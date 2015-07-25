@@ -15,6 +15,7 @@ namespace DistantObject
         public CelestialBody body;
         public GameObject bodyMesh;
         public MeshRenderer meshRenderer;
+        public Renderer scaledRenderer;
         public Color color;
         public Vector3d cameraToBodyUnitVector;
         public double distanceFromCamera;
@@ -53,6 +54,9 @@ namespace DistantObject
             bodyMesh.transform.localScale = new Vector3(resizeFactor, resizeFactor, resizeFactor);
 
             sizeInDegrees = Math.Acos(Math.Sqrt(distanceFromCamera * distanceFromCamera - bodyRadiusSquared) / distanceFromCamera) * Mathf.Rad2Deg;
+
+            // Disable the mesh if the scaledRenderer is enabled and visible.
+            bodyMesh.SetActive(!(scaledRenderer.enabled && scaledRenderer.isVisible));
         }
 
         ~BodyFlare()
@@ -128,7 +132,6 @@ namespace DistantObject
         private Transform showNameTransform = null;
         private Color showNameColor;
 
-        private List<Transform> scaledTransforms = new List<Transform>();
         private List<Vessel> deadVessels = new List<Vessel>();
 
         //--------------------------------------------------------------------
@@ -192,7 +195,7 @@ namespace DistantObject
             //ListChildren(sm.systemPrefab.rootBody, 0);
             //--- HACK--
 
-            if(BodyFlare.kerbinSMA <= 0.0)
+            if (BodyFlare.kerbinSMA <= 0.0)
             {
                 BodyFlare.kerbinSMA = FlightGlobals.Bodies[1].orbit.semiMajorAxis;
                 BodyFlare.kerbinRadius = FlightGlobals.Bodies[1].Radius;
@@ -209,13 +212,18 @@ namespace DistantObject
                     color.r = 1.0f - (DistantObjectSettings.DistantFlare.flareSaturation * (1.0f - (color.r / 255.0f)));
                     color.g = 1.0f - (DistantObjectSettings.DistantFlare.flareSaturation * (1.0f - (color.g / 255.0f)));
                     color.b = 1.0f - (DistantObjectSettings.DistantFlare.flareSaturation * (1.0f - (color.b / 255.0f)));
-                    color.a = 1;
+                    color.a = 1.0f;
                     if (!bodyColors.ContainsKey(body))
                     {
                         bodyColors.Add(body, color);
                     }
                 }
             }
+
+            List<Transform> scaledTransforms =
+                ScaledSpace.Instance.scaledSpaceTransforms
+                .Where(ss => ss.GetComponent<ScaledSpaceFader>() != null)
+                .ToList();
 
             GameObject flare = GameDatabase.Instance.GetModel("DistantObject/Flare/model");
 
@@ -251,9 +259,12 @@ namespace DistantObject
                     flareMR.castShadows = false;
                     flareMR.receiveShadows = false;
 
+                    Renderer scaledRenderer = scaledTransforms.Find(x => x.name == body.name).renderer;
+
                     bf.body = body;
                     bf.bodyMesh = flareMesh;
                     bf.meshRenderer = flareMR;
+                    bf.scaledRenderer = scaledRenderer;
                     bf.color = flareMR.material.color;
                     bf.relativeRadiusSquared = Math.Pow(body.Radius / FlightGlobals.Bodies[1].Radius, 2.0);
                     bf.bodyRadiusSquared = body.Radius * body.Radius;
@@ -280,14 +291,14 @@ namespace DistantObject
                 }
             }
 
-            for (int v=0; v<deadVessels.Count; ++v)
+            for (int v = 0; v < deadVessels.Count; ++v)
             {
                 RemoveVesselFlare(deadVessels[v]);
             }
             deadVessels.Clear();
 
             // See which vessels we should add
-            for (int i = 0; i < FlightGlobals.Vessels.Count; ++i )
+            for (int i = 0; i < FlightGlobals.Vessels.Count; ++i)
             {
                 Vessel vessel = FlightGlobals.Vessels[i];
                 if (!vesselFlares.ContainsKey(vessel) && RenderableVesselType(vessel.vesselType) && !vessel.loaded && situations.Contains(vessel.situation))
@@ -300,7 +311,7 @@ namespace DistantObject
         //--------------------------------------------------------------------
         // CheckDraw
         // Checks if the given mesh should be drawn.
-        private void CheckDraw(GameObject flareMesh, MeshRenderer flareMR, Vector3d position, CelestialBody referenceBody, double objRadius, FlareType flareType)
+        private void CheckDraw(GameObject flareMesh, MeshRenderer flareMR, Vector3d position, CelestialBody referenceBody, Color baseColor, double objRadius, FlareType flareType)
         {
             Vector3d targetVectorToSun = FlightGlobals.Bodies[0].position - position;
             Vector3d targetVectorToRef = referenceBody.position - position;
@@ -343,27 +354,26 @@ namespace DistantObject
                 }
             }
 
-            Color color = flareMR.material.color;
-
             if (targetSize < (camFOV / 500.0f) && isVisible && !MapView.MapIsEnabled)
             {
+                Color color = baseColor;
                 color.a = atmosphereFactor * dimFactor;
                 if (targetSize > (camFOV / 1000.0f))
                 {
                     color.a *= (float)(((camFOV / targetSize) / 500.0) - 1.0);
                 }
-                if (flareType == FlareType.Debris)
+                if (flareType == FlareType.Debris && DistantObjectSettings.DistantFlare.debrisBrightness < 1.0f)
                 {
                     color.a *= DistantObjectSettings.DistantFlare.debrisBrightness;
                 }
+                // Uncomment this to help with debugging
                 //color.a = 1.0f;
+                flareMR.material.color = color;
             }
             else
             {
-                color.a = 0.0f;
+                flareMesh.SetActive(false);
             }
-
-            flareMR.material.color = color;
         }
 
         //--------------------------------------------------------------------
@@ -422,7 +432,7 @@ namespace DistantObject
 
             float sunDimFactor = 1.0f;
             float skyboxDimFactor;
-            if(DistantObjectSettings.SkyboxBrightness.changeSkybox == true)
+            if (DistantObjectSettings.SkyboxBrightness.changeSkybox == true)
             {
                 // Apply fudge factors here so people who turn off the skybox don't turn off the flares, too.
                 // And avoid a divide-by-zero.
@@ -446,13 +456,14 @@ namespace DistantObject
                     if (bodyFlares[i].distanceFromCamera < sunBodyDist && bodyFlares[i].sizeInDegrees > sunBodySize && Vector3d.Angle(bodyFlares[i].cameraToBodyUnitVector, FlightGlobals.Bodies[0].position - camPos) < bodyFlares[i].sizeInDegrees)
                     {
                         isVisible = false;
+                        break;
                     }
                 }
                 if (isVisible)
                 {
                     // Apply an arbitrary minimum value - the (x^4) function
                     // isn't right, but it does okay on its own.
-                    float sunDimming = Mathf.Max(0.2f, Mathf.Pow(angCamToSun / (camFOV / 2.0f), 4.0f));
+                    float sunDimming = Mathf.Max(0.2f, Mathf.Pow(angCamToSun / (camFOV * 0.5f), 4.0f));
                     sunDimFactor *= sunDimming;
                 }
             }
@@ -465,7 +476,7 @@ namespace DistantObject
         private void UpdateNameShown()
         {
             showNameTransform = null;
-            if (DistantObjectSettings.DistantFlare.showNames && !MapView.MapIsEnabled)
+            if (DistantObjectSettings.DistantFlare.showNames)
             {
                 Ray mouseRay = FlightCamera.fetch.mainCamera.ScreenPointToRay(Input.mousePosition);
 
@@ -574,13 +585,6 @@ namespace DistantObject
             // After they are destroyed they are == null and this confuses Dictionary.
             GameEvents.onVesselWillDestroy.Add(RemoveVesselFlare);
 
-            // Cache a list of the scaledTransforms so we know which worlds
-            // are being rendered.
-            scaledTransforms =
-                ScaledSpace.Instance.scaledSpaceTransforms
-                .Where(ss => ss.GetComponent<ScaledSpaceFader>() != null)
-                .ToList();
-
             //--- HACK++
             //foreach(Transform sst in scaledTransforms)
             //{
@@ -628,11 +632,14 @@ namespace DistantObject
                         Destroy(b.meshRenderer.material);
                     }
                     Destroy(b.meshRenderer);
+                    b.meshRenderer = null;
                 }
                 if (b.bodyMesh != null)
                 {
                     Destroy(b.bodyMesh);
+                    b.bodyMesh = null;
                 }
+                b.scaledRenderer = null;
             }
             bodyFlares.Clear();
         }
@@ -656,7 +663,16 @@ namespace DistantObject
         // Update visible vessel list
         public void FixedUpdate()
         {
-            GenerateVesselFlares();
+            if (DistantObjectSettings.debugMode)
+            {
+                Debug.Log(Constants.DistantObject + " -- FixedUpdate");
+            }
+
+            if (DistantObjectSettings.DistantFlare.flaresEnabled && !MapView.MapIsEnabled)
+            {
+                // MOARdV TODO: Make this callback-based instead of polling
+                GenerateVesselFlares();
+            }
         }
 
         //--------------------------------------------------------------------
@@ -693,31 +709,14 @@ namespace DistantObject
                     {
                         Debug.Log(Constants.DistantObject + " -- Update");
                     }
+
                     foreach (BodyFlare flare in bodyFlares)
                     {
                         flare.Update(camPos, camFOV);
-                        CheckDraw(flare.bodyMesh, flare.meshRenderer, flare.body.transform.position, flare.body.referenceBody, flare.sizeInDegrees, FlareType.Celestial);
 
-                        if (flare.meshRenderer.material.color.a > 0.0f)
+                        if (flare.bodyMesh.activeSelf)
                         {
-                            try
-                            {
-                                Renderer scaledRenderer = scaledTransforms.Find(x => x.name == flare.body.name).renderer;
-
-                                //Transform t = scaledTransforms.Find(x => x.name == flare.body.name);
-                                //Debug.Log(string.Format("xform {0} @ {1}, which is {2}; world is {3}", t.name, t.position, ScaledSpace.ScaledToLocalSpace(t.position), flare.body.transform.position));
-
-                                flare.bodyMesh.SetActive(!(scaledRenderer.enabled && scaledRenderer.isVisible));
-                            }
-                            catch (Exception e)
-                            {
-                                flare.bodyMesh.SetActive(true);
-                                Debug.LogException(e);
-                            }
-                        }
-                        else
-                        {
-                            flare.bodyMesh.SetActive(false);
+                            CheckDraw(flare.bodyMesh, flare.meshRenderer, flare.body.transform.position, flare.body.referenceBody, flare.color, flare.sizeInDegrees, FlareType.Celestial);
                         }
                     }
 
@@ -729,7 +728,7 @@ namespace DistantObject
 
                         if (vesselFlare.flareMesh.activeSelf)
                         {
-                            CheckDraw(vesselFlare.flareMesh, vesselFlare.meshRenderer, vesselFlare.flareMesh.transform.position, vesselFlare.referenceShip.mainBody, 5, (vesselFlare.referenceShip.vesselType == VesselType.Debris) ? FlareType.Debris : FlareType.Vessel);
+                            CheckDraw(vesselFlare.flareMesh, vesselFlare.meshRenderer, vesselFlare.flareMesh.transform.position, vesselFlare.referenceShip.mainBody, Color.white, 5.0, (vesselFlare.referenceShip.vesselType == VesselType.Debris) ? FlareType.Debris : FlareType.Vessel);
                         }
                     }
 
