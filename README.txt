@@ -3,10 +3,9 @@ Distant Object Enhancement bis
 
 This plugin renders effects for distant objects in Kerbal Space Program v1.0.2 and later.
 
-Version 1.6.0 Release Notes:
-- Finally fixed vessel flare positions.
-- Changed equation used to determine vessel flare brightness so smaller satellites will be visible.
-- Internal code changes to eliminate some redundant updates.
+Version 1.6.1 Release Notes:
+- Tweaks to body flare rendering to reduce the amount of unchanging data being stored by the mod and queried every update.
+- Changed computation of a constant used for flare brightness to allow for Kerbin being a child of something other than Kerbol (for instance, with the New Horizons mod).  Courtesy forum user Tynrael.
 
 Original plugin by duckytopia (Rubber Ducky on the KSP forum).
 
