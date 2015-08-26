@@ -1,3 +1,9 @@
+v1.6.1 (21 August, 2015)
+- Tweaks to body flare rendering to reduce the amount of unchanging data being stored by the mod and queried every update.
+- Changed computation of a constant used for flare brightness to allow for Kerbin being a child of something other than Kerbol (for instance, with the New Horizons mod).  Courtesy forum user Tynrael.
+
+---
+
 v1.6.0 (July 23, 2015)
 - Finally fixed vessel flare positions.
 - Changed equation used to determine vessel flare brightness so smaller satellites will be visible.
