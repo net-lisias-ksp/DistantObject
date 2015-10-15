@@ -293,6 +293,7 @@ namespace DistantObject
                     bf.color = flareMR.material.color;
                     bf.relativeRadiusSquared = Math.Pow(body.Radius / FlightGlobals.Bodies[1].Radius, 2.0);
                     bf.bodyRadiusSquared = body.Radius * body.Radius;
+                    bf.bodyMesh.SetActive(DistantObjectSettings.DistantFlare.flaresEnabled);
 
                     bodyFlares.Add(bf);
                 }
@@ -697,6 +698,21 @@ namespace DistantObject
             {
                 // MOARdV TODO: Make this callback-based instead of polling
                 GenerateVesselFlares();
+            }
+            else if (!DistantObjectSettings.DistantFlare.flaresEnabled)
+            {
+                if (vesselFlares.Count > 0)
+                {
+                    foreach (VesselFlare v in vesselFlares.Values)
+                    {
+                        DestroyVesselFlare(v);
+                    }
+                    vesselFlares.Clear();
+                }
+                for(int i=0; i<bodyFlares.Count; ++i)
+                {
+                    bodyFlares[i].bodyMesh.SetActive(false);
+                }
             }
         }
 
