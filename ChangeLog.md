@@ -1,3 +1,8 @@
+v1.6.4 (21 November 2015)
+- Recompiled for KSP 1.0.5.  Guess 1.6.3 wasn't quite compatible after all.  Issue #23.
+
+---
+
 v1.6.3 (15 October 2015)
 - Fix for ghost flares that appear when flare rendering is disabled.  Issue #21.
 
