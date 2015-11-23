@@ -1,4 +1,19 @@
-v1.6.1 (21 August, 2015)
+v1.6.4 (21 November 2015)
+- Recompiled for KSP 1.0.5.  Guess 1.6.3 wasn't quite compatible after all.  Issue #23.
+
+---
+
+v1.6.3 (15 October 2015)
+- Fix for ghost flares that appear when flare rendering is disabled.  Issue #21.
+
+---
+
+v1.6.2 (9 October 2015)
+- Fix for a nullref exception in VesselDraw with craft that have fixed solar panels, courtesy taniwha.
+
+---
+
+v1.6.1 (21 August 2015)
 - Tweaks to body flare rendering to reduce the amount of unchanging data being stored by the mod and queried every update.
 - Changed computation of a constant used for flare brightness to allow for Kerbin being a child of something other than Kerbol (for instance, with the New Horizons mod).  Courtesy forum user Tynrael.
 
