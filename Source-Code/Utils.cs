@@ -35,7 +35,7 @@ namespace DistantObject
             static public float flareSaturation = 0.65f;
             static public float flareSize = 1.0f;
             static public float flareBrightness = 1.0f;
-            static readonly public string situations = "ORBITING,SUB_ORBITAL,ESCAPING,DOCKED";
+            static readonly public string situations = "ORBITING,SUB_ORBITAL,ESCAPING,DOCKED,FLYING";
             static public float debrisBrightness = 0.15f;
         }
 
