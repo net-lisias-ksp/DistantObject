@@ -1,4 +1,6 @@
+//#define SHOW_FIXEDUPDATE_TIMING
 using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -133,6 +135,10 @@ namespace DistantObject
         private Color showNameColor;
 
         private List<Vessel> deadVessels = new List<Vessel>();
+
+#if SHOW_FIXEDUPDATE_TIMING
+        private Stopwatch stopwatch = new Stopwatch();
+#endif
 
         //--------------------------------------------------------------------
         // AddVesselFlare
@@ -307,6 +313,10 @@ namespace DistantObject
         // Iterate over the vessels, adding and removing flares as appropriate
         private void GenerateVesselFlares()
         {
+#if SHOW_FIXEDUPDATE_TIMING
+                stopwatch.Reset();
+                stopwatch.Start();
+#endif
             // See if there are vessels that need to be removed from our live
             // list
             foreach (Vessel v in vesselFlares.Keys)
@@ -316,12 +326,18 @@ namespace DistantObject
                     deadVessels.Add(v);
                 }
             }
+#if SHOW_FIXEDUPDATE_TIMING
+                long scanDead = stopwatch.ElapsedMilliseconds;
+#endif
 
             for (int v = 0; v < deadVessels.Count; ++v)
             {
                 RemoveVesselFlare(deadVessels[v]);
             }
             deadVessels.Clear();
+#if SHOW_FIXEDUPDATE_TIMING
+                long clearDead = stopwatch.ElapsedMilliseconds;
+#endif
 
             // See which vessels we should add
             for (int i = 0; i < FlightGlobals.Vessels.Count; ++i)
@@ -332,6 +348,13 @@ namespace DistantObject
                     AddVesselFlare(vessel);
                 }
             }
+#if SHOW_FIXEDUPDATE_TIMING
+                long addNew = stopwatch.ElapsedMilliseconds;
+                stopwatch.Stop();
+
+                UnityEngine.Debug.Log(string.Format(Constants.DistantObject + " -- GenerateVesselFlares net ms: scanDead = {0}, clearDead = {1}, addNew = {2} - {3} flares tracked",
+                    scanDead, clearDead, addNew, vesselFlares.Count));
+#endif
         }
 
         //--------------------------------------------------------------------
@@ -592,17 +615,17 @@ namespace DistantObject
                 }
                 else
                 {
-                    Debug.LogWarning(Constants.DistantObject + " -- Unable to find situation '" + sit + "' in my known situations atlas");
+                    UnityEngine.Debug.LogWarning(Constants.DistantObject + " -- Unable to find situation '" + sit + "' in my known situations atlas");
                 }
             }
 
             if (DistantObjectSettings.DistantFlare.flaresEnabled)
             {
-                Debug.Log(Constants.DistantObject + " -- FlareDraw enabled");
+                UnityEngine.Debug.Log(Constants.DistantObject + " -- FlareDraw enabled");
             }
             else
             {
-                Debug.Log(Constants.DistantObject + " -- FlareDraw disabled");
+                UnityEngine.Debug.Log(Constants.DistantObject + " -- FlareDraw disabled");
             }
 
             GenerateBodyFlares();
@@ -691,7 +714,7 @@ namespace DistantObject
         {
             if (DistantObjectSettings.debugMode)
             {
-                Debug.Log(Constants.DistantObject + " -- FixedUpdate");
+                UnityEngine.Debug.Log(Constants.DistantObject + " -- FixedUpdate");
             }
 
             if (DistantObjectSettings.DistantFlare.flaresEnabled && !MapView.MapIsEnabled)
@@ -739,6 +762,10 @@ namespace DistantObject
                 }
                 else
                 {
+#if SHOW_FIXEDUPDATE_TIMING
+                stopwatch.Reset();
+                stopwatch.Start();
+#endif
                     camPos = FlightCamera.fetch.mainCamera.transform.position;
 
                     if (!ExternalControl)
@@ -748,7 +775,7 @@ namespace DistantObject
 
                     if (DistantObjectSettings.debugMode)
                     {
-                        Debug.Log(Constants.DistantObject + " -- Update");
+                        UnityEngine.Debug.Log(Constants.DistantObject + " -- Update");
                     }
 
                     foreach (BodyFlare flare in bodyFlares)
@@ -760,8 +787,14 @@ namespace DistantObject
                             CheckDraw(flare.bodyMesh, flare.meshRenderer, flare.body.transform.position, flare.body.referenceBody, flare.color, flare.sizeInDegrees, FlareType.Celestial);
                         }
                     }
+#if SHOW_FIXEDUPDATE_TIMING
+                    long bodyCheckdraw = stopwatch.ElapsedMilliseconds;
+#endif
 
                     UpdateVar();
+#if SHOW_FIXEDUPDATE_TIMING
+                    long updateVar = stopwatch.ElapsedMilliseconds;
+#endif
 
                     foreach (VesselFlare vesselFlare in vesselFlares.Values)
                     {
@@ -772,8 +805,18 @@ namespace DistantObject
                             CheckDraw(vesselFlare.flareMesh, vesselFlare.meshRenderer, vesselFlare.flareMesh.transform.position, vesselFlare.referenceShip.mainBody, Color.white, 5.0, (vesselFlare.referenceShip.vesselType == VesselType.Debris) ? FlareType.Debris : FlareType.Vessel);
                         }
                     }
+#if SHOW_FIXEDUPDATE_TIMING
+                    long vesselCheckdraw = stopwatch.ElapsedMilliseconds;
+#endif
 
                     UpdateNameShown();
+#if SHOW_FIXEDUPDATE_TIMING
+                    long updateName = stopwatch.ElapsedMilliseconds;
+                    stopwatch.Stop();
+
+                    UnityEngine.Debug.Log(string.Format(Constants.DistantObject + " -- Update net ms: bodyCheckdraw = {0}, updateVar = {1}, vesselCheckdraw = {2}, updateName = {3}",
+                        bodyCheckdraw, updateVar, vesselCheckdraw,updateName));
+#endif
                 }
             }
         }
