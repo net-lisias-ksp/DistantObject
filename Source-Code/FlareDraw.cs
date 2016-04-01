@@ -148,7 +148,7 @@ namespace DistantObject
             // DistantObject/Flare/model has extents of (0.5, 0.5, 0.0), a 1/2 meter wide square.
             GameObject flare = GameDatabase.Instance.GetModel("DistantObject/Flare/model");
             GameObject flareMesh = Mesh.Instantiate(flare) as GameObject;
-            Destroy(flareMesh.collider);
+            Destroy(flareMesh.GetComponent<Collider>());
             DestroyObject(flare);
 
             flareMesh.name = referenceShip.vesselName;
@@ -163,7 +163,7 @@ namespace DistantObject
             flareMR.gameObject.layer = 15;
             flareMR.material.shader = Shader.Find("KSP/Alpha/Unlit Transparent");
             flareMR.material.color = Color.white;
-            flareMR.castShadows = false;
+            flareMR.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
             flareMR.receiveShadows = false;
 
             VesselFlare vesselFlare = new VesselFlare();
@@ -251,11 +251,6 @@ namespace DistantObject
                 }
             }
 
-            List<Transform> scaledTransforms =
-                ScaledSpace.Instance.scaledSpaceTransforms
-                .Where(ss => ss.GetComponent<ScaledSpaceFader>() != null)
-                .ToList();
-
             GameObject flare = GameDatabase.Instance.GetModel("DistantObject/Flare/model");
 
             foreach (CelestialBody body in FlightGlobals.Bodies)
@@ -265,7 +260,7 @@ namespace DistantObject
                     BodyFlare bf = new BodyFlare();
 
                     GameObject flareMesh = Mesh.Instantiate(flare) as GameObject;
-                    Destroy(flareMesh.collider);
+                    Destroy(flareMesh.GetComponent<Collider>());
 
                     flareMesh.name = body.bodyName;
                     flareMesh.SetActive(true);
@@ -287,10 +282,10 @@ namespace DistantObject
                     {
                         flareMR.material.color = Color.white;
                     }
-                    flareMR.castShadows = false;
+                    flareMR.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
                     flareMR.receiveShadows = false;
 
-                    Renderer scaledRenderer = scaledTransforms.Find(x => x.name == body.name).renderer;
+                    Renderer scaledRenderer = body.MapObject.transform.GetComponent<Renderer>();
 
                     bf.body = body;
                     bf.bodyMesh = flareMesh;
@@ -321,7 +316,7 @@ namespace DistantObject
             // list
             foreach (Vessel v in vesselFlares.Keys)
             {
-                if (v.loaded == true || !situations.Contains(v.situation))
+                if (v.orbit.referenceBody != FlightGlobals.ActiveVessel.orbit.referenceBody || v.loaded == true || !situations.Contains(v.situation))
                 {
                     deadVessels.Add(v);
                 }
@@ -343,7 +338,7 @@ namespace DistantObject
             for (int i = 0; i < FlightGlobals.Vessels.Count; ++i)
             {
                 Vessel vessel = FlightGlobals.Vessels[i];
-                if (!vesselFlares.ContainsKey(vessel) && RenderableVesselType(vessel.vesselType) && !vessel.loaded && situations.Contains(vessel.situation))
+                if (vessel.orbit.referenceBody == FlightGlobals.ActiveVessel.orbit.referenceBody && !vesselFlares.ContainsKey(vessel) && RenderableVesselType(vessel.vesselType) && !vessel.loaded && situations.Contains(vessel.situation))
                 {
                     AddVesselFlare(vessel);
                 }
@@ -732,7 +727,7 @@ namespace DistantObject
                     }
                     vesselFlares.Clear();
                 }
-                for(int i=0; i<bodyFlares.Count; ++i)
+                for (int i = 0; i < bodyFlares.Count; ++i)
                 {
                     bodyFlares[i].bodyMesh.SetActive(false);
                 }

@@ -133,6 +133,11 @@ namespace DistantObject
                     }
 
                     //check if part is a landing leg
+                    /* MOARdV: In KSP 1.1, ModuleLandingLeg is deprecated, so
+                     * this isn't valid to use going forward.  I need to decide
+                     * if I want to expend the energy to support this, or just
+                     * punt on VesselDraw outright.
+                     *
                     ProtoPartModuleSnapshot landingLeg = a.modules.Find(n => n.moduleName == "ModuleLandingLeg");
                     if (landingLeg != null)
                     {
@@ -150,6 +155,7 @@ namespace DistantObject
                             anim[animName].normalizedTime = 1f;
                         }
                     }
+                    */
 
                     //check if part has a generic animation
                     ProtoPartModuleSnapshot animGeneric = a.modules.Find(n => n.moduleName == "ModuleAnimateGeneric");

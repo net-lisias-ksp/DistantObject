@@ -64,23 +64,24 @@ namespace DistantObject
                         appLauncherButton.SetTexture(iconTexture);
                     }
                 }
-
             }
         }
 
         private void OnDestroy()
         {
-            GameEvents.onGameSceneLoadRequested.Remove(onGameSceneLoadRequestedForAppLauncher);
-            
+            if (DistantObjectSettings.debugMode)
+            {
+                Debug.Log(Constants.DistantObject + " -- SettingsGui OnDestroy - " + this.GetInstanceID());
+            }
+
             if (buttonDOSettings != null)
             {
                 buttonDOSettings.Destroy();
+                buttonDOSettings = null;
             }
-
-            if (callback != null)
-            {
-                RenderingManager.RemoveFromPostDrawQueue(3, callback);
-            }
+            GameEvents.onGUIApplicationLauncherReady.Remove(AddAppLauncherButton);
+            GameEvents.onGUIApplicationLauncherDestroyed.Remove(RemoveAppLauncherButton);
+            RemoveAppLauncherButton();
         }
     }
 }

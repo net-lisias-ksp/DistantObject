@@ -7,14 +7,14 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("KSP Plugin to render distant planets and spacecraft")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Duckytopia / MOARdV")]
-[assembly: AssemblyCopyright("Copyright © 2014-2015")]
+[assembly: AssemblyCopyright("Copyright © 2014-2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
 // The assembly version has the format "{Major}.{Minor}.{Build}.{Revision}".
 // The form "{Major}.{Minor}.*" will automatically update the build and revision,
 // and "{Major}.{Minor}.{Build}.*" will update just the revision.
-[assembly: AssemblyVersion("1.6.4.*")]
+[assembly: AssemblyVersion("1.7.0.*")]
 
 // Use KSPAssembly to allow other DLLs to make this DLL a dependency in a 
 // non-hacky way in KSP.  Format is (AssemblyProduct, major, minor), and it 
