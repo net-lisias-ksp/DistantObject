@@ -1,3 +1,8 @@
+v1.7.0 (1 Apr 2016)
+- Recompiled for KSP 1.1.
+
+---
+
 v1.6.4 (21 November 2015)
 - Recompiled for KSP 1.0.5.  Guess 1.6.3 wasn't quite compatible after all.  Issue #23.
 
