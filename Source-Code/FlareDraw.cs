@@ -19,6 +19,7 @@ namespace DistantObject
         public MeshRenderer meshRenderer;
         public Renderer scaledRenderer;
         public Color color;
+        public Vector4 hslColor;
         public Vector3d cameraToBodyUnitVector;
         public double distanceFromCamera;
         public double sizeInDegrees;
@@ -126,6 +127,11 @@ namespace DistantObject
         private float atmosphereFactor = 1.0f;
         private float dimFactor = 1.0f;
 
+        private double sunDistanceFromCamera = 1.0;
+        private double sunSizeInDegrees = 1.0;
+        private double sunRadiusSquared;
+        private Vector3d cameraToSunUnitVector = Vector3d.zero;
+
         private static bool ExternalControl = false;
 
         private List<Vessel.Situations> situations = new List<Vessel.Situations>();
@@ -133,6 +139,7 @@ namespace DistantObject
         private string showNameString = null;
         private Transform showNameTransform = null;
         private Color showNameColor;
+        static private readonly Vector4 hslWhite = Utility.RGB2HSL(Color.white);
 
         private List<Vessel> deadVessels = new List<Vessel>();
 
@@ -292,6 +299,7 @@ namespace DistantObject
                     bf.meshRenderer = flareMR;
                     bf.scaledRenderer = scaledRenderer;
                     bf.color = flareMR.material.color;
+                    bf.hslColor = Utility.RGB2HSL(flareMR.material.color);
                     bf.relativeRadiusSquared = Math.Pow(body.Radius / FlightGlobals.Bodies[1].Radius, 2.0);
                     bf.bodyRadiusSquared = body.Radius * body.Radius;
                     bf.bodyMesh.SetActive(DistantObjectSettings.DistantFlare.flaresEnabled);
@@ -355,7 +363,7 @@ namespace DistantObject
         //--------------------------------------------------------------------
         // CheckDraw
         // Checks if the given mesh should be drawn.
-        private void CheckDraw(GameObject flareMesh, MeshRenderer flareMR, Vector3d position, CelestialBody referenceBody, Color baseColor, double objRadius, FlareType flareType)
+        private void CheckDraw(GameObject flareMesh, MeshRenderer flareMR, Vector3d position, CelestialBody referenceBody, Vector4 hslColor, double objRadius, FlareType flareType)
         {
             Vector3d targetVectorToSun = FlightGlobals.Bodies[0].position - position;
             Vector3d targetVectorToRef = referenceBody.position - position;
@@ -388,31 +396,47 @@ namespace DistantObject
             {
                 isVisible = true;
 
-                for (int i = 0; i < bodyFlares.Count; ++i)
+                // See if the sun obscures our target
+                if (sunDistanceFromCamera < targetDist && sunSizeInDegrees > targetSize && Vector3d.Angle(cameraToSunUnitVector, position - camPos) < sunSizeInDegrees)
                 {
-                    if (bodyFlares[i].body.bodyName != flareMesh.name && bodyFlares[i].distanceFromCamera < targetDist && bodyFlares[i].sizeInDegrees > targetSize && Vector3d.Angle(bodyFlares[i].cameraToBodyUnitVector, position - camPos) < bodyFlares[i].sizeInDegrees)
+                    isVisible = false;
+                }
+
+                if (isVisible)
+                {
+                    for (int i = 0; i < bodyFlares.Count; ++i)
                     {
-                        isVisible = false;
-                        break;
+                        if (bodyFlares[i].body.bodyName != flareMesh.name && bodyFlares[i].distanceFromCamera < targetDist && bodyFlares[i].sizeInDegrees > targetSize && Vector3d.Angle(bodyFlares[i].cameraToBodyUnitVector, position - camPos) < bodyFlares[i].sizeInDegrees)
+                        {
+                            isVisible = false;
+                            break;
+                        }
                     }
                 }
             }
 
             if (targetSize < (camFOV / 500.0f) && isVisible && !MapView.MapIsEnabled)
             {
-                Color color = baseColor;
-                color.a = atmosphereFactor * dimFactor;
+                // Work in HSL space.  That allows us to do dimming of color
+                // by adjusting the lightness value without any hue shifting.
+                // We apply atmospheric dimming using alpha.  Although maybe
+                // I don't need to - it could be done by dimming, too.
+                float alpha = hslColor.w;
+                float dimming = 1.0f;
+                alpha *= atmosphereFactor;
+                dimming *= dimFactor;
                 if (targetSize > (camFOV / 1000.0f))
                 {
-                    color.a *= (float)(((camFOV / targetSize) / 500.0) - 1.0);
+                    dimming *= (float)(((camFOV / targetSize) / 500.0) - 1.0);
                 }
                 if (flareType == FlareType.Debris && DistantObjectSettings.DistantFlare.debrisBrightness < 1.0f)
                 {
-                    color.a *= DistantObjectSettings.DistantFlare.debrisBrightness;
+                    dimming *= DistantObjectSettings.DistantFlare.debrisBrightness;
                 }
                 // Uncomment this to help with debugging
-                //color.a = 1.0f;
-                flareMR.material.color = color;
+                //alpha = 1.0f;
+                //dimming = 1.0f;
+                flareMR.material.color = ResourceUtilities.HSL2RGB(hslColor.x, hslColor.y, hslColor.z * dimming, alpha);
             }
             else
             {
@@ -623,17 +647,12 @@ namespace DistantObject
                 UnityEngine.Debug.Log(Constants.DistantObject + " -- FlareDraw disabled");
             }
 
+            sunRadiusSquared = FlightGlobals.Bodies[0].Radius * FlightGlobals.Bodies[0].Radius;
             GenerateBodyFlares();
 
             // Remove Vessels from our dictionaries just before they are destroyed.
             // After they are destroyed they are == null and this confuses Dictionary.
             GameEvents.onVesselWillDestroy.Add(RemoveVesselFlare);
-
-            //--- HACK++
-            //foreach(Transform sst in scaledTransforms)
-            //{
-            //    Debug.Log(string.Format("xform {0} @ {1}, which is {2}", sst.name, sst.position, ScaledSpace.ScaledToLocalSpace(sst.position)));
-            //}
         }
 
         //--------------------------------------------------------------------
@@ -763,6 +782,12 @@ namespace DistantObject
 #endif
                     camPos = FlightCamera.fetch.mainCamera.transform.position;
 
+                    Vector3d targetVectorToCam = camPos - FlightGlobals.Bodies[0].position;
+
+                    cameraToSunUnitVector = -targetVectorToCam.normalized;
+                    sunDistanceFromCamera = targetVectorToCam.magnitude;
+                    sunSizeInDegrees = Math.Acos(Math.Sqrt(sunDistanceFromCamera * sunDistanceFromCamera - sunRadiusSquared) / sunDistanceFromCamera) * Mathf.Rad2Deg;
+
                     if (!ExternalControl)
                     {
                         camFOV = FlightCamera.fetch.mainCamera.fieldOfView;
@@ -779,7 +804,7 @@ namespace DistantObject
 
                         if (flare.bodyMesh.activeSelf)
                         {
-                            CheckDraw(flare.bodyMesh, flare.meshRenderer, flare.body.transform.position, flare.body.referenceBody, flare.color, flare.sizeInDegrees, FlareType.Celestial);
+                            CheckDraw(flare.bodyMesh, flare.meshRenderer, flare.body.transform.position, flare.body.referenceBody, flare.hslColor, flare.sizeInDegrees, FlareType.Celestial);
                         }
                     }
 #if SHOW_FIXEDUPDATE_TIMING
@@ -797,7 +822,7 @@ namespace DistantObject
 
                         if (vesselFlare.flareMesh.activeSelf)
                         {
-                            CheckDraw(vesselFlare.flareMesh, vesselFlare.meshRenderer, vesselFlare.flareMesh.transform.position, vesselFlare.referenceShip.mainBody, Color.white, 5.0, (vesselFlare.referenceShip.vesselType == VesselType.Debris) ? FlareType.Debris : FlareType.Vessel);
+                            CheckDraw(vesselFlare.flareMesh, vesselFlare.meshRenderer, vesselFlare.flareMesh.transform.position, vesselFlare.referenceShip.mainBody, hslWhite, 5.0, (vesselFlare.referenceShip.vesselType == VesselType.Debris) ? FlareType.Debris : FlareType.Vessel);
                         }
                     }
 #if SHOW_FIXEDUPDATE_TIMING
