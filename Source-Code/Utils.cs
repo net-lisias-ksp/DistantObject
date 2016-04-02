@@ -4,6 +4,72 @@ using UnityEngine;
 
 namespace DistantObject
 {
+    class Utility
+    {
+        public static Vector4 RGB2HSL(Color rgba)
+        {
+            float h = 0.0f, s = 0.0f, l = 0.0f;
+            float r = rgba.r;
+            float g = rgba.g;
+            float b = rgba.b;
+
+            float v;
+            float m;
+            float vm;
+
+            float r2, g2, b2;
+
+
+            v = Mathf.Max(r, g);
+            v = Mathf.Max(v, b);
+
+            m = Mathf.Min(r, g);
+            m = Mathf.Min(m, b);
+
+            l = (m + v) / 2.0f;
+
+            if (l <= 0.0f)
+            {
+                return new Vector4(0.0f, 0.0f, 0.0f, rgba.a);
+            }
+
+            vm = v - m;
+
+            s = vm;
+
+            if (s > 0.0f)
+            {
+                s /= (l <= 0.5f) ? (v + m) : (2.0f - v - m);
+            }
+            else
+            {
+                return new Vector4(0.0f, 0.0f, 0.0f, rgba.a);
+            }
+
+            r2 = (v - r) / vm;
+            g2 = (v - g) / vm;
+            b2 = (v - b) / vm;
+
+            if (r == v)
+            {
+                h = (g == m ? 5.0f + b2 : 1.0f - g2);
+            }
+            else if (g == v)
+            {
+                h = (b == m ? 1.0f + r2 : 3.0f - b2);
+            }
+            else
+            {
+                h = (r == m ? 3.0f + g2 : 5.0f - r2);
+            }
+
+            h /= 6.0f;
+
+            return new Vector4(h, s, l, rgba.a);
+        }
+
+    }
+
     class Constants
     {
         static private string _DistantObject = null;
@@ -32,7 +98,7 @@ namespace DistantObject
             static public bool flaresEnabled = true;
             static public bool ignoreDebrisFlare = false;
             static public bool showNames = false;
-            static public float flareSaturation = 0.65f;
+            static public float flareSaturation = 1.0f;
             static public float flareSize = 1.0f;
             static public float flareBrightness = 1.0f;
             static readonly public string situations = "ORBITING,SUB_ORBITAL,ESCAPING,DOCKED,FLYING";

@@ -12,7 +12,7 @@ namespace DistantObject
         private bool isActivated = false;
 
         private bool flaresEnabled = false;
-        private float flareSaturation = 0.65f;
+        private float flareSaturation = 1.0f;
         private float flareSize = 1.0f;
         private float flareBrightness = 1.0f;
         private bool ignoreDebrisFlare = false;
@@ -217,7 +217,7 @@ namespace DistantObject
                 GUILayout.Label("Flare Saturation");
                 GUILayout.EndHorizontal();
                 GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
-                flareSaturation = GUILayout.HorizontalSlider(flareSaturation, 0f, 1f, GUILayout.Width(240));
+                flareSaturation = GUILayout.HorizontalSlider(flareSaturation, 0f, 1f, GUILayout.Width(220));
                 GUILayout.Label(string.Format("{0:0}", 100 * flareSaturation) + "%");
                 GUILayout.EndHorizontal();
 
@@ -225,7 +225,7 @@ namespace DistantObject
                 GUILayout.Label("Flare Size");
                 GUILayout.EndHorizontal();
                 GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
-                flareSize = GUILayout.HorizontalSlider(flareSize, 0.5f, 1.5f, GUILayout.Width(240));
+                flareSize = GUILayout.HorizontalSlider(flareSize, 0.5f, 1.5f, GUILayout.Width(220));
                 GUILayout.Label(string.Format("{0:0}", 100 * flareSize) + "%");
                 GUILayout.EndHorizontal();
 
@@ -233,7 +233,7 @@ namespace DistantObject
                 GUILayout.Label("Flare Brightness");
                 GUILayout.EndHorizontal();
                 GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
-                flareBrightness = GUILayout.HorizontalSlider(flareBrightness, 0.0f, 1.0f, GUILayout.Width(240));
+                flareBrightness = GUILayout.HorizontalSlider(flareBrightness, 0.0f, 1.0f, GUILayout.Width(220));
                 GUILayout.Label(string.Format("{0:0}", 100 * flareBrightness) + "%");
                 GUILayout.EndHorizontal();
 
@@ -247,7 +247,7 @@ namespace DistantObject
                     GUILayout.Label("Debris Brightness");
                     GUILayout.EndHorizontal();
                     GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
-                    debrisBrightness = GUILayout.HorizontalSlider(debrisBrightness, 0f, 1f, GUILayout.Width(240));
+                    debrisBrightness = GUILayout.HorizontalSlider(debrisBrightness, 0f, 1f, GUILayout.Width(220));
                     GUILayout.Label(string.Format("{0:0}", 100 * debrisBrightness) + "%");
                     GUILayout.EndHorizontal();
                 }
@@ -314,7 +314,7 @@ namespace DistantObject
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
-            maxBrightness = GUILayout.HorizontalSlider(maxBrightness, 0f, 1f, GUILayout.Width(240));
+            maxBrightness = GUILayout.HorizontalSlider(maxBrightness, 0f, 1f, GUILayout.Width(220));
             GUILayout.Label(string.Format("{0:0}", 100 * maxBrightness) + "%");
             GUILayout.EndHorizontal();
             GUILayout.EndVertical();
