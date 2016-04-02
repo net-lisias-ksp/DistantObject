@@ -19,8 +19,6 @@ namespace DistantObject
         private static Vessel workingTarget = null;
         private int n = 0;
 
-        //public static Vessel storedTarget = null;
-
         public static void DrawVessel(Vessel shipToDraw)
         {
             if (!vesselIsBuilt[shipToDraw])
@@ -132,19 +130,16 @@ namespace DistantObject
                         }
                     }
 
-                    //check if part is a landing leg
-                    /* MOARdV: In KSP 1.1, ModuleLandingLeg is deprecated, so
-                     * this isn't valid to use going forward.  I need to decide
-                     * if I want to expend the energy to support this, or just
-                     * punt on VesselDraw outright.
-                     *
-                    ProtoPartModuleSnapshot landingLeg = a.modules.Find(n => n.moduleName == "ModuleLandingLeg");
-                    if (landingLeg != null)
+                    //check if part is a landing gear
+                    ProtoPartModuleSnapshot landingGear = a.modules.Find(n => n.moduleName == "ModuleWheelDeployment");
+                    if (landingGear != null)
                     {
-                        if (landingLeg.moduleValues.GetValue("savedAnimationTime") != "0")
+                        // MOARdV TODO: This wasn't really right to start with.
+                        // There is no field "savedAnimationTime".
+                        //if (landingGear.moduleValues.GetValue("savedAnimationTime") != "0")
                         {
                             //grab the animation name specified in the part cfg
-                            string animName = avPart.partPrefab.GetComponent<ModuleLandingLeg>().animationName;
+                            string animName = avPart.partPrefab.GetComponent<ModuleWheels.ModuleWheelDeployment>().animationStateName;
                             //grab the actual animation istelf
                             AnimationClip animClip = avPart.partPrefab.FindModelAnimators().FirstOrDefault().GetClip(animName);
                             //grab the animation control module on the actual drawn model
@@ -155,7 +150,6 @@ namespace DistantObject
                             anim[animName].normalizedTime = 1f;
                         }
                     }
-                    */
 
                     //check if part has a generic animation
                     ProtoPartModuleSnapshot animGeneric = a.modules.Find(n => n.moduleName == "ModuleAnimateGeneric");
@@ -234,32 +228,29 @@ namespace DistantObject
             }
         }
 
-        private void Update()
+        private void FixedUpdate()
         {
             if (DistantObjectSettings.DistantVessel.renderVessels)
             {
-            restart:
-                foreach (Vessel vessel in watchList)
+                for (int i = watchList.Count - 1; i >= 0; --i)
                 {
-                    if (!FlightGlobals.fetch.vessels.Contains(vessel))
+                    if (!FlightGlobals.fetch.vessels.Contains(watchList[i]))
                     {
                         if (DistantObjectSettings.debugMode)
                         {
-                            print("DistObj: Erasing vessel " + vessel.vesselName + " (vessel destroyed)");
+                            print("DistObj: Erasing vessel " + watchList[i].vesselName + " (vessel destroyed)");
                         }
 
-                        if (vesselIsBuilt.ContainsKey(vessel))
+                        if (vesselIsBuilt.ContainsKey(watchList[i]))
                         {
-                            vesselIsBuilt.Remove(vessel);
+                            vesselIsBuilt.Remove(watchList[i]);
                         }
-                        if (meshListLookup.ContainsKey(vessel))
+                        if (meshListLookup.ContainsKey(watchList[i]))
                         {
-                            meshListLookup.Remove(vessel);
+                            meshListLookup.Remove(watchList[i]);
                         }
-                        watchList.Remove(vessel);
+                        watchList.Remove(watchList[i]);
                         workingTarget = null;
-
-                        goto restart;
                     }
                 }
 
