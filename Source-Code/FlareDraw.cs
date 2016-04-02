@@ -14,6 +14,13 @@ namespace DistantObject
         public static double kerbinSMA = -1.0;
         public static double kerbinRadius;
 
+        // Scale body flare distance to try to ameliorate z-fighting of moons.
+        public static double bodyFlareDistanceScalar = 0.0;
+
+        public static readonly double MinFlareDistance = 739760.0;
+        public static readonly double MaxFlareDistance = 750000.0;
+        public static readonly double FlareDistanceRange = MaxFlareDistance - MinFlareDistance;
+
         public CelestialBody body;
         public GameObject bodyMesh;
         public MeshRenderer meshRenderer;
@@ -49,7 +56,7 @@ namespace DistantObject
             float brightness = Math.Min(4.99f, (float)(luminosity + Math.Log10(distanceFromCamera / kerbinSMA)));
 
             //position, rotate, and scale mesh
-            targetVectorToCam = (750000.0 * targetVectorToCam.normalized);
+            targetVectorToCam = ((MinFlareDistance + Math.Min(FlareDistanceRange, distanceFromCamera*bodyFlareDistanceScalar)) * targetVectorToCam.normalized);
             bodyMesh.transform.position = camPos - targetVectorToCam;
             bodyMesh.transform.LookAt(camPos);
 
@@ -127,6 +134,8 @@ namespace DistantObject
         private float atmosphereFactor = 1.0f;
         private float dimFactor = 1.0f;
 
+        // Track the variables relevant to determine whether the sun is
+        // occluding a body flare.
         private double sunDistanceFromCamera = 1.0;
         private double sunSizeInDegrees = 1.0;
         private double sunRadiusSquared;
@@ -202,12 +211,6 @@ namespace DistantObject
         // them.  Add the flare info to the dictionary.
         private void GenerateBodyFlares()
         {
-            //--- HACK++
-            //PSystemManager sm = PSystemManager.Instance;
-            //Debug.Log("PSystemManager scaledSpaceFactor = " + sm.scaledSpaceFactor);
-            //ListChildren(sm.systemPrefab.rootBody, 0);
-            //--- HACK--
-
             // If Kerbin is parented to the Sun, set its SMA - otherwise iterate
             // through celestial bodies to locate which is parented to the Sun
             // and has Kerbin as a child. Set the highest parent's SMA to kerbinSMA.
@@ -260,10 +263,13 @@ namespace DistantObject
 
             GameObject flare = GameDatabase.Instance.GetModel("DistantObject/Flare/model");
 
+            double largestSMA = 0.0;
             foreach (CelestialBody body in FlightGlobals.Bodies)
             {
                 if (body != FlightGlobals.Bodies[0])
                 {
+                    largestSMA = Math.Max(largestSMA, body.orbit.semiMajorAxis);
+
                     BodyFlare bf = new BodyFlare();
 
                     GameObject flareMesh = Mesh.Instantiate(flare) as GameObject;
@@ -307,6 +313,7 @@ namespace DistantObject
                     bodyFlares.Add(bf);
                 }
             }
+            BodyFlare.bodyFlareDistanceScalar = BodyFlare.FlareDistanceRange / largestSMA;
 
             DestroyObject(flare);
         }
