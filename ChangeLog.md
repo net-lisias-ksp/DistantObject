@@ -1,6 +1,6 @@
-v1.7.0 (? Apr 2016)
+v1.7.0 (19 Apr 2016)
 - Changed default planet flare saturation to 100%.  Issue #25.
-- Flares behind the sun will no longer show up in front of the sun.  Issue #26.
+- Flares behind the sun should no longer show up in front of the sun.  Issue #26.
 - Recompiled for KSP 1.1.  Issue #27, #28.
 - Changed the way dimming is applied to flares.
 - Fixed GUI layout glitch when sliders for percentages reach 100%.
