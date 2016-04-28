@@ -1,3 +1,8 @@
+v1.7.1 (28 April 2016)
+- Fixed color conversion that made vessel flares black instead of white.  Issue #30.
+
+---
+
 v1.7.0 (19 Apr 2016)
 - Changed default planet flare saturation to 100%.  Issue #25.
 - Flares behind the sun should no longer show up in front of the sun.  Issue #26.
