@@ -43,7 +43,7 @@ namespace DistantObject
             }
             else
             {
-                return new Vector4(0.0f, 0.0f, 0.0f, rgba.a);
+                return new Vector4(0.0f, 0.0f, l, rgba.a);
             }
 
             r2 = (v - r) / vm;
