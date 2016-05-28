@@ -153,6 +153,11 @@ namespace DistantObject
         private Color showNameColor;
         static private readonly Vector4 hslWhite = Utility.RGB2HSL(Color.white);
 
+        // If something goes wrong (say, because another mod does something bad
+        // that screws up vessels without us seeing the normal "vessel destroyed"
+        // callback, we can see exceptions in Update.  If that happens, we use
+        // the bigHammer to rebuild our vessel flare table outright.
+        private bool bigHammer = false;
         private List<Vessel> deadVessels = new List<Vessel>();
 
 #if SHOW_FIXEDUPDATE_TIMING
@@ -743,6 +748,16 @@ namespace DistantObject
 
             if (DistantObjectSettings.DistantFlare.flaresEnabled && !MapView.MapIsEnabled)
             {
+                if (bigHammer)
+                {
+                    foreach (VesselFlare v in vesselFlares.Values)
+                    {
+                        DestroyVesselFlare(v);
+                    }
+                    vesselFlares.Clear();
+                    bigHammer = false;
+                }
+
                 // MOARdV TODO: Make this callback-based instead of polling
                 GenerateVesselFlares();
             }
@@ -828,11 +843,19 @@ namespace DistantObject
 
                     foreach (VesselFlare vesselFlare in vesselFlares.Values)
                     {
-                        vesselFlare.Update(camPos, camFOV);
-
-                        if (vesselFlare.flareMesh.activeSelf)
+                        try
                         {
-                            CheckDraw(vesselFlare.flareMesh, vesselFlare.meshRenderer, vesselFlare.flareMesh.transform.position, vesselFlare.referenceShip.mainBody, hslWhite, 5.0, (vesselFlare.referenceShip.vesselType == VesselType.Debris) ? FlareType.Debris : FlareType.Vessel);
+                            vesselFlare.Update(camPos, camFOV);
+
+                            if (vesselFlare.flareMesh.activeSelf)
+                            {
+                                CheckDraw(vesselFlare.flareMesh, vesselFlare.meshRenderer, vesselFlare.flareMesh.transform.position, vesselFlare.referenceShip.mainBody, hslWhite, 5.0, (vesselFlare.referenceShip.vesselType == VesselType.Debris) ? FlareType.Debris : FlareType.Vessel);
+                            }
+                        }
+                        catch
+                        {
+                            // Something went drastically wrong.
+                            bigHammer = true;
                         }
                     }
 #if SHOW_FIXEDUPDATE_TIMING
