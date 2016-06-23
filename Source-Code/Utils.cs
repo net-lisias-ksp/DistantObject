@@ -126,7 +126,7 @@ namespace DistantObject
 
         //--- Internal values
         static private bool hasLoaded = false;
-        static private string configFileName = "GameData/DistantObject/Settings.cfg";
+        static private string configFileName = "GameData/DistantObject/PluginData/Settings.cfg";
 
         static public void LoadConfig()
         {
