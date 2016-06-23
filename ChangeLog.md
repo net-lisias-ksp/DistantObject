@@ -1,3 +1,9 @@
+v1.7.2 (23 June 2016)
+- Moved settings.cfg to PluginData to play better with ModuleManager.
+- Added some try/catch to deal with unexpected missing vessels triggering exceptions.
+
+---
+
 v1.7.1 (28 April 2016)
 - Fixed color conversion that made vessel flares black instead of white.  Issue #30.
 
