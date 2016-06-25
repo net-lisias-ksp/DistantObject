@@ -1,3 +1,23 @@
+v1.7.2 (23 June 2016)
+- Moved settings.cfg to PluginData to play better with ModuleManager.
+- Added some try/catch to deal with unexpected missing vessels triggering exceptions.
+
+---
+
+v1.7.1 (28 April 2016)
+- Fixed color conversion that made vessel flares black instead of white.  Issue #30.
+
+---
+
+v1.7.0 (19 Apr 2016)
+- Changed default planet flare saturation to 100%.  Issue #25.
+- Flares behind the sun should no longer show up in front of the sun.  Issue #26.
+- Recompiled for KSP 1.1.  Issue #27, #28.
+- Changed the way dimming is applied to flares.
+- Fixed GUI layout glitch when sliders for percentages reach 100%.
+
+---
+
 v1.6.4 (21 November 2015)
 - Recompiled for KSP 1.0.5.  Guess 1.6.3 wasn't quite compatible after all.  Issue #23.
 

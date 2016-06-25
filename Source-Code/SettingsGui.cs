@@ -1,4 +1,5 @@
 using UnityEngine;
+using KSP.UI.Screens;
 
 namespace DistantObject
 {
@@ -11,7 +12,7 @@ namespace DistantObject
         private bool isActivated = false;
 
         private bool flaresEnabled = false;
-        private float flareSaturation = 0.65f;
+        private float flareSaturation = 1.0f;
         private float flareSize = 1.0f;
         private float flareBrightness = 1.0f;
         private bool ignoreDebrisFlare = false;
@@ -27,7 +28,6 @@ namespace DistantObject
         private bool useToolbar = true;
         private bool useAppLauncher = true;
         private bool onlyInSpaceCenter = false;
-        private Callback callback = null;
 
         private static ApplicationLauncherButton appLauncherButton = null;
 
@@ -96,7 +96,6 @@ namespace DistantObject
             }
 
             activated = true;
-
             ToggleIcon();
         }
 
@@ -110,20 +109,6 @@ namespace DistantObject
 
             activated = false;
             ToggleIcon();
-        }
-
-        void RemoveFromAppLauncher()
-        {
-            if (DistantObjectSettings.debugMode)
-            {
-                Debug.Log(Constants.DistantObject + " -- RemoveFromAppLauncher");
-            }
-            if (appLauncherButton != null)
-            {
-                ApplicationLauncher.Instance.RemoveApplication(appLauncherButton);
-                appLauncherButton = null;
-                GameEvents.onGameSceneLoadRequested.Remove(onGameSceneLoadRequestedForAppLauncher);
-            }
         }
 
         ApplicationLauncherButton InitAppLauncherButton()
@@ -147,7 +132,7 @@ namespace DistantObject
             {
                 button = ApplicationLauncher.Instance.AddModApplication(onAppLauncherTrue, onAppLauncherFalse,
                     null, null, null, null,
-                    ApplicationLauncher.AppScenes.FLIGHT | ApplicationLauncher.AppScenes.SPACECENTER,
+                    (onlyInSpaceCenter) ? ApplicationLauncher.AppScenes.SPACECENTER : (ApplicationLauncher.AppScenes.FLIGHT | ApplicationLauncher.AppScenes.SPACECENTER),
                     iconTexture);
 
                 if (button == null)
@@ -159,60 +144,46 @@ namespace DistantObject
             return button;
         }
 
-        void onGameSceneLoadRequestedForAppLauncher(GameScenes SceneToLoad)
+        private void AddAppLauncherButton()
         {
-            if (DistantObjectSettings.debugMode)
+            if (useAppLauncher && appLauncherButton == null)
             {
-                Debug.Log(Constants.DistantObject + " -- onGameSceneLoadRequestedForAppLauncher: " + SceneToLoad.ToString() + " - " + this.GetInstanceID() + " AppLauncher.Ready = " + ApplicationLauncher.Ready.ToString());
+                if (DistantObjectSettings.debugMode)
+                {
+                    Debug.Log(Constants.DistantObject + " -- creating new appLauncher instance - " + this.GetInstanceID());
+                }
+                appLauncherButton = InitAppLauncherButton();
             }
         }
 
-        public void Awake()
+        private void RemoveAppLauncherButton()
+        {
+            if (appLauncherButton != null)
+            {
+                ApplicationLauncher.Instance.RemoveModApplication(appLauncherButton);
+                appLauncherButton = null;
+            }
+        }
+
+        private void Awake()
         {
             //Load settings
             ReadSettings();
 
             if (DistantObjectSettings.debugMode)
             {
-                Debug.Log(Constants.DistantObject + " -- awake - " + this.GetInstanceID());
+                Debug.Log(Constants.DistantObject + " -- SettingsGui awake - " + this.GetInstanceID());
             }
 
-            // Load and configure once
+            GameEvents.onGUIApplicationLauncherReady.Add(AddAppLauncherButton);
+            GameEvents.onGUIApplicationLauncherDestroyed.Add(RemoveAppLauncherButton);
+
             if (HighLogic.LoadedScene == GameScenes.SPACECENTER || HighLogic.LoadedScene == GameScenes.FLIGHT)
             {
-
-                if (useAppLauncher && appLauncherButton == null && ApplicationLauncher.Ready)
-                {
-                    if (DistantObjectSettings.debugMode)
-                    {
-                        Debug.Log(Constants.DistantObject + " -- creating new appLauncher instance - " + this.GetInstanceID());
-                    }
-                    appLauncherButton = InitAppLauncherButton();
-                    GameEvents.onGameSceneLoadRequested.Add(onGameSceneLoadRequestedForAppLauncher);
-                }
-
-
-                if (useAppLauncher && appLauncherButton != null)
-                {
-                    if (onlyInSpaceCenter)
-                    {
-                        appLauncherButton.VisibleInScenes = ApplicationLauncher.AppScenes.SPACECENTER;
-                    }
-                    else
-                    {
-                        appLauncherButton.VisibleInScenes = ApplicationLauncher.AppScenes.SPACECENTER |
-                                                            ApplicationLauncher.AppScenes.FLIGHT;
-                    }
-                }
-
-
                 if (useToolbar && ToolbarManager.ToolbarAvailable)
                 {
                     toolbarButton();
                 }
-
-                callback = new Callback(drawGUI);
-                RenderingManager.AddToPostDrawQueue(3, callback);
             }
         }
 
@@ -246,7 +217,7 @@ namespace DistantObject
                 GUILayout.Label("Flare Saturation");
                 GUILayout.EndHorizontal();
                 GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
-                flareSaturation = GUILayout.HorizontalSlider(flareSaturation, 0f, 1f, GUILayout.Width(240));
+                flareSaturation = GUILayout.HorizontalSlider(flareSaturation, 0f, 1f, GUILayout.Width(220));
                 GUILayout.Label(string.Format("{0:0}", 100 * flareSaturation) + "%");
                 GUILayout.EndHorizontal();
 
@@ -254,7 +225,7 @@ namespace DistantObject
                 GUILayout.Label("Flare Size");
                 GUILayout.EndHorizontal();
                 GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
-                flareSize = GUILayout.HorizontalSlider(flareSize, 0.5f, 1.5f, GUILayout.Width(240));
+                flareSize = GUILayout.HorizontalSlider(flareSize, 0.5f, 1.5f, GUILayout.Width(220));
                 GUILayout.Label(string.Format("{0:0}", 100 * flareSize) + "%");
                 GUILayout.EndHorizontal();
 
@@ -262,7 +233,7 @@ namespace DistantObject
                 GUILayout.Label("Flare Brightness");
                 GUILayout.EndHorizontal();
                 GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
-                flareBrightness = GUILayout.HorizontalSlider(flareBrightness, 0.0f, 1.0f, GUILayout.Width(240));
+                flareBrightness = GUILayout.HorizontalSlider(flareBrightness, 0.0f, 1.0f, GUILayout.Width(220));
                 GUILayout.Label(string.Format("{0:0}", 100 * flareBrightness) + "%");
                 GUILayout.EndHorizontal();
 
@@ -276,7 +247,7 @@ namespace DistantObject
                     GUILayout.Label("Debris Brightness");
                     GUILayout.EndHorizontal();
                     GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
-                    debrisBrightness = GUILayout.HorizontalSlider(debrisBrightness, 0f, 1f, GUILayout.Width(240));
+                    debrisBrightness = GUILayout.HorizontalSlider(debrisBrightness, 0f, 1f, GUILayout.Width(220));
                     GUILayout.Label(string.Format("{0:0}", 100 * debrisBrightness) + "%");
                     GUILayout.EndHorizontal();
                 }
@@ -343,7 +314,7 @@ namespace DistantObject
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
-            maxBrightness = GUILayout.HorizontalSlider(maxBrightness, 0f, 1f, GUILayout.Width(240));
+            maxBrightness = GUILayout.HorizontalSlider(maxBrightness, 0f, 1f, GUILayout.Width(220));
             GUILayout.Label(string.Format("{0:0}", 100 * maxBrightness) + "%");
             GUILayout.EndHorizontal();
             GUILayout.EndVertical();
@@ -388,6 +359,11 @@ namespace DistantObject
 
             GUILayout.EndVertical();
             GUI.DragWindow();
+        }
+
+        private void OnGUI()
+        {
+            drawGUI();
         }
 
         private void drawGUI()
