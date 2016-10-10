@@ -1,5 +1,5 @@
-v1.8.0.15846 (18 September 2016)
-- Recompiled against KSP pre-release v.1.2.0.1500
+v1.8.0 (11 October 2016)
+- Recompiled against KSP release v1.2.0
 
 ---
 
