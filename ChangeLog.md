@@ -1,3 +1,8 @@
+v1.8.0 (11 October 2016)
+- Recompiled against KSP release v1.2.0
+
+---
+
 v1.7.2 (23 June 2016)
 - Moved settings.cfg to PluginData to play better with ModuleManager.
 - Added some try/catch to deal with unexpected missing vessels triggering exceptions.
