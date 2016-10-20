@@ -2,7 +2,6 @@
 using System;
 using System.Diagnostics;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using UnityEngine;
 
@@ -648,7 +647,7 @@ namespace DistantObject
                 { Vessel.Situations.DOCKED.ToString(), Vessel.Situations.DOCKED},
             };
 
-            List<string> situationStrings = DistantObjectSettings.DistantFlare.situations.Split(',').ToList();
+            string[] situationStrings = DistantObjectSettings.DistantFlare.situations.Split(',');
 
             foreach (string sit in situationStrings)
             {

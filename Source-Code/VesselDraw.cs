@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using UnityEngine;
 
@@ -105,10 +104,10 @@ namespace DistantObject
                             //grab the animation name specified in the part cfg
                             string animName = avPart.partPrefab.GetComponent<ModuleDeployableSolarPanel>().animationName;
                             //grab the actual animation istelf
-                            var animator = avPart.partPrefab.FindModelAnimators().FirstOrDefault();
-                            if (animator != null)
+                            var animator = avPart.partPrefab.FindModelAnimators();
+                            if (animator != null && animator.Length > 0)
                             {
-                                AnimationClip animClip = animator.GetClip(animName);
+                                AnimationClip animClip = animator[0].GetClip(animName);
                                 //grab the animation control module on the actual drawn model
                                 Animation anim = cloneMesh.GetComponentInChildren<Animation>();
                                 //copy the animation over to the new part!
@@ -140,14 +139,18 @@ namespace DistantObject
                         {
                             //grab the animation name specified in the part cfg
                             string animName = avPart.partPrefab.GetComponent<ModuleWheels.ModuleWheelDeployment>().animationStateName;
-                            //grab the actual animation istelf
-                            AnimationClip animClip = avPart.partPrefab.FindModelAnimators().FirstOrDefault().GetClip(animName);
-                            //grab the animation control module on the actual drawn model
-                            Animation anim = cloneMesh.GetComponentInChildren<Animation>();
-                            //copy the animation over to the new part!
-                            anim.AddClip(animClip, animName);
-                            anim[animName].enabled = true;
-                            anim[animName].normalizedTime = 1f;
+                            var animator = avPart.partPrefab.FindModelAnimators();
+                            if (animator != null && animator.Length > 0)
+                            {
+                                //grab the actual animation istelf
+                                AnimationClip animClip = animator[0].GetClip(animName);
+                                //grab the animation control module on the actual drawn model
+                                Animation anim = cloneMesh.GetComponentInChildren<Animation>();
+                                //copy the animation over to the new part!
+                                anim.AddClip(animClip, animName);
+                                anim[animName].enabled = true;
+                                anim[animName].normalizedTime = 1f;
+                            }
                         }
                     }
 
@@ -159,14 +162,18 @@ namespace DistantObject
                         {
                             //grab the animation name specified in the part cfg
                             string animName = avPart.partPrefab.GetComponent<ModuleAnimateGeneric>().animationName;
-                            //grab the actual animation istelf
-                            AnimationClip animClip = avPart.partPrefab.FindModelAnimators().FirstOrDefault().GetClip(animName);
-                            //grab the animation control module on the actual drawn model
-                            Animation anim = cloneMesh.GetComponentInChildren<Animation>();
-                            //copy the animation over to the new part!
-                            anim.AddClip(animClip, animName);
-                            anim[animName].enabled = true;
-                            anim[animName].normalizedTime = 1f;
+                            var animator = avPart.partPrefab.FindModelAnimators();
+                            if (animator != null && animator.Length > 0)
+                            {
+                                //grab the actual animation istelf
+                                AnimationClip animClip = animator[0].GetClip(animName);
+                                //grab the animation control module on the actual drawn model
+                                Animation anim = cloneMesh.GetComponentInChildren<Animation>();
+                                //copy the animation over to the new part!
+                                anim.AddClip(animClip, animName);
+                                anim[animName].enabled = true;
+                                anim[animName].normalizedTime = 1f;
+                            }
                         }
                     }
 
