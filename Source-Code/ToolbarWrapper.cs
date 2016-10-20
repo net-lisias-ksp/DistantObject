@@ -80,9 +80,14 @@ namespace DistantObject
             {
                 if ((toolbarAvailable != false) && (instance_ == null))
                 {
-                    Type type = AssemblyLoader.loadedAssemblies
-                        .SelectMany(a => a.assembly.GetExportedTypes())
-                        .SingleOrDefault(t => t.FullName == "Toolbar.ToolbarManager");
+					Type type = null;
+					AssemblyLoader.loadedAssemblies.TypeOperation(t =>
+					{
+						if (t.FullName == "Toolbar.ToolbarManager")
+						{
+							type = t;
+						}
+					});
                     if (type != null)
                     {
                         object realToolbarManager = type.GetProperty("Instance", BindingFlags.Public | BindingFlags.Static).GetValue(null, null);
@@ -420,9 +425,14 @@ namespace DistantObject
 
         public GameScenesVisibility(params GameScenes[] gameScenes)
         {
-            Type gameScenesVisibilityType = AssemblyLoader.loadedAssemblies
-                .SelectMany(a => a.assembly.GetExportedTypes())
-                .SingleOrDefault(t => t.FullName == "Toolbar.GameScenesVisibility");
+			Type gameScenesVisibilityType = null;
+			AssemblyLoader.loadedAssemblies.TypeOperation(t =>
+			{
+				if (t.FullName == "Toolbar.GameScenesVisibility")
+				{
+					gameScenesVisibilityType = t;
+				}
+			});
             realGameScenesVisibility = Activator.CreateInstance(gameScenesVisibilityType, new object[] { gameScenes });
             visibleProperty = gameScenesVisibilityType.GetProperty("Visible", BindingFlags.Public | BindingFlags.Instance);
             this.gameScenes = gameScenes;
@@ -448,17 +458,32 @@ namespace DistantObject
         {
             this.realToolbarManager = realToolbarManager;
 
-            Type iToolbarManagerType = AssemblyLoader.loadedAssemblies
-                .SelectMany(a => a.assembly.GetExportedTypes())
-                .SingleOrDefault(t => t.FullName == "Toolbar.IToolbarManager");
+			Type iToolbarManagerType = null;
+			AssemblyLoader.loadedAssemblies.TypeOperation(t =>
+			{
+				if (t.FullName == "Toolbar.IToolbarManager")
+				{
+					iToolbarManagerType = t;
+				}
+			});
             addMethod = iToolbarManagerType.GetMethod("add", BindingFlags.Public | BindingFlags.Instance);
 
-            iButtonType = AssemblyLoader.loadedAssemblies
-                .SelectMany(a => a.assembly.GetExportedTypes())
-                .SingleOrDefault(t => t.FullName == "Toolbar.IButton");
-            functionVisibilityType = AssemblyLoader.loadedAssemblies
-                .SelectMany(a => a.assembly.GetExportedTypes())
-                .SingleOrDefault(t => t.FullName == "Toolbar.FunctionVisibility");
+			iButtonType = null;
+			AssemblyLoader.loadedAssemblies.TypeOperation(t =>
+			{
+				if (t.FullName == "Toolbar.IButton")
+				{
+					iButtonType = t;
+				}
+			});
+			functionVisibilityType = null;
+			AssemblyLoader.loadedAssemblies.TypeOperation(t =>
+			{
+				if (t.FullName == "Toolbar.FunctionVisibility")
+				{
+					functionVisibilityType = t;
+				}
+			});
         }
 
         public IButton add(string ns, string id)
