@@ -25,7 +25,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Text;
 using UnityEngine;
@@ -80,14 +79,14 @@ namespace DistantObject
             {
                 if ((toolbarAvailable != false) && (instance_ == null))
                 {
-					Type type = null;
-					AssemblyLoader.loadedAssemblies.TypeOperation(t =>
-					{
-						if (t.FullName == "Toolbar.ToolbarManager")
-						{
-							type = t;
-						}
-					});
+                    Type type = null;
+                    AssemblyLoader.loadedAssemblies.TypeOperation(t =>
+                    {
+                        if (t.FullName == "Toolbar.ToolbarManager")
+                        {
+                            type = t;
+                        }
+                    });
                     if (type != null)
                     {
                         object realToolbarManager = type.GetProperty("Instance", BindingFlags.Public | BindingFlags.Static).GetValue(null, null);
@@ -425,14 +424,14 @@ namespace DistantObject
 
         public GameScenesVisibility(params GameScenes[] gameScenes)
         {
-			Type gameScenesVisibilityType = null;
-			AssemblyLoader.loadedAssemblies.TypeOperation(t =>
-			{
-				if (t.FullName == "Toolbar.GameScenesVisibility")
-				{
-					gameScenesVisibilityType = t;
-				}
-			});
+            Type gameScenesVisibilityType = null;
+            AssemblyLoader.loadedAssemblies.TypeOperation(t =>
+            {
+                if (t.FullName == "Toolbar.GameScenesVisibility")
+                {
+                    gameScenesVisibilityType = t;
+                }
+            });
             realGameScenesVisibility = Activator.CreateInstance(gameScenesVisibilityType, new object[] { gameScenes });
             visibleProperty = gameScenesVisibilityType.GetProperty("Visible", BindingFlags.Public | BindingFlags.Instance);
             this.gameScenes = gameScenes;
@@ -458,32 +457,32 @@ namespace DistantObject
         {
             this.realToolbarManager = realToolbarManager;
 
-			Type iToolbarManagerType = null;
-			AssemblyLoader.loadedAssemblies.TypeOperation(t =>
-			{
-				if (t.FullName == "Toolbar.IToolbarManager")
-				{
-					iToolbarManagerType = t;
-				}
-			});
+            Type iToolbarManagerType = null;
+            AssemblyLoader.loadedAssemblies.TypeOperation(t =>
+            {
+                if (t.FullName == "Toolbar.IToolbarManager")
+                {
+                    iToolbarManagerType = t;
+                }
+            });
             addMethod = iToolbarManagerType.GetMethod("add", BindingFlags.Public | BindingFlags.Instance);
 
-			iButtonType = null;
-			AssemblyLoader.loadedAssemblies.TypeOperation(t =>
-			{
-				if (t.FullName == "Toolbar.IButton")
-				{
-					iButtonType = t;
-				}
-			});
-			functionVisibilityType = null;
-			AssemblyLoader.loadedAssemblies.TypeOperation(t =>
-			{
-				if (t.FullName == "Toolbar.FunctionVisibility")
-				{
-					functionVisibilityType = t;
-				}
-			});
+            iButtonType = null;
+            AssemblyLoader.loadedAssemblies.TypeOperation(t =>
+            {
+                if (t.FullName == "Toolbar.IButton")
+                {
+                    iButtonType = t;
+                }
+            });
+            functionVisibilityType = null;
+            AssemblyLoader.loadedAssemblies.TypeOperation(t =>
+            {
+                if (t.FullName == "Toolbar.FunctionVisibility")
+                {
+                    functionVisibilityType = t;
+                }
+            });
         }
 
         public IButton add(string ns, string id)
