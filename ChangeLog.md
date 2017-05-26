@@ -1,3 +1,8 @@
+v1.9.0 (26 May 2017)
+- Recompiled against KSP release v1.3.0
+
+---
+
 v1.8.1 (20 October 2016)
 - Fix potential exceptions related to the Blizzy Toolbar interface (thanks to Kerbas-ad-astra).
 - De-Linq the rest of DOE.
