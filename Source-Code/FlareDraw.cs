@@ -55,7 +55,7 @@ namespace DistantObject
             float brightness = Math.Min(4.99f, (float)(luminosity + Math.Log10(distanceFromCamera / kerbinSMA)));
 
             //position, rotate, and scale mesh
-            targetVectorToCam = ((MinFlareDistance + Math.Min(FlareDistanceRange, distanceFromCamera*bodyFlareDistanceScalar)) * targetVectorToCam.normalized);
+            targetVectorToCam = ((MinFlareDistance + Math.Min(FlareDistanceRange, distanceFromCamera * bodyFlareDistanceScalar)) * targetVectorToCam.normalized);
             bodyMesh.transform.position = camPos - targetVectorToCam;
             bodyMesh.transform.LookAt(camPos);
 
@@ -882,6 +882,9 @@ namespace DistantObject
             }
         }
 
+        private GUIStyle flyoverTextStyle = new GUIStyle();
+        private Rect flyoverTextPosition = new Rect(0.0f, 0.0f, 100.0f, 20.0f);
+
         //--------------------------------------------------------------------
         // OnGUI
         // Draws flare names when enabled
@@ -890,10 +893,10 @@ namespace DistantObject
             if (DistantObjectSettings.DistantFlare.flaresEnabled && DistantObjectSettings.DistantFlare.showNames && !MapView.MapIsEnabled && showNameTransform != null)
             {
                 Vector3 screenPos = FlightCamera.fetch.mainCamera.WorldToScreenPoint(showNameTransform.position);
-                Rect screenRect = new Rect(screenPos.x, Screen.height - screenPos.y - 20, 100, 20);
-                GUIStyle s = new GUIStyle();
-                s.normal.textColor = showNameColor;
-                GUI.Label(screenRect, showNameString, s);
+                flyoverTextPosition.x = screenPos.x;
+                flyoverTextPosition.y = Screen.height - screenPos.y - 20.0f;
+                flyoverTextStyle.normal.textColor = showNameColor;
+                GUI.Label(flyoverTextPosition, showNameString, flyoverTextStyle);
             }
         }
 
