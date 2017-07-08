@@ -594,7 +594,7 @@ namespace DistantObject
                                 {
                                     bestRadius = bodyFlare.body.Radius;
                                     showNameTransform = bodyFlare.body.transform;
-                                    showNameString = bodyFlare.body.bodyName;
+                                    showNameString = KSP.Localization.Localizer.Format("<<1>>", bodyFlare.body.bodyDisplayName);
                                     showNameColor = bodyFlare.color;
                                 }
                             }
