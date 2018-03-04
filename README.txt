@@ -7,6 +7,11 @@ Original plugin by duckytopia (Rubber Ducky on the KSP forum).
 
 Distant Object Enhancement bis update by MOARdV.
 
+NOTE:
+
+Due to updated Terms of Service on the Kerbal Space Program Forum, this mod is currently on hiatus.  View here: https://github.com/MOARdV/AvionicsSystems/wiki/KSP-Forum-ToS for more information.
+
+
 This release's forum thread:
 http://forum.kerbalspaceprogram.com/index.php?/topic/89214-105-distant-object-enhancement-bis-v164-21-november-2015/
 
