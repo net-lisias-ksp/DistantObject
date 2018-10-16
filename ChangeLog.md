@@ -1,3 +1,8 @@
+v1.9.1.1 16 October 2018
+- Recompiled against KSP release v1.5.0
+
+---
+
 v1.9.1 8 July 2017
 - Body mouseover names should now be localized correctly.
 - RSS flares updated, courtesy PhineasFreak.
