@@ -1,5 +1,6 @@
 using UnityEngine;
 using KSP.UI.Screens;
+using KSP.Localization;
 
 namespace DistantObject
 {
@@ -202,19 +203,19 @@ namespace DistantObject
             GUILayout.EndHorizontal();
 
             //--- Flare Rendering --------------------------------------------
-            GUILayout.BeginVertical("Flare Rendering", new GUIStyle(GUI.skin.window));
+            GUILayout.BeginVertical(Localizer.Format("#DistantObject_FlareRendering"), new GUIStyle(GUI.skin.window));//"Flare Rendering"
             GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
-            flaresEnabled = GUILayout.Toggle(flaresEnabled, "Enable Flares");
+            flaresEnabled = GUILayout.Toggle(flaresEnabled, Localizer.Format("#DistantObject_flaresEnabled"));//"Enable Flares"
             GUILayout.EndHorizontal();
 
             if (flaresEnabled)
             {
                 GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
-                showNames = GUILayout.Toggle(showNames, "Show names on mouseover");
+                showNames = GUILayout.Toggle(showNames, Localizer.Format("#DistantObject_showNames"));//"Show names on mouseover"
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
-                GUILayout.Label("Flare Saturation");
+                GUILayout.Label(Localizer.Format("#DistantObject_FlareSaturation"));//"Flare Saturation"
                 GUILayout.EndHorizontal();
                 GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
                 flareSaturation = GUILayout.HorizontalSlider(flareSaturation, 0f, 1f, GUILayout.Width(220));
@@ -222,7 +223,7 @@ namespace DistantObject
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
-                GUILayout.Label("Flare Size");
+                GUILayout.Label(Localizer.Format("#DistantObject_FlareSize"));//"Flare Size"
                 GUILayout.EndHorizontal();
                 GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
                 flareSize = GUILayout.HorizontalSlider(flareSize, 0.5f, 1.5f, GUILayout.Width(220));
@@ -230,7 +231,7 @@ namespace DistantObject
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
-                GUILayout.Label("Flare Brightness");
+                GUILayout.Label(Localizer.Format("#DistantObject_FlareBrightness"));//"Flare Brightness"
                 GUILayout.EndHorizontal();
                 GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
                 flareBrightness = GUILayout.HorizontalSlider(flareBrightness, 0.0f, 1.0f, GUILayout.Width(220));
@@ -238,13 +239,13 @@ namespace DistantObject
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
-                ignoreDebrisFlare = !GUILayout.Toggle(!ignoreDebrisFlare, "Show Debris Flares");
+                ignoreDebrisFlare = !GUILayout.Toggle(!ignoreDebrisFlare, Localizer.Format("#DistantObject_ignoreDebrisFlare"));//"Show Debris Flares"
                 GUILayout.EndHorizontal();
 
                 if (!ignoreDebrisFlare)
                 {
                     GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
-                    GUILayout.Label("Debris Brightness");
+                    GUILayout.Label(Localizer.Format("#DistantObject_debrisBrightness"));//"Debris Brightness"
                     GUILayout.EndHorizontal();
                     GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
                     debrisBrightness = GUILayout.HorizontalSlider(debrisBrightness, 0f, 1f, GUILayout.Width(220));
@@ -259,16 +260,16 @@ namespace DistantObject
             GUILayout.EndHorizontal();
 
             //--- Vessel Rendering -------------------------------------------
-            GUILayout.BeginVertical("Distant Vessel", new GUIStyle(GUI.skin.window));
+            GUILayout.BeginVertical(Localizer.Format("#DistantObject_DistantVessel"), new GUIStyle(GUI.skin.window));//"Distant Vessel"
 
             GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
-            renderVessels = GUILayout.Toggle(renderVessels, "Distant Vessel Rendering");
+            renderVessels = GUILayout.Toggle(renderVessels, Localizer.Format("#DistantObject_renderVessels"));//"Distant Vessel Rendering"
             GUILayout.EndHorizontal();
 
             if (renderVessels)
             {
                 GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
-                GUILayout.Label("Max Distance to Render");
+                GUILayout.Label(Localizer.Format("#DistantObject_maxDistance"));//"Max Distance to Render"
                 GUILayout.EndHorizontal();
                 GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
                 maxDistance = GUILayout.HorizontalSlider(maxDistance, 2500f, 750000f, GUILayout.Width(200));
@@ -276,7 +277,7 @@ namespace DistantObject
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
-                if (GUILayout.Button(renderMode == 0 ? "Render All Unloaded Vessels" : "Render Targeted Vessel Only"))
+                if (GUILayout.Button(renderMode == 0 ? Localizer.Format("#DistantObject_renderMode0") : Localizer.Format("#DistantObject_renderMode1")))//"Render All Unloaded Vessels" : "Render Targeted Vessel Only"
                 {
                     if (renderMode == 0)
                     {
@@ -292,7 +293,7 @@ namespace DistantObject
                 if (renderMode == 1)
                 {
                     GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
-                    ignoreDebris = GUILayout.Toggle(ignoreDebris, "Ignore Debris");
+                    ignoreDebris = GUILayout.Toggle(ignoreDebris, Localizer.Format("#DistantObject_ignoreDebris"));//"Ignore Debris"
                     GUILayout.EndHorizontal();
                 }
             }
@@ -303,14 +304,14 @@ namespace DistantObject
             GUILayout.EndHorizontal();
 
             //--- Skybox Brightness ------------------------------------------
-            GUILayout.BeginVertical("Skybox Dimming", new GUIStyle(GUI.skin.window));
+            GUILayout.BeginVertical(Localizer.Format("#DistantObject_SkyboxBrightness"), new GUIStyle(GUI.skin.window));//"Skybox Dimming"
             GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
 
-            changeSkybox = GUILayout.Toggle(changeSkybox, "Dynamic Sky Dimming");
+            changeSkybox = GUILayout.Toggle(changeSkybox, Localizer.Format("#DistantObject_changeSkybox"));//"Dynamic Sky Dimming"
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
-            GUILayout.Label("Maximum Sky Brightness");
+            GUILayout.Label(Localizer.Format("#DistantObject_MaximumSkyBrightness"));//"Maximum Sky Brightness"
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
@@ -325,16 +326,16 @@ namespace DistantObject
 
             //--- Misc. ------------------------------------------------------
             GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
-            debugMode = GUILayout.Toggle(debugMode, "Debug Mode");
+            debugMode = GUILayout.Toggle(debugMode, Localizer.Format("#DistantObject_debugMode"));//"Debug Mode"
             GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
-            useAppLauncher = GUILayout.Toggle(useAppLauncher, "Use KSP AppLauncher (may require restart)");
+            useAppLauncher = GUILayout.Toggle(useAppLauncher, Localizer.Format("#DistantObject_useAppLauncher"));//"Use KSP AppLauncher (may require restart)"
             GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
-            onlyInSpaceCenter = GUILayout.Toggle(onlyInSpaceCenter, "Show AppLauncher only in Space Center");
+            onlyInSpaceCenter = GUILayout.Toggle(onlyInSpaceCenter, Localizer.Format("#DistantObject_onlyInSpaceCenter"));//"Show AppLauncher only in Space Center"
             GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
-            useToolbar = GUILayout.Toggle(useToolbar, "Use Blizzy's Toolbar (may require restart)");
+            useToolbar = GUILayout.Toggle(useToolbar, Localizer.Format("#DistantObject_useToolbar"));//"Use Blizzy's Toolbar (may require restart)"
             GUILayout.EndHorizontal();
             if (useAppLauncher == false && useToolbar == false)
             {
@@ -342,7 +343,7 @@ namespace DistantObject
             }
 
             GUILayout.BeginHorizontal(GUILayout.ExpandHeight(false));
-            if (GUILayout.Button("Reset To Default"))
+            if (GUILayout.Button(Localizer.Format("#DistantObject_Reset")))//"Reset To Default"
             {
                 Reset();
             }
@@ -351,7 +352,7 @@ namespace DistantObject
             GUILayout.BeginHorizontal(GUILayout.ExpandHeight(false));
             GUIStyle styleApply = new GUIStyle(GUI.skin.button);
             styleApply.fontSize = styleApply.fontSize + 2;
-            if (GUILayout.Button("Apply", GUILayout.Height(50)))
+            if (GUILayout.Button(Localizer.Format("#DistantObject_Apply"), GUILayout.Height(50)))//"Apply"
             {
                 ApplySettings();
             }

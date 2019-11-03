@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using UnityEngine;
+using KSP.Localization;
 
 namespace DistantObject
 {
@@ -82,7 +83,7 @@ namespace DistantObject
                 {
                     Version version = Assembly.GetExecutingAssembly().GetName().Version;
 
-                    _DistantObject = "Distant Object Enhancement v" + version.Major + "." + version.Minor + "." + version.Build;
+                    _DistantObject = Localizer.Format("#DistantObject_title") +"v" + version.Major + "." + version.Minor + "." + version.Build;//"Distant Object Enhancement "
                 }
 
                 return _DistantObject;
