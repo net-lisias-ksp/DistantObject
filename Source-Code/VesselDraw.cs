@@ -77,7 +77,7 @@ namespace DistantObject
                         continue;
                     }
                     GameObject cloneMesh = Mesh.Instantiate(clone) as GameObject;
-                    DestroyObject(clone);
+                    clone.DestroyGameObject();
                     cloneMesh.transform.SetParent(shipToDraw.transform);
                     cloneMesh.transform.localPosition = a.position;
                     cloneMesh.transform.localRotation = a.rotation;

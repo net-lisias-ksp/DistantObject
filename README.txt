@@ -1,13 +1,15 @@
-Distant Object Enhancement bis
+Distant Object Enhancement Continued
 =============
 
-This plugin renders effects for distant objects in Kerbal Space Program v1.1 and later.
+This plugin renders effects for distant objects in Kerbal Space Program v1.8.1 and later.
 
 Original plugin by duckytopia (Rubber Ducky on the KSP forum).
 
 Distant Object Enhancement bis update by MOARdV.
 
-This release's forum thread:
+Distant Object Enhancement Continued by TheDarkBadger
+
+MOARdV release's forum thread:
 http://forum.kerbalspaceprogram.com/index.php?/topic/89214-105-distant-object-enhancement-bis-v164-21-november-2015/
 
 Original Forum thread:

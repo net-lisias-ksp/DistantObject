@@ -6,8 +6,8 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyProduct("Distant Object Enhancement")]
 [assembly: AssemblyDescription("KSP Plugin to render distant planets and spacecraft")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Duckytopia / MOARdV")]
-[assembly: AssemblyCopyright("Copyright © 2014-2017")]
+[assembly: AssemblyCompany("Duckytopia / MOARdV / TheDarkBadger")]
+[assembly: AssemblyCopyright("Copyright © 2014-2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
