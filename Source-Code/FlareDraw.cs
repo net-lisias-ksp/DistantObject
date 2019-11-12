@@ -181,7 +181,7 @@ namespace DistantObject
             GameObject flare = GameDatabase.Instance.GetModel("DistantObject/Flare/model");
             GameObject flareMesh = Mesh.Instantiate(flare) as GameObject;
             Destroy(flareMesh.GetComponent<Collider>());
-            DestroyObject(flare);
+            flare.DestroyGameObject();
 
             flareMesh.name = referenceShip.vesselName;
             flareMesh.SetActive(true);
@@ -331,7 +331,7 @@ namespace DistantObject
             }
             BodyFlare.bodyFlareDistanceScalar = BodyFlare.FlareDistanceRange / largestSMA;
 
-            DestroyObject(flare);
+            flare.DestroyGameObject();
         }
 
         //--------------------------------------------------------------------
