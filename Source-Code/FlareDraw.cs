@@ -282,7 +282,7 @@ namespace DistantObject
             double largestSMA = 0.0;
             foreach (CelestialBody body in FlightGlobals.Bodies)
             {
-                if (body != FlightGlobals.Bodies[0])
+                if (body != FlightGlobals.Bodies[0] && body?.MapObject != null)
                 {
                     largestSMA = Math.Max(largestSMA, body.orbit.semiMajorAxis);
 
