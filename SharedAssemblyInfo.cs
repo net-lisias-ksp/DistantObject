@@ -14,7 +14,7 @@ using System.Runtime.InteropServices;
 // The assembly version has the format "{Major}.{Minor}.{Build}.{Revision}".
 // The form "{Major}.{Minor}.*" will automatically update the build and revision,
 // and "{Major}.{Minor}.{Build}.*" will update just the revision.
-[assembly: AssemblyVersion("2.0.1.0")]
+[assembly: AssemblyVersion("2.0.1.1")]
 
 // Use KSPAssembly to allow other DLLs to make this DLL a dependency in a 
 // non-hacky way in KSP.  Format is (AssemblyProduct, major, minor), and it 
