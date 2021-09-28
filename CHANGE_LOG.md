@@ -1,5 +1,8 @@
 # Distant Object Enhancement :: Change Log
 
+* 2015-1010: 1.6.2 (MOARdV) for KSP 1.0.4
+	+ For KSP 1.0.4
+		- Fix for a nullref exception in VesselDraw with craft that have fixed solar panels, courtesy taniwha.
 * 2015-0821: 1.6.1 (MOARdV) for KSP 1.0.4
 	+ For KSP 1.0.4
 		- Tweaks to body flare rendering to reduce the amount of unchanging data being stored by the mod and queried every update.
