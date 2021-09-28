@@ -1,5 +1,9 @@
 # Distant Object Enhancement :: Change Log
 
+* 2016-1020: 1.8.1 (MOARdV) for KSP 1.2
+	+ For KSP 1.2
+		- Fix potential exceptions related to the Blizzy Toolbar interface (thanks to Kerbas-ad-astra).
+		- De-Linq the rest of DOE.
 * 2016-1011: 1.8.0 (MOARdV) for KSP 1.2
 	+ For KSP 1.2
 		- Updated RSS config and body names, per pull request from Theysen.
