@@ -1,5 +1,8 @@
 # Distant Object Enhancement :: Change Log
 
+* 2015-1121: 1.6.4 (MOARdV) for KSP 1.0.5
+	+ For KSP 1.0.5
+		- Recompiled for KSP 1.0.5 compatibility.  Restores missing vessel flares (Issue #23).
 * 2015-1015: 1.6.3 (MOARdV) for KSP 1.0.4
 	+ For KSP 1.0.4
 		- Fix for ghost flares appearing when flares are disabled.  Issue #21.
