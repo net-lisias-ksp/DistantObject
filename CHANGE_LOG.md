@@ -1,5 +1,9 @@
 # Distant Object Enhancement :: Change Log
 
+* 2017-0708: 1.9.1 (MOARdV) for KSP 1.3.
+	+ For KSP 1.3.x / KSP 1.4.x
+			- Body mouseover names should now be localized correctly.
+			- RSS flares updated, courtesy PhineasFreak.
 * 2017-0526: 1.9.0 (MOARdV) for KSP 1.3.0
 	+ For KSP 1.3.0
 			- Recompiled for KSP 1.3.0
