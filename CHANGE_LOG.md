@@ -1,5 +1,8 @@
 # Distant Object Enhancement :: Change Log
 
+* 2020-1101: 2.0.1.1 (TheDarkBadger) for KSP 1.10.1
+	+ Small fix from Sigma88.
+	+ Thanks Sigma88
 * 2020-0927: 2.0.1.0 (TheDarkBadger) for KSP 1.10.1
 	+ Updated to KSP v1.10.x
 * 2020-0214: 2.0.0.2 (TheDarkBadger) for KSP 1.9.0
