@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace DistantObject
@@ -34,6 +35,11 @@ namespace DistantObject
         public static float debrisBrightness = 0.15f;
         public static List<string> situations = new List<string>();
         public static bool debugMode = false;
+
+        public static bool showNames = true;
+        public static string showNameString = null;
+        public static Transform showNameTransform = null;
+        public static Color showNameColor;
 
         public static Dictionary<GameObject, Vector3d> debugDeltaPos = new Dictionary<GameObject, Vector3d>();
 
@@ -215,7 +221,7 @@ namespace DistantObject
             }
 
             atmosphereFactor = 1;
-            if (FlightGlobals.currentMainBody != null && FlightGlobals.currentMainBody.atmosphere)
+            if (FlightGlobals.currentMainBody.atmosphere)
             {
                 double camAltitude = FlightGlobals.currentMainBody.GetAltitude(camPos);
                 double atmAltitude = FlightGlobals.currentMainBody.maxAtmosphereAltitude;
@@ -255,6 +261,71 @@ namespace DistantObject
             dimFactor *= flareBrightness;
         }
 
+        private void UpdateNameShown()
+        {
+            if (showNames && !MapView.MapIsEnabled)
+            {
+                showNameTransform = null;
+                Ray mouseRay = FlightCamera.fetch.mainCamera.ScreenPointToRay(Input.mousePosition);
+
+                // Detect CelestialBody mouseovers
+                double bestRadius = -1;
+                foreach (CelestialBody body in bodyMeshLookup.Keys)
+                {
+                    if (body == FlightGlobals.ActiveVessel.mainBody) continue;
+                    Vector3d vectorToBody = body.position - mouseRay.origin;
+                    double mouseBodyAngle = Vector3d.Angle(vectorToBody, mouseRay.direction);
+                    if (mouseBodyAngle < 1.0)
+                    {
+                        if (body.Radius > bestRadius)
+                        {
+                            double distance = Vector3d.Distance(FlightCamera.fetch.mainCamera.transform.position, body.position);
+                            double angularSize = (180 / Math.PI) * body.Radius / distance;
+                            if (angularSize < 0.2)
+                            {
+                                bestRadius = body.Radius;
+                                showNameTransform = body.transform;
+                                showNameString = body.bodyName;
+                                if (bodyColorLookup.ContainsKey(body))
+                                    showNameColor = bodyColorLookup[body];
+                                else
+                                    showNameColor = Color.white;
+                            }
+                        }
+                    }
+                }
+
+                if (showNameTransform == null)
+                {
+                    // Detect Vessel mouseovers
+                    double bestBrightness = 0.25; // min luminosity to show vessel name
+                    foreach (Vessel v in vesselMeshLookup.Keys)
+                    {
+                        GameObject mesh = vesselMeshLookup[v];
+                        MeshRenderer flareMR = meshRendererLookup[mesh];
+                        if (flareMR.material.color.a > 0)
+                        {
+                            Vector3d vectorToVessel = v.transform.position - mouseRay.origin;
+                            double mouseVesselAngle = Vector3d.Angle(vectorToVessel, mouseRay.direction);
+                            if (mouseVesselAngle < 1.0)
+                            {
+                                double luminosity = vesselLuminosityLookup[v];
+                                double distance = Vector3d.Distance(FlightCamera.fetch.mainCamera.transform.position, v.transform.position);
+                                double brightness = Math.Log10(luminosity) * (1 - Math.Pow(distance / 750000, 1.25));
+                                if (brightness > bestBrightness)
+                                {
+                                    bestBrightness = brightness;
+                                    showNameTransform = v.transform;
+                                    showNameString = v.vesselName;
+                                    showNameColor = Color.white;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         private void Awake()
         {
             meshVesselLookup.Clear();
@@ -279,6 +350,7 @@ namespace DistantObject
                 debrisBrightness = float.Parse(node.GetValue("debrisBrightness"));
                 debugMode = bool.Parse(node.GetValue("debugMode"));
                 situations = node.GetValue("situations").Split(',').ToList();
+                showNames = bool.Parse(node.GetValue("showNames"));
             }
             foreach (ConfigNode node in settings.GetNodes("SkyboxBrightness"))
             {
@@ -306,10 +378,32 @@ namespace DistantObject
 
             if (flaresEnabled)
                 StartCoroutine("StartUp");
+
+
+            // Remove Vessels from our dictionaries just before they are destroyed.
+            // After they are destroyed they are == null and this confuses Dictionary.
+            GameEvents.onVesselWillDestroy.Add(RemoveVesselFlare);
+
+        }
+
+        private void RemoveVesselFlare(Vessel v)
+        {
+            if (vesselMeshLookup.ContainsKey(v))
+            {
+                if (debugMode) { print("DistObj: Erasing flare for vessel " + v.name); }
+                GameObject flareMesh = vesselMeshLookup[v];
+                meshRendererLookup.Remove(flareMesh);
+                meshVesselLookup.Remove(flareMesh);
+                vesselMeshLookup.Remove(v);
+                vesselLuminosityLookup.Remove(v);
+                DestroyObject(flareMesh);
+            }
         }
 
         private void Update()
         {
+            debugMode = true;
+
             if (flaresEnabled)
             {
                 UpdateVar();
@@ -323,14 +417,10 @@ namespace DistantObject
                 restart:
                 foreach (GameObject flareMesh in meshVesselLookup.Keys)
                 {
-                    if (meshVesselLookup[flareMesh] == null || meshVesselLookup[flareMesh].loaded || !situations.Contains(meshVesselLookup[flareMesh].situation.ToString()))
+                    Vessel v = meshVesselLookup[flareMesh];
+                    if (v == null || v.loaded || !situations.Contains(v.situation.ToString()))
                     {
-                        if (debugMode) { print("DistObj: Erasing flare for vessel " + flareMesh.name); }
-                        meshRendererLookup.Remove(flareMesh);
-                        vesselMeshLookup.Remove(meshVesselLookup[flareMesh]);
-                        vesselLuminosityLookup.Remove(meshVesselLookup[flareMesh]);
-                        meshVesselLookup.Remove(flareMesh);
-                        DestroyObject(flareMesh);
+                        RemoveVesselFlare(v);
                         goto restart;
                     }
 
@@ -341,6 +431,20 @@ namespace DistantObject
                 {
                     UpdateBodyFlare(targetBody);
                 }
+
+                UpdateNameShown();
+            }
+        }
+
+        private void OnGUI()
+        {
+            if (flaresEnabled && showNames && !MapView.MapIsEnabled && showNameTransform != null)
+            {
+                Vector3 screenPos = FlightCamera.fetch.mainCamera.WorldToScreenPoint(showNameTransform.position);
+                Rect screenRect = new Rect(screenPos.x, Screen.height - screenPos.y - 20, 100, 20);
+                GUIStyle s = new GUIStyle();
+                s.normal.textColor = showNameColor;
+                GUI.Label(screenRect, showNameString, s);
             }
         }
 
