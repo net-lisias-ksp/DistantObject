@@ -1,5 +1,11 @@
 # Distant Object Enhancement :: Change Log
 
+* 2015-0502: 1.5.5 (MOARdV) for KSP 1.0.2
+	+ For KSP 1.0.2
+		- Option to show config button only in Space Center view (Gribbleshnibit8View).
+		- Labels for worlds that are not visible (such as blocked by a nearby world) no longer show up.
+		- Some assorted tweaks in an effort to deal with a couple of other bugs.
+		- Ghost flares should be fixed.
 * 2015-0429: 1.5.4 (MOARdV) for KSP 1.0.
 	+ Fix for App Launcher extra button.
 * 2015-0428: 1.5.3 (MOARdV) for KSP 1.0.
