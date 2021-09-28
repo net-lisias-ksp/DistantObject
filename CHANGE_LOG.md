@@ -1,5 +1,10 @@
 # Distant Object Enhancement :: Change Log
 
+* 2014-0729: 1.3.1 (MOARdV) for KSP 0.24
+	+ Patch by MOARdV
+	+ 0.24 compatibility
+	+ Two null reference exceptions fixed
+	+ Removed System.Threading.Tasks
 * 2014-0303: 1.3 (Rubber Ducky) for KSP 0.23.5 -- MIA
 	+ Dynamic skybox fading
 	+ Added settings GUI
