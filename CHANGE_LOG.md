@@ -1,5 +1,8 @@
 # Distant Object Enhancement :: Change Log
 
+* 2016-0428: 1.7.1 (MOARdV) for KSP 1.1.0
+	+ For KSP 1.1.0
+		- Fixed color conversion that made vessel flares black instead of white.  Issue #30.
 * 2016-0419: 1.7.0 (MOARdV) for KSP 1.1.
 	+ For KSP 1.1.0
 		- Changed default planet flare saturation to 100%.  Issue #25.
