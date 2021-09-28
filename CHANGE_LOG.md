@@ -1,5 +1,8 @@
 # Distant Object Enhancement :: Change Log
 
+* 2016-1011: 1.8.0 (MOARdV) for KSP 1.2
+	+ For KSP 1.2
+		- Updated RSS config and body names, per pull request from Theysen.
 * 2016-0623: 1.7.2 (MOARdV) for KSP 1.1.
 	+ For KSP 1.1.x
 		- Moved settings.cfg to PluginData to play better with ModuleManager.
