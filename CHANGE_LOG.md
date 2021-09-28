@@ -1,5 +1,9 @@
 # Distant Object Enhancement :: Change Log
 
+* 2015-0821: 1.6.1 (MOARdV) for KSP 1.0.4
+	+ For KSP 1.0.4
+		- Tweaks to body flare rendering to reduce the amount of unchanging data being stored by the mod and queried every update.
+		- Changed computation of a constant used for flare brightness to allow for Kerbin being a child of something other than Kerbol (for instance, with the New Horizons mod).  Courtesy forum user Tynrael.
 * 2015-0723: 1.6.0 (MOARdV) for KSP 1.0.4
 	+ For KSP 1.0.4
 		- Finally fixed vessel flare positions.
