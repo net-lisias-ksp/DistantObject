@@ -1,5 +1,7 @@
 # Distant Object Enhancement :: Change Log
 
+* 2020-0214: 2.0.0.2 (TheDarkBadger) for KSP 1.9.0
+	+ Updated to KSP v1.9.0
 * 2019-1125: 2.0.0.1 (TheDarkBadger) for KSP 1.8.1
 	+ Just an updated settings file so the defaults are back to normal
 * 2019-1112: 2.0.0.0 (TheDarkBadger) for KSP 1.8.1
