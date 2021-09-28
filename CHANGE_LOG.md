@@ -1,5 +1,10 @@
 # Distant Object Enhancement :: Change Log
 
+* 2015-0723: 1.6.0 (MOARdV) for KSP 1.0.4
+	+ For KSP 1.0.4
+		- Finally fixed vessel flare positions.
+		- Changed equation used to determine vessel flare brightness so smaller satellites will be visible.
+		- Internal code changes to eliminate some redundant updates.
 * 2015-0708: 1.5.7 (MOARdV) for KSP 1.0.4
 	+ For KSP 1.0.4
 		- NullReferenceException in FlareDraw.OnDestroy has been fixed.
