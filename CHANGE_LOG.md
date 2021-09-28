@@ -1,5 +1,10 @@
 # Distant Object Enhancement :: Change Log
 
+* 2015-0708: 1.5.7 (MOARdV) for KSP 1.0.4
+	+ For KSP 1.0.4
+		- NullReferenceException in FlareDraw.OnDestroy has been fixed.
+		- Sky dimming has changed again. Flares are dimmed less aggressively, particularly for very low max brightness settings.
+		- The flare model's texture was resized and converted to .dds. If you are installing over an existing DOE, please make sure to delete GameData/DistantObject/Flare/model000.png
 * 2015-0627: 1.5.6 (MOARdV) for KSP 1.0.4
 	+ For KSP 1.0.4
 		- Big flares appearing for small/dim worlds is fixed.  Issue #16.
