@@ -1,5 +1,10 @@
 # Distant Object Enhancement :: Change Log
 
+* 2015-0627: 1.5.6 (MOARdV) for KSP 1.0.4
+	+ For KSP 1.0.4
+		- Big flares appearing for small/dim worlds is fixed.  Issue #16.
+		- A few changes to hopefully reduce memory footprint when some features are not used.
+		- Sky dimming has been changed: Updates are shown immediately when "Apply" is pressed. Sky dimming now affects Tracking Station and Space Center views.  Planet dimming near the sun has been tweaked.
 * 2015-0502: 1.5.5 (MOARdV) for KSP 1.0.2
 	+ For KSP 1.0.2
 		- Option to show config button only in Space Center view (Gribbleshnibit8View).
