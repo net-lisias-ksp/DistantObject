@@ -2,16 +2,16 @@
 
 * 2018-1016: 1.9.1.1 (MOARdV) for KSP 1.3.
 	+ For KSP 1.3.x - KSP 1.6.x
-			- Recompiled against KSP 1.5.0 assemblies.
-			- Updated the version file.
-			- NOTE: This is my last planned release of Distant Object Enhancement.  I don't have the motivation to track down the remaining bugs in the sky dimming module, and I have made no changes to this mod for over a year.  It is available for adoption by anyone who will comply with the mod's license.
+		- Recompiled against KSP 1.5.0 assemblies.
+		- Updated the version file.
+		- NOTE: This is my last planned release of Distant Object Enhancement.  I don't have the motivation to track down the remaining bugs in the sky dimming module, and I have made no changes to this mod for over a year.  It is available for adoption by anyone who will comply with the mod's license.
 * 2017-0708: 1.9.1 (MOARdV) for KSP 1.3.
 	+ For KSP 1.3.x / KSP 1.4.x
-			- Body mouseover names should now be localized correctly.
-			- RSS flares updated, courtesy PhineasFreak.
+		- Body mouseover names should now be localized correctly.
+		- RSS flares updated, courtesy PhineasFreak.
 * 2017-0526: 1.9.0 (MOARdV) for KSP 1.3.0
 	+ For KSP 1.3.0
-			- Recompiled for KSP 1.3.0
+		- Recompiled for KSP 1.3.0
 * 2016-1020: 1.8.1 (MOARdV) for KSP 1.2
 	+ For KSP 1.2
 		- Fix potential exceptions related to the Blizzy Toolbar interface (thanks to Kerbas-ad-astra).
