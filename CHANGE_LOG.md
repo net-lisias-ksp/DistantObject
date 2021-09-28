@@ -1,2 +1,23 @@
 # Distant Object Enhancement :: Change Log
 
+* 2014-0303: 1.3 (Rubber Ducky) for KSP 0.23.5 -- MIA
+	+ Dynamic skybox fading
+	+ Added settings GUI
+	+ Vessel rendering overall should be stable now
+	+ Vessel rendering now creates a database of part models and draws from there, instead of cloning the part reference object
+	+ Vessel rendering no longer attempts to draw incompatible parts in many cases
+	+ Probably some other minor things
+* 2014-0218: 1.2 (Rubber Ducky) for KSP 0.23.5 -- MIA
+	+ Planet color definitions added for Real Solar System
+	+ Planet color definitions added for Real Solar System (metaphor's reconfiguration)
+	+ Planet color definitions added for PlanetFactory default planets
+	+ Planet color definitions added for Alternis Kerbol
+	+ Fixed issue with plugin trying to render launch clamps at large distances and causing ships to explode
+	+ Fixed issue with plugin incorrectly loading custom planet color definitions
+	+ Added some more information to print to the console for easier debugging
+	+ Added setting to easily toggle vessel rendering
+	+ Vessel rendering is now disabled by default
+* 2014-0217: 1.1 (Rubber Ducky) for KSP 0.23.5 -- MIA
+	+ Fixed issue with plugin trying to render flags and EVA Kerbals
+* 2014-0216: 1.0 (Rubber Ducky) for KSP 0.23.5 -- MIA
+	+ Initial Release
