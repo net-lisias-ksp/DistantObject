@@ -338,11 +338,29 @@ namespace DistantObject
 
                     if (cfgNode.HasValue("name"))
                     {
+                        string partName = cfgNode.GetValue("name");
                         string url = urlConfig.parent.url.Substring(0, urlConfig.parent.url.LastIndexOf("/"));
-                        string model = System.IO.Path.GetFileNameWithoutExtension(cfgNode.GetValue("mesh"));
-                        if (!partModelNameLookup.ContainsKey(urlConfig.name))
+                        if (cfgNode.HasValue("mesh"))
+                        { 
+                            string modelName = cfgNode.GetValue("mesh");
+                            modelName = System.IO.Path.GetFileNameWithoutExtension(modelName);
+                            Debug.LogFormat("DOE Addint {0} {1}/{2}", partName, url, modelName);
+                            partModelNameLookup.Add(partName, url + "/" + modelName);
+                        }
+                        else if (cfgNode.HasNode("MODEL"))
                         {
-                            partModelNameLookup.Add(urlConfig.name, url + "/" + model);
+                            ConfigNode cn = cfgNode.GetNode("MODEL");
+                            string modelName = cn?.GetValue("model");
+                            Debug.LogFormat("DOE Addint {0} {1}", partName, modelName);
+                            partModelNameLookup.Add(partName, modelName);
+                        }
+                        else
+                        {
+                            if (DistantObjectSettings.debugMode)
+                            {
+                                Debug.LogError(Constants.DistantObject + " -- Could not find a model for part " + partName + ".  Part will not render for VesselDraw.");
+                            }
+                            sawErrors = true;
                         }
                     }
                     else
