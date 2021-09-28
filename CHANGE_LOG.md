@@ -1,5 +1,8 @@
 # Distant Object Enhancement :: Change Log
 
+* 2015-1015: 1.6.3 (MOARdV) for KSP 1.0.4
+	+ For KSP 1.0.4
+		- Fix for ghost flares appearing when flares are disabled.  Issue #21.
 * 2015-1010: 1.6.2 (MOARdV) for KSP 1.0.4
 	+ For KSP 1.0.4
 		- Fix for a nullref exception in VesselDraw with craft that have fixed solar panels, courtesy taniwha.
