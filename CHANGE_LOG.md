@@ -1,5 +1,7 @@
 # Distant Object Enhancement :: Change Log
 
+* 2015-0429: 1.5.4 (MOARdV) for KSP 1.0.
+	+ Fix for App Launcher extra button.
 * 2015-0428: 1.5.3 (MOARdV) for KSP 1.0.
 	+ Maintenance release for KSP 1.0.
 * 2015-0215: 1.5.2 (MOARdV) for KSP 0.90
