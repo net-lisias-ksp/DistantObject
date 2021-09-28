@@ -1,5 +1,12 @@
 # Distant Object Enhancement :: Change Log
 
+* 2016-0419: 1.7.0 (MOARdV) for KSP 1.1.
+	+ For KSP 1.1.0
+		- Changed default planet flare saturation to 100%.  Issue #25.
+		- Flares behind the sun should no longer show up in front of the sun.  Issue #26.
+		- Recompiled for KSP 1.1.  Issue #27, #28.
+		- Changed the way dimming is applied to flares.
+		- Fixed GUI layout glitch when sliders for percentages reach 100%.
 * 2015-1121: 1.6.4 (MOARdV) for KSP 1.0.5
 	+ For KSP 1.0.5
 		- Recompiled for KSP 1.0.5 compatibility.  Restores missing vessel flares (Issue #23).
