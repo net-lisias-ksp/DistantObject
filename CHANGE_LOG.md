@@ -1,5 +1,9 @@
 # Distant Object Enhancement :: Change Log
 
+* 2016-0623: 1.7.2 (MOARdV) for KSP 1.1.
+	+ For KSP 1.1.x
+		- Moved settings.cfg to PluginData to play better with ModuleManager.
+		- Added some try/catch to deal with unexpected missing vessels triggering exceptions.
 * 2016-0428: 1.7.1 (MOARdV) for KSP 1.1.0
 	+ For KSP 1.1.0
 		- Fixed color conversion that made vessel flares black instead of white.  Issue #30.
