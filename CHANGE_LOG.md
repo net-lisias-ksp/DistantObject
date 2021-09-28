@@ -1,5 +1,7 @@
 # Distant Object Enhancement :: Change Log
 
+* 2015-0428: 1.5.3 (MOARdV) for KSP 1.0.
+	+ Maintenance release for KSP 1.0.
 * 2015-0215: 1.5.2 (MOARdV) for KSP 0.90
 	+ For KSP v0.90
 		- Fixed flares rendering when their world is rendered (eg, Minmus and its flare rendering at the same time).
