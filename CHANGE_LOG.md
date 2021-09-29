@@ -1,4 +1,4 @@
-# Distant Object Enhancement :: Change Log
+# Distant Object Enhancement (DOE) :: Change Log
 
 * 2021-0929: 2.0.3.1 (TheDarkBadger) for KSP 1.12.2
 	+ Implements Lisias' fix for TweakScale and MODEL support
