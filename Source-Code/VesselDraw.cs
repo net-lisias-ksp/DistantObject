@@ -82,6 +82,20 @@ namespace DistantObject
                     cloneMesh.transform.localPosition = a.position;
                     cloneMesh.transform.localRotation = a.rotation;
 
+                    //check if part has TweakScale
+                    ProtoPartModuleSnapshot tweakScale = a.modules.Find(n => n.moduleName == "TweakScale");
+                    if (tweakScale != null)
+                    {
+                        float defaultScale = float.Parse(tweakScale.moduleValues.GetValue("defaultScale"));
+                        float currentScale = float.Parse(tweakScale.moduleValues.GetValue("currentScale"));
+                        float ratio = currentScale / defaultScale;
+                        if (ratio > 0.001)
+                        {    
+                            cloneMesh.transform.localScale = new Vector3(ratio, ratio, ratio);
+                            Debug.LogFormat("localScale after {0}", cloneMesh.transform.localScale);
+                        }
+                    }
+
                     VesselRanges.Situation situation = shipToDraw.vesselRanges.GetSituationRanges(shipToDraw.situation);
                     if (Vector3d.Distance(cloneMesh.transform.position, FlightGlobals.ship_position) < situation.load)
                     {
