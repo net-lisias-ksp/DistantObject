@@ -8,7 +8,7 @@ namespace DistantObject
 
         private void toolbarButton()
         {
-            print(Constants.DistantObject + " -- Drawing toolbar icon...");
+            Log.dbg("Drawing toolbar icon...");
             buttonDOSettings = ToolbarManager.Instance.add("test", "buttonDOSettings");
             buttonDOSettings.Visibility = new GameScenesVisibility(GameScenes.SPACECENTER, GameScenes.FLIGHT);
             if (activated)
@@ -69,10 +69,7 @@ namespace DistantObject
 
         private void OnDestroy()
         {
-            if (DistantObjectSettings.debugMode)
-            {
-                Debug.Log(Constants.DistantObject + " -- SettingsGui OnDestroy - " + this.GetInstanceID());
-            }
+            Log.trace("OnDestroy - {0}", this.GetInstanceID());
 
             if (buttonDOSettings != null)
             {

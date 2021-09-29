@@ -91,7 +91,7 @@ namespace DistantObject
         {
             if (appLauncherButton == null)
             {
-                Debug.LogError(Constants.DistantObject + " -- onAppLauncherTrue called without a button?!?");
+                Log.warn("onAppLauncherTrue called without a button?!?");
                 return;
             }
 
@@ -103,7 +103,7 @@ namespace DistantObject
         {
             if (appLauncherButton == null)
             {
-                Debug.LogError(Constants.DistantObject + " -- onAppLauncherFalse called without a button?!?");
+                Log.warn("onAppLauncherFalse called without a button?!?");
                 return;
             }
 
@@ -115,10 +115,8 @@ namespace DistantObject
         {
             ApplicationLauncherButton button = null;
             Texture2D iconTexture = null;
-            if (DistantObjectSettings.debugMode)
-            {
-                Debug.Log(Constants.DistantObject + " -- InitAppLauncherButton");
-            }
+            Log.trace("InitAppLauncherButton");
+
             if (GameDatabase.Instance.ExistsTexture("DistantObject/Icons/toolbar_disabled_38"))
             {
                 iconTexture = GameDatabase.Instance.GetTexture("DistantObject/Icons/toolbar_disabled_38", false);
@@ -126,7 +124,7 @@ namespace DistantObject
 
             if (iconTexture == null)
             {
-                Debug.LogError(Constants.DistantObject + " -- Failed to load toolbar_disabled_38");
+                Log.error("Failed to load toolbar_disabled_38");
             }
             else
             {
@@ -137,7 +135,7 @@ namespace DistantObject
 
                 if (button == null)
                 {
-                    Debug.LogError(Constants.DistantObject + " -- Unable to create AppLauncher button");
+                    Log.warn("Unable to create AppLauncher button");
                 }
             }
 
@@ -148,10 +146,7 @@ namespace DistantObject
         {
             if (useAppLauncher && appLauncherButton == null)
             {
-                if (DistantObjectSettings.debugMode)
-                {
-                    Debug.Log(Constants.DistantObject + " -- creating new appLauncher instance - " + this.GetInstanceID());
-                }
+                Log.trace("creating new appLauncher instance - " + this.GetInstanceID());
                 appLauncherButton = InitAppLauncherButton();
             }
         }
@@ -170,10 +165,7 @@ namespace DistantObject
             //Load settings
             ReadSettings();
 
-            if (DistantObjectSettings.debugMode)
-            {
-                Debug.Log(Constants.DistantObject + " -- SettingsGui awake - " + this.GetInstanceID());
-            }
+            Log.trace("SettingsGui awake - " + this.GetInstanceID());
 
             GameEvents.onGUIApplicationLauncherReady.Add(AddAppLauncherButton);
             GameEvents.onGUIApplicationLauncherDestroyed.Add(RemoveAppLauncherButton);

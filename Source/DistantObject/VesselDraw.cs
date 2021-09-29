@@ -99,7 +99,7 @@ namespace DistantObject
                     VesselRanges.Situation situation = shipToDraw.vesselRanges.GetSituationRanges(shipToDraw.situation);
                     if (Vector3d.Distance(cloneMesh.transform.position, FlightGlobals.ship_position) < situation.load)
                     {
-                        Debug.LogError(Constants.DistantObject + " -- Tried to draw part " + partName + " within rendering distance of active vessel!");
+                        Log.error("Tried to draw part {0} within rendering distance of active vessel!", partName);
                         continue;
                     }
                     cloneMesh.SetActive(true);
@@ -356,32 +356,23 @@ namespace DistantObject
                         }
                         else
                         {
-                            if (DistantObjectSettings.debugMode)
-                            {
-                                Debug.LogError(Constants.DistantObject + " -- Could not find a model for part " + partName + ".  Part will not render for VesselDraw.");
-                            }
+                            Log.trace("Could not find a model for part {0}.  Part will not render for VesselDraw.", partName);
                             sawErrors = true;
                         }
                     }
                     else
                     {
-                        if (DistantObjectSettings.debugMode)
-                        {
-                            Debug.LogError(Constants.DistantObject + " -- Could not find ConfigNode for part " + urlConfig.name + ".  Part will not render for VesselDraw.");
-                        }
+                        Log.trace("Could not find ConfigNode for part {0}.  Part will not render for VesselDraw.", urlConfig.name);
                         sawErrors = true;
                     }
                 }
 
-                print(Constants.DistantObject + " -- VesselDraw initialized");
-                if (sawErrors)
-                {
-                    Debug.LogError(Constants.DistantObject + " -- Some parts do not have ConfigNode entries in the game database.  Some distant vessels will be missing pieces.");
-                }
+                Log.dbg("VesselDraw initialized");
+                if (sawErrors) Log.error("Some parts do not have ConfigNode entries in the game database.  Some distant vessels will be missing pieces.");
             }
-            else if (DistantObjectSettings.debugMode)
+            else
             {
-                print(Constants.DistantObject + " -- VesselDraw disabled");
+                Log.trace("VesselDraw disabled");
             }
         }
 

@@ -72,22 +72,7 @@ namespace DistantObject
 
     class Constants
     {
-        static private string _DistantObject = null;
-
-        static public string DistantObject
-        {
-            get
-            {
-                if (_DistantObject == null)
-                {
-                    Version version = Assembly.GetExecutingAssembly().GetName().Version;
-
-                    _DistantObject = "Distant Object Enhancement v" + version.Major + "." + version.Minor + "." + version.Build;
-                }
-
-                return _DistantObject;
-            }
-        }
+        static internal readonly string DistantObject = "Distant Object Enhancement v" + Version.Text;
     }
 
     class DistantObjectSettings

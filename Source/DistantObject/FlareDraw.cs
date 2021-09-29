@@ -657,17 +657,17 @@ namespace DistantObject
                 }
                 else
                 {
-                    UnityEngine.Debug.LogWarning(Constants.DistantObject + " -- Unable to find situation '" + sit + "' in my known situations atlas");
+                    Log.trace("Unable to find situation '{0}' in my known situations atlas", sit);
                 }
             }
 
             if (DistantObjectSettings.DistantFlare.flaresEnabled)
             {
-                UnityEngine.Debug.Log(Constants.DistantObject + " -- FlareDraw enabled");
+                Log.trace("FlareDraw enabled");
             }
             else
             {
-                UnityEngine.Debug.Log(Constants.DistantObject + " -- FlareDraw disabled");
+                Log.trace("FlareDraw disabled");
             }
 
             sunRadiusSquared = FlightGlobals.Bodies[0].Radius * FlightGlobals.Bodies[0].Radius;
@@ -749,10 +749,7 @@ namespace DistantObject
         // Update visible vessel list
         public void FixedUpdate()
         {
-            if (DistantObjectSettings.debugMode)
-            {
-                UnityEngine.Debug.Log(Constants.DistantObject + " -- FixedUpdate");
-            }
+            Log.dbg("FixedUpdate");
 
             if (DistantObjectSettings.DistantFlare.flaresEnabled && !MapView.MapIsEnabled)
             {
@@ -826,10 +823,7 @@ namespace DistantObject
                         camFOV = FlightCamera.fetch.mainCamera.fieldOfView;
                     }
 
-                    if (DistantObjectSettings.debugMode)
-                    {
-                        UnityEngine.Debug.Log(Constants.DistantObject + " -- Update");
-                    }
+                    Log.dbg("Update");
 
                     foreach (BodyFlare flare in bodyFlares)
                     {
