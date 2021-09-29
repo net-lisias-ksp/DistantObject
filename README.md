@@ -1,18 +1,18 @@
-# Distant Object Enhancement/L Unofficial
+# Distant Object Enhancement /L : Under new Management!
 
-Distant Object Enhancement Continued is a visual enhancement mod that makes objects realistically visible over large distances.
+Distant Object Enhancement (DOE) is a visual enhancement mod that makes objects realistically visible over large distances.
 
-Unofficial fork by Lisias.
+Distant Object Enhancement /L is DOE under Lisias' management!
 
 
 ## In a Hurry
 
-* [Latest Release](https://github.com/net-lisias-kspu/DistantObject/releases)
-	+ [Binaries](https://github.com/net-lisias-kspu/DistantObject/tree/Archive)
-* [Source](https://github.com/net-lisias-kspu/DistantObject)
+* [Latest Release](https://github.com/net-lisias-ksp/DistantObject/releases)
+	+ [Binaries](https://github.com/net-lisias-ksp/DistantObject/tree/Archive)
+* [Source](https://github.com/net-lisias-ksp/DistantObject)
 * Documentation
-	+ [Project's README](https://github.com/net-lisias-kspu/DistantObject/blob/master/README.md)
-	+ [Install Instructions](https://github.com/net-lisias-kspu/DistantObject/blob/master/INSTALL.md)
+	+ [Project's README](https://github.com/net-lisias-ksp/DistantObject/blob/master/README.md)
+	+ [Install Instructions](https://github.com/net-lisias-ksp/DistantObject/blob/master/INSTALL.md)
 	+ [Change Log](./CHANGE_LOG.md)
 	+ [TODO](./TODO.md) list
 
@@ -61,7 +61,7 @@ Please note the copyrights and trademarks in [NOTICE](./NOTICE).
 * [MOARdV](https://forum.kerbalspaceprogram.com/index.php?/profile/60950-moardv/) Previous Maintainer
 	+ [Forum](https://forum.kerbalspaceprogram.com/index.php?/topic/89214-*) 
 	+ [Github](https://github.com/MOARdV/DistantObject/)
-* [TheDarkBadger](https://forum.kerbalspaceprogram.com/index.php?/profile/201198-thedarkbadger/) Current Maintainer
+* [TheDarkBadger](https://forum.kerbalspaceprogram.com/index.php?/profile/201198-thedarkbadger/) Previous Maintainer
 	+ [Forum](https://forum.kerbalspaceprogram.com/index.php?/topic/189759-*/) 
 	+ [SpaceDock](https://spacedock.info/mod/2274/Distant%20Object%20Enhancement%20Continued)
 	+ [Github](https://github.com/TheDarkBadger/DistantObject)

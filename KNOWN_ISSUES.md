@@ -1,6 +1,6 @@
 # Distant Object Enhancement :: Known Issues
 
-None at the moment. :)
+* Parts from ReStock does not work properly. yet. :)
 
 - - -
 

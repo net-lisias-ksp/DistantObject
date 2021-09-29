@@ -1,2 +1,2 @@
-# Distant Object Enhancement :: Changes
+# Distant Object Enhancement (DOE) :: Changes
 

@@ -1,4 +1,4 @@
-# Distant Object Enhancement :: Change Log
+# Distant Object Enhancement (DOE) :: Change Log
 
 * 2021-0824: 2.0.3.0 (TheDarkBadger) for KSP 1.12.2
 	+ Updated to KSP v1.12.x
