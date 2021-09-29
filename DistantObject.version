@@ -1,0 +1,18 @@
+{
+	"NAME"		: "Distant Object Enhancement (DOE) /L",
+	"URL"		: "https://raw.githubusercontent.com/net-lisias-ksp/DistantObject/master/DistantObject.version",
+	"DOWNLOAD"	: "https://github.com/net-lisias-ksp/DistantObject/releases",
+	"CHANGE_LOG"	: "https://raw.githubusercontent.com/net-lisias-ksp/DistantObject/master/CHANGE_LOG.md",
+	"CHANGE_LOG_URL": "https://raw.githubusercontent.com/net-lisias-ksp/DistantObject/master/CHANGES.md",
+	"VERSION":{
+		"MAJOR":2,
+		"MINOR":0,
+		"PATCH":3,
+		"BUILD":1
+		},
+	"KSP_VERSION_MIN":{
+		"MAJOR":1,
+		"MINOR":12,
+		"PATCH":20
+		}
+}
