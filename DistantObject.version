@@ -6,13 +6,13 @@
 	"CHANGE_LOG_URL": "https://raw.githubusercontent.com/net-lisias-ksp/DistantObject/master/CHANGES.md",
 	"VERSION":{
 		"MAJOR":2,
-		"MINOR":0,
-		"PATCH":3,
-		"BUILD":1
+		"MINOR":1,
+		"PATCH":0,
+		"BUILD":0
 		},
 	"KSP_VERSION_MIN":{
 		"MAJOR":1,
-		"MINOR":12,
-		"PATCH":20
+		"MINOR":8,
+		"PATCH":0
 		}
 }
