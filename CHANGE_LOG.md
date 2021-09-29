@@ -1,5 +1,8 @@
 # Distant Object Enhancement :: Change Log
 
+* 2021-0929: 2.0.3.1 (TheDarkBadger) for KSP 1.12.2
+	+ Implements Lisias' fix for TweakScale and MODEL support
+	+ Big thanks to Lisias :)
 * 2021-0824: 2.0.3.0 (TheDarkBadger) for KSP 1.12.2
 	+ Updated to KSP v1.12.x
 * 2020-1227: 2.0.2.0 (TheDarkBadger) for KSP 1.11.0
