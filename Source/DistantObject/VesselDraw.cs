@@ -30,10 +30,7 @@ namespace DistantObject
         {
             if (!vesselIsBuilt[shipToDraw])
             {
-                if (DistantObjectSettings.debugMode)
-                {
-                    print("DistObj: Drawing vessel " + shipToDraw.vesselName);
-                }
+                Log.detail("DistObj: Drawing vessel {0}", shipToDraw.vesselName);
 
                 vesselIsBuilt[shipToDraw] = true;
 
@@ -56,7 +53,7 @@ namespace DistantObject
                     {
                         if (DistantObjectSettings.debugMode)
                         {
-                            print("Ignoring part " + partName);
+                            Log.detail("Ignoring part {0}", partName);
                         }
 
                         continue;
@@ -67,10 +64,7 @@ namespace DistantObject
                         partName = partName.Replace('.', '_');
                         if (!partModelNameLookup.ContainsKey(partName))
                         {
-                            if (DistantObjectSettings.debugMode)
-                            {
-                                print("DistObj ERROR: Could not find config definition for " + partName);
-                            }
+                            Log.detail("DistObj ERROR: Could not find config definition for {0}", partName);
                             continue;
                         }
                     }
@@ -78,10 +72,7 @@ namespace DistantObject
                     GameObject clone = GameDatabase.Instance.GetModel(partModelNameLookup[partName]);
                     if (clone == null)
                     {
-                        if (DistantObjectSettings.debugMode)
-                        {
-                            print("DistObj ERROR: Could not load part model " + partModelNameLookup[partName]);
-                        }
+                        Log.detail("DistObj ERROR: Could not load part model {0}", partModelNameLookup[partName]);
                         continue;
                     }
                     GameObject cloneMesh = Mesh.Instantiate(clone) as GameObject;
@@ -100,7 +91,7 @@ namespace DistantObject
                         if (ratio > 0.001)
                         {    
                             cloneMesh.transform.localScale = new Vector3(ratio, ratio, ratio);
-                            Debug.LogFormat("localScale after {0}", cloneMesh.transform.localScale);
+                            Log.detail("localScale after {0}", cloneMesh.transform.localScale);
                         }
                     }
 
@@ -209,10 +200,7 @@ namespace DistantObject
         {
             if (vesselIsBuilt[shipToErase])
             {
-                if (DistantObjectSettings.debugMode)
-                {
-                    print("DistObj: Erasing vessel " + shipToErase.vesselName + " (vessel unloaded)");
-                }
+                Log.detail("DistObj: Erasing vessel {0} (vessel unloaded)", shipToErase.vesselName);
 
                 foreach (GameObject mesh in meshListLookup[shipToErase])
                 {
@@ -234,10 +222,7 @@ namespace DistantObject
                     meshListLookup.Add(shipToCheck, new List<GameObject>());
                     vesselIsBuilt.Add(shipToCheck, false);
                     watchList.Add(shipToCheck);
-                    if (DistantObjectSettings.debugMode)
-                    {
-                        print("DistObj: Adding new definition for " + shipToCheck.vesselName);
-                    }
+                    Log.detail("DistObj: Adding new definition for {0}", shipToCheck.vesselName);
                 }
                 DrawVessel(shipToCheck);
             }
@@ -248,10 +233,7 @@ namespace DistantObject
                     meshListLookup.Add(shipToCheck, new List<GameObject>());
                     vesselIsBuilt.Add(shipToCheck, false);
                     watchList.Add(shipToCheck);
-                    if (DistantObjectSettings.debugMode)
-                    {
-                        print("DistObj: Adding new definition for " + shipToCheck.vesselName);
-                    }
+                    Log.detail("DistObj: Adding new definition for {0}", shipToCheck.vesselName);
                 }
                 CheckErase(shipToCheck);
             }
@@ -265,10 +247,7 @@ namespace DistantObject
                 {
                     if (!FlightGlobals.fetch.vessels.Contains(watchList[i]))
                     {
-                        if (DistantObjectSettings.debugMode)
-                        {
-                            print("DistObj: Erasing vessel " + watchList[i].vesselName + " (vessel destroyed)");
-                        }
+                        Log.detail("DistObj: Erasing vessel {0} (vessel destroyed)", watchList[i].vesselName);
 
                         if (vesselIsBuilt.ContainsKey(watchList[i]))
                         {
@@ -352,14 +331,14 @@ namespace DistantObject
                         { 
                             string modelName = cfgNode.GetValue("mesh");
                             modelName = System.IO.Path.GetFileNameWithoutExtension(modelName);
-                            Debug.LogFormat("DOE Addint {0} {1}/{2}", partName, url, modelName);
+                            Log.detail("Addint {0} {1}/{2}", partName, url, modelName);
                             partModelNameLookup.Add(partName, url + "/" + modelName);
                         }
                         else if (cfgNode.HasNode("MODEL"))
                         {
                             ConfigNode cn = cfgNode.GetNode("MODEL");
                             string modelName = cn?.GetValue("model");
-                            Debug.LogFormat("DOE Addint {0} {1}", partName, modelName);
+                            Log.detail("Addint {0} {1}", partName, modelName);
                             partModelNameLookup.Add(partName, modelName);
                         }
                         else
@@ -386,7 +365,7 @@ namespace DistantObject
 
         private void OnDestroy()
         {
-            //print(Constants.DistantObject + " -- VesselDraw OnDestroy");
+            Log.dbg("VesselDraw OnDestroy");
         }
     }
 }

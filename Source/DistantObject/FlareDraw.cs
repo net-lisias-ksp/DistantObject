@@ -78,7 +78,7 @@ namespace DistantObject
 
         ~BodyFlare()
         {
-            //Debug.Log(Constants.DistantObject + string.Format(" -- BodyFlare {0} Destroy", (body != null) ? body.name : "(null bodyflare?)"));
+            Log.dbg("BodyFlare {0} Destroy", (body != null) ? body.name : "(null bodyflare?)");
         }
     }
 
@@ -117,7 +117,7 @@ namespace DistantObject
                     float resizeFactor = (0.002f * targetDist * brightness * (0.7f + .99f * camFOV) / 70.0f) * DistantObjectSettings.DistantFlare.flareSize;
 
                     flareMesh.transform.localScale = new Vector3(resizeFactor, resizeFactor, resizeFactor);
-                    //Debug.Log(string.Format("Resizing vessel flare {0} to {1} - brightness {2}, luminosity {3}", referenceShip.vesselName, resizeFactor, brightness, luminosity));
+                    Log.dbg("Resizing vessel flare {0} to {1} - brightness {2}, luminosity {3}", referenceShip.vesselName, resizeFactor, brightness, luminosity);
                 }
             }
             catch
@@ -131,7 +131,7 @@ namespace DistantObject
         ~VesselFlare()
         {
             // Why is this never called?
-            //Debug.Log(Constants.DistantObject + string.Format(" -- VesselFlare {0} Destroy", (referenceShip != null) ? referenceShip.vesselName : "(null vessel?)"));
+            Log.dbg("VesselFlare {0} Destroy", (referenceShip != null) ? referenceShip.vesselName : "(null vessel?)");
         }
     }
 
@@ -222,7 +222,7 @@ namespace DistantObject
         //    for(int i=0; i< idx; ++i) sb.Append("  ");
         //    sb.Append("Body ");
         //    sb.Append(body.celestialBody.name);
-        //    Debug.Log(sb.ToString());
+        //    Log.force(sb.ToString());
         //    for(int i=0; i<body.children.Count; ++i)
         //    {
         //        ListChildren(body.children[i], idx + 1);
@@ -386,8 +386,7 @@ namespace DistantObject
                 long addNew = stopwatch.ElapsedMilliseconds;
                 stopwatch.Stop();
 
-                UnityEngine.Debug.Log(string.Format(Constants.DistantObject + " -- GenerateVesselFlares net ms: scanDead = {0}, clearDead = {1}, addNew = {2} - {3} flares tracked",
-                    scanDead, clearDead, addNew, vesselFlares.Count));
+                Log.force("GenerateVesselFlares net ms: scanDead = {0}, clearDead = {1}, addNew = {2} - {3} flares tracked", scanDead, clearDead, addNew, vesselFlares.Count));
 #endif
         }
 
@@ -757,7 +756,7 @@ namespace DistantObject
         // Update visible vessel list
         public void FixedUpdate()
         {
-            Log.dbg("FixedUpdate");
+            // Log.dbg("FixedUpdate"); Really bad idea...
 
             if (DistantObjectSettings.DistantFlare.flaresEnabled && !MapView.MapIsEnabled)
             {
@@ -831,7 +830,7 @@ namespace DistantObject
                         camFOV = FlightCamera.fetch.mainCamera.fieldOfView;
                     }
 
-                    Log.dbg("Update");
+                    // Log.dbg("Update"); Really bad idea...
 
                     foreach (BodyFlare flare in bodyFlares)
                     {
@@ -877,8 +876,7 @@ namespace DistantObject
                     long updateName = stopwatch.ElapsedMilliseconds;
                     stopwatch.Stop();
 
-                    UnityEngine.Debug.Log(string.Format(Constants.DistantObject + " -- Update net ms: bodyCheckdraw = {0}, updateVar = {1}, vesselCheckdraw = {2}, updateName = {3}",
-                        bodyCheckdraw, updateVar, vesselCheckdraw,updateName));
+                    Log.force("Update net ms: bodyCheckdraw = {0}, updateVar = {1}, vesselCheckdraw = {2}, updateName = {3}", bodyCheckdraw, updateVar, vesselCheckdraw,updateName));
 #endif
                 }
             }
