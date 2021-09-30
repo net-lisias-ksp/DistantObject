@@ -1,3 +1,11 @@
+/*
+		This file is part of Distant Object Enhancement /L
+			© 2021 LisiasT
+			© 2019-2021 TheDarkBadger
+			© 2014-2019 MOARdV
+			© 2014 Rubber Ducky
+*/
+
 using System;
 using System.Collections.Generic;
 using System.Text;
