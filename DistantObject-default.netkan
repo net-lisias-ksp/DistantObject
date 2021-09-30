@@ -1,0 +1,31 @@
+{
+    "spec_version": "v1.16",
+    "identifier":   "DistantObject-default",
+    "name":         "Distant Object Enhancement Continued default config",
+    "abstract":     "Default planets colors",
+    "$kref":        "#/ckan/github/TheDarkBadger/DistantObject",
+    "$vref":        "#/ckan/ksp-avc",
+    "x_netkan_force_v": true,
+    "license":      "CC-BY-4.0",
+    "resources": {
+        "homepage": "https://forum.kerbalspaceprogram.com/index.php?/topic/189759-*"
+    },
+    "tags": [
+        "config",
+        "graphics"
+    ],
+    "install": [ {
+        "find":       "PlanetColors.cfg",
+        "install_to": "GameData/DistantObject",
+        "find_matches_files": true
+    } ],
+    "depends": [
+        { "name": "DistantObject" }
+    ],
+    "provides": [
+        "DistantObject-config"
+    ],
+    "conflicts": [
+        { "name": "DistantObject-config" }
+    ]
+}
