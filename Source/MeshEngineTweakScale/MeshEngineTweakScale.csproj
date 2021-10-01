@@ -3,12 +3,12 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{074F8FA7-0AAF-4A54-84F1-08F631DD3F94}</ProjectGuid>
+    <ProjectGuid>{D481B9E8-A27C-444F-81C4-4155C460BAED}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>DistantObject.MeshEngine</RootNamespace>
-    <AssemblyName>MeshEngine</AssemblyName>
+    <RootNamespace>DistantObject.MeshEngine.TweakScale</RootNamespace>
+    <AssemblyName>MeshEngineTweakScale</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
-    <BaseIntermediateOutputPath>..\..\obj\MeshEngine</BaseIntermediateOutputPath>
+    <BaseIntermediateOutputPath>..\..\obj\MeshEngineTweakScale</BaseIntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -29,10 +29,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="KSPe.Light.DOE">
-      <HintPath>..\..\..\..\..\..\LIB\plugins\KSPe.Light.DOE.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Assembly-CSharp">
       <HintPath>..\..\..\..\..\..\LIB\managed\1.4.1\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
@@ -41,16 +37,22 @@
       <HintPath>..\..\..\..\..\..\LIB\managed\1.4.1\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="KSPe.Light.DOE">
+      <HintPath>..\..\..\..\..\..\LIB\plugins\KSPe.Light.DOE.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Implementation.cs" />
     <Compile Include="Startup.cs" />
-    <Compile Include="Database.cs" />
-    <Compile Include="MeshEngine.cs" />
-    <Compile Include="Contracts\Module.cs" />
+    <Compile Include="Modules\TweakScale.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MeshEngine\MeshEngine.csproj">
+      <Project>{074F8FA7-0AAF-4A54-84F1-08F631DD3F94}</Project>
+      <Name>MeshEngine</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\DistantObject\DistantObject.csproj">
       <Project>{CFA036CD-0BD0-4363-9A4B-621567C9F5E3}</Project>
       <Name>DistantObject</Name>
@@ -58,7 +60,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Contracts\" />
+    <Folder Include="Modules\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

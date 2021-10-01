@@ -16,12 +16,10 @@ namespace DistantObject.MeshEngine
 		[UsedImplicitly]
 		private void Awake()
 		{
-			{ 
-				using (KSPe.Util.SystemTools.Assembly.Loader a = new KSPe.Util.SystemTools.Assembly.Loader<Startup>())
-				{
-					a.LoadAndStartup("MeshEngineStock");
-					a.LoadAndStartup("MeshEngineTweakScale");
-				}
+			using (KSPe.Util.SystemTools.Assembly.Loader a = new KSPe.Util.SystemTools.Assembly.Loader<DistantObject.Startup>())
+			{
+				a.LoadAndStartup("MeshEngineStock");
+				a.LoadAndStartup("MeshEngineTweakScale");
 			}
 
 			Database.Init();

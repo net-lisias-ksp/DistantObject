@@ -7,7 +7,7 @@ TARGETBINDIR="$TARGETDIR/Plugins/"
 PROJECTSDIR="$PACKAGE/"
 
 DLLS="DistantObject"
-PD_DLLS="MeshEngine"
+PD_DLLS="MeshEngine MeshEngineStock MeshEngineTweakScale"
 declare -A PD_SUB_RULES=( )
 PD_SUB_DLLS=`{ for K in "${!PD_SUB_RULES[@]}"; do echo $(basename ${PD_SUB_RULES[$K]}); done } | sort -u | tr '\n' ' '`
 PD_SUB_DIRS=`{ for K in "${!PD_SUB_RULES[@]}"; do echo $(dirname ${PD_SUB_RULES[$K]}); done } | sort -u | tr '\n' ' '`

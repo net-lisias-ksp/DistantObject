@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DistantObject", "Source\Dis
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeshEngine", "Source\MeshEngine\MeshEngine.csproj", "{074F8FA7-0AAF-4A54-84F1-08F631DD3F94}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeshEngineStock", "Source\MeshEngineStock\MeshEngineStock.csproj", "{7E036F7E-905C-41DB-8C34-4D6D0C4B1984}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeshEngineTweakScale", "Source\MeshEngineTweakScale\MeshEngineTweakScale.csproj", "{D481B9E8-A27C-444F-81C4-4155C460BAED}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{074F8FA7-0AAF-4A54-84F1-08F631DD3F94}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{074F8FA7-0AAF-4A54-84F1-08F631DD3F94}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{074F8FA7-0AAF-4A54-84F1-08F631DD3F94}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E036F7E-905C-41DB-8C34-4D6D0C4B1984}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E036F7E-905C-41DB-8C34-4D6D0C4B1984}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E036F7E-905C-41DB-8C34-4D6D0C4B1984}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E036F7E-905C-41DB-8C34-4D6D0C4B1984}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D481B9E8-A27C-444F-81C4-4155C460BAED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D481B9E8-A27C-444F-81C4-4155C460BAED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D481B9E8-A27C-444F-81C4-4155C460BAED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D481B9E8-A27C-444F-81C4-4155C460BAED}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

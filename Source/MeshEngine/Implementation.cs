@@ -42,7 +42,7 @@ namespace DistantObject.MeshEngine
 
 				AvailablePart avPart = PartLoader.getPartInfoByName(partName);
 
-				if (a.modules.Find(n => n.moduleName == "LaunchClamp") != null)
+				if (MeshEngine.Contract.Module.IsBlackListed(a))
 				{
 					Log.detail("Ignoring part {0}", partName);
 					continue;
@@ -71,20 +71,6 @@ namespace DistantObject.MeshEngine
 				cloneMesh.transform.localPosition = a.position;
 				cloneMesh.transform.localRotation = a.rotation;
 
-				//check if part has TweakScale
-				ProtoPartModuleSnapshot tweakScale = a.modules.Find(n => n.moduleName == "TweakScale");
-				if (tweakScale != null)
-				{
-					float defaultScale = float.Parse(tweakScale.moduleValues.GetValue("defaultScale"));
-					float currentScale = float.Parse(tweakScale.moduleValues.GetValue("currentScale"));
-					float ratio = currentScale / defaultScale;
-					if (ratio > 0.001)
-					{
-						cloneMesh.transform.localScale = new Vector3(ratio, ratio, ratio);
-						Log.detail("localScale after {0}", cloneMesh.transform.localScale);
-					}
-				}
-
 				VesselRanges.Situation situation = this.vessel.vesselRanges.GetSituationRanges(this.vessel.situation);
 				if (Vector3d.Distance(cloneMesh.transform.position, FlightGlobals.ship_position) < situation.load)
 				{
@@ -98,87 +84,8 @@ namespace DistantObject.MeshEngine
 					col.enabled = false;
 				}
 
-				//check if part is a solar panel
-				ProtoPartModuleSnapshot solarPanel = a.modules.Find(n => n.moduleName == "ModuleDeployableSolarPanel");
-				if (solarPanel != null)
-				{
-					if (solarPanel.moduleValues.GetValue("stateString") == "EXTENDED")
-					{
-						//grab the animation name specified in the part cfg
-						string animName = avPart.partPrefab.GetComponent<ModuleDeployableSolarPanel>().animationName;
-						//grab the actual animation istelf
-						var animator = avPart.partPrefab.FindModelAnimators();
-						if (animator != null && animator.Length > 0)
-						{
-							AnimationClip animClip = animator[0].GetClip(animName);
-							//grab the animation control module on the actual drawn model
-							Animation anim = cloneMesh.GetComponentInChildren<Animation>();
-							//copy the animation over to the new part!
-							anim.AddClip(animClip, animName);
-							anim[animName].enabled = true;
-							anim[animName].normalizedTime = 1f;
-						}
-					}
-				}
-
-				//check if part is a light
-				ProtoPartModuleSnapshot light = a.modules.Find(n => n.moduleName == "ModuleLight");
-				if (light != null)
-				{
-					//Oddly enough the light already renders no matter what, so we'll kill the module if it's suppsed to be turned off
-					if (light.moduleValues.GetValue("isOn") == "False")
-					{
-						Object.Destroy(cloneMesh.GetComponentInChildren<Light>());
-					}
-				}
-
-				//check if part is a landing gear
-				ProtoPartModuleSnapshot landingGear = a.modules.Find(n => n.moduleName == "ModuleWheelDeployment");
-				if (landingGear != null)
-				{
-					// MOARdV TODO: This wasn't really right to start with.
-					// There is no field "savedAnimationTime".
-					//if (landingGear.moduleValues.GetValue("savedAnimationTime") != "0")
-					{
-						//grab the animation name specified in the part cfg
-						string animName = avPart.partPrefab.GetComponent<ModuleWheels.ModuleWheelDeployment>().animationStateName;
-						var animator = avPart.partPrefab.FindModelAnimators();
-						if (animator != null && animator.Length > 0)
-						{
-							//grab the actual animation istelf
-							AnimationClip animClip = animator[0].GetClip(animName);
-							//grab the animation control module on the actual drawn model
-							Animation anim = cloneMesh.GetComponentInChildren<Animation>();
-							//copy the animation over to the new part!
-							anim.AddClip(animClip, animName);
-							anim[animName].enabled = true;
-							anim[animName].normalizedTime = 1f;
-						}
-					}
-				}
-
-				//check if part has a generic animation
-				ProtoPartModuleSnapshot animGeneric = a.modules.Find(n => n.moduleName == "ModuleAnimateGeneric");
-				if (animGeneric != null)
-				{
-					if (animGeneric.moduleValues.GetValue("animTime") != "0")
-					{
-						//grab the animation name specified in the part cfg
-						string animName = avPart.partPrefab.GetComponent<ModuleAnimateGeneric>().animationName;
-						var animator = avPart.partPrefab.FindModelAnimators();
-						if (animator != null && animator.Length > 0)
-						{
-							//grab the actual animation istelf
-							AnimationClip animClip = animator[0].GetClip(animName);
-							//grab the animation control module on the actual drawn model
-							Animation anim = cloneMesh.GetComponentInChildren<Animation>();
-							//copy the animation over to the new part!
-							anim.AddClip(animClip, animName);
-							anim[animName].enabled = true;
-							anim[animName].normalizedTime = 1f;
-						}
-					}
-				}
+				foreach (ProtoPartModuleSnapshot module in a.modules)
+					cloneMesh = DistantObject.MeshEngine.Contract.Module.Render(cloneMesh, a, avPart, module);
 
 				this.referencePart.Add(cloneMesh, a);
 				this.meshList.Add(cloneMesh);
