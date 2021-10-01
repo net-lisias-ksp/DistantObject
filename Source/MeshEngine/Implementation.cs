@@ -25,7 +25,7 @@ namespace DistantObject.MeshEngine
 
 		void DistantObject.Contract.MeshEngine.Interface.Draw()
 		{
-			Log.detail("DistObj: Drawing vessel {0}", this.vessel.vesselName);
+			Log.detail("Drawing vessel {0}", this.vessel.vesselName);
 
 			List<ProtoPartSnapshot> partList = this.vessel.protoVessel.protoPartSnapshots;
 			foreach (ProtoPartSnapshot a in partList)

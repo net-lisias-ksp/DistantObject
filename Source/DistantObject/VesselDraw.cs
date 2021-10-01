@@ -30,7 +30,7 @@ namespace DistantObject
         {
             if (meshEngineForVessel.ContainsKey(shipToErase))
             {
-                Log.detail("DistObj: Erasing vessel {0} (vessel unloaded)", shipToErase.vesselName);
+                Log.detail("Erasing vessel {0} (vessel unloaded)", shipToErase.vesselName);
 
                 meshEngineForVessel[shipToErase].Destroy();
                 meshEngineForVessel.Remove(shipToErase);
@@ -44,7 +44,7 @@ namespace DistantObject
             if (!meshEngineForVessel.ContainsKey(shipToCheck))
             {
                 watchList.Add(shipToCheck);
-                Log.detail("DistObj: Adding new definition for {0}", shipToCheck.vesselName);
+                Log.detail("Adding new definition for {0}", shipToCheck.vesselName);
             }
             if (Vector3d.Distance(shipToCheck.GetWorldPos3D(), FlightGlobals.ship_position) < DistantObjectSettings.DistantVessel.maxDistance && !shipToCheck.loaded)
                 DrawVessel(shipToCheck);
@@ -61,7 +61,7 @@ namespace DistantObject
                 {
                     if (!FlightGlobals.fetch.vessels.Contains(watchList[i]))
                     {
-                        Log.detail("DistObj: Erasing vessel {0} (vessel destroyed)", watchList[i].vesselName);
+                        Log.detail("Erasing vessel {0} (vessel destroyed)", watchList[i].vesselName);
 
                         if (meshEngineForVessel.ContainsKey(watchList[i]))
                         {
