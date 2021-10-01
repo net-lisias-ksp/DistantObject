@@ -3,11 +3,11 @@ source ${SCRIPT_DIR}/../CONFIG.inc
 
 PACKAGE=DistantObject
 TARGETDIR="$PACKAGE"
-TARGETBINDIR="$TARGETDIR/"
+TARGETBINDIR="$TARGETDIR/Plugins/"
 PROJECTSDIR="$PACKAGE/"
 
 DLLS="DistantObject"
-PD_DLLS=""
+PD_DLLS="MeshEngine"
 declare -A PD_SUB_RULES=( )
 PD_SUB_DLLS=`{ for K in "${!PD_SUB_RULES[@]}"; do echo $(basename ${PD_SUB_RULES[$K]}); done } | sort -u | tr '\n' ' '`
 PD_SUB_DIRS=`{ for K in "${!PD_SUB_RULES[@]}"; do echo $(dirname ${PD_SUB_RULES[$K]}); done } | sort -u | tr '\n' ' '`
@@ -16,7 +16,7 @@ GD_PRIORITY="000"
 LIB_DLLS="${DLLS}"
 
 PROJECT_BRANCH=`git branch | grep \* | cut -d ' ' -f2`
-if [ "$PROJECT_BRANCH" == "mestre" ] ; then
+if [ "$PROJECT_BRANCH" == "master" ] ; then
 	# Release mode
 	PROJECT_STATE=""
 else

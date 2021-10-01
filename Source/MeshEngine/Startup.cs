@@ -4,40 +4,34 @@
 			© 2019-2021 TheDarkBadger
 			© 2014-2019 MOARdV
 			© 2014 Rubber Ducky
+
+	THIS FILE is ARR to LisiasT. No right other than using the generalted DLL on your machine is granted.
 */
 using KSPe.Annotations;
-using UnityEngine;
 
-namespace DistantObject
+namespace DistantObject.MeshEngine
 {
-	[KSPAddon(KSPAddon.Startup.Instantly, true)]
-	public class Startup:MonoBehaviour
+	public class Startup
 	{
 		[UsedImplicitly]
 		private void Awake()
 		{
-			try
-			{
-				KSPe.Util.Installation.Check<Startup>();
-			}
-			catch (KSPe.Util.InstallmentException e)
-			{
-				Log.error(e.ToShortMessage());
-				KSPe.Common.Dialogs.ShowStopperAlertBox.Show(e);
-			}
-
 			{ 
 				using (KSPe.Util.SystemTools.Assembly.Loader a = new KSPe.Util.SystemTools.Assembly.Loader<Startup>())
 				{
-					a.LoadAndStartup("MeshEngine");
+					a.LoadAndStartup("MeshEngineStock");
+					a.LoadAndStartup("MeshEngineTweakScale");
 				}
 			}
+
+			Database.Init();
+			Contract.Module.Init();
 		}
 
 		[UsedImplicitly]
 		private void Start()
 		{
-			Log.force("Version {0}", Version.Text);
+			Log.force("MeshEngine {0} ready.", Version.Text);
 		}
 	}
 }

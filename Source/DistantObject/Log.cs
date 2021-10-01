@@ -18,59 +18,63 @@
 */
 using System;
 using System.Diagnostics;
-using D = UnityEngine.Debug;
+using KSPe.Util.Log;
 
 namespace DistantObject
 {
 	public static class Log
 	{
-		private static readonly string PREFIX = string.Format("[{0}] ", typeof(Log).Namespace);
+		private static readonly Logger log = Logger.CreateForType<Startup>();
+
+		public static Level level {
+			get { return log.level; }
+			set {log.level = value; }
+		}
+
 		public static void force (string msg, params object [] @params)
 		{
-			D.LogFormat(PREFIX + msg, @params);
+			log.force(msg, @params);
 		}
 
 		public static void info(string msg, params object[] @params)
 		{
-			D.LogFormat(PREFIX + "INFO : " + msg, @params);
+			log.info(msg, @params);
 		}
 
 		public static void warn(string msg, params object[] @params)
 		{
-			D.LogWarningFormat(PREFIX + "WARN : " + msg, @params);
+			log.warn(msg, @params);
 		}
 
 		public static void detail(string msg, params object[] @params)
 		{
-			D.LogFormat(PREFIX + "DETAIL : " + msg, @params);
+			log.detail(msg, @params);
 		}
 
 		public static void trace(string msg, params object[] @params)
 		{
-			if (!DistantObjectSettings.debugMode) return;
-			D.LogFormat(PREFIX + "TRACE : " + msg, @params);
+			log.trace(msg, @params);
 		}
 
 		public static void error(string msg, params object[] @params)
 		{
-			D.LogErrorFormat(PREFIX + "ERROR : " + msg, @params);
+			log.error(msg, @params);
 		}
 
-		public static void error(Exception e)
+		public static void error(Exception e, object offended)
 		{
-			D.LogException(e);
+			log.error(offended, e);
 		}
 
 		public static void error(Exception e, string msg, params object[] @params)
 		{
-			error(msg, @params);
-			error(e);
+			log.error(e, msg, @params);
 		}
 
 		[ConditionalAttribute("DEBUG")]
 		public static void dbg(string msg, params object[] @params)
 		{
-			D.LogFormat(PREFIX + "TRACE : " + msg, @params);
+			log.detail(msg, @params);
 		}
 	}
 }

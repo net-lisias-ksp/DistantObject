@@ -5,13 +5,11 @@
 			© 2014-2019 MOARdV
 			© 2014 Rubber Ducky
 */
+using System;
+using System.Collections.Generic;
+using UnityEngine;
 
 //#define SHOW_FIXEDUPDATE_TIMING
-using System;
-using System.Diagnostics;
-using System.Collections.Generic;
-using System.Text;
-using UnityEngine;
 
 namespace DistantObject
 {

@@ -5,6 +5,8 @@ VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DistantObject", "Source\DistantObject\DistantObject.csproj", "{CFA036CD-0BD0-4363-9A4B-621567C9F5E3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeshEngine", "Source\MeshEngine\MeshEngine.csproj", "{074F8FA7-0AAF-4A54-84F1-08F631DD3F94}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,8 +17,19 @@ Global
 		{CFA036CD-0BD0-4363-9A4B-621567C9F5E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CFA036CD-0BD0-4363-9A4B-621567C9F5E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CFA036CD-0BD0-4363-9A4B-621567C9F5E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{074F8FA7-0AAF-4A54-84F1-08F631DD3F94}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{074F8FA7-0AAF-4A54-84F1-08F631DD3F94}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{074F8FA7-0AAF-4A54-84F1-08F631DD3F94}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{074F8FA7-0AAF-4A54-84F1-08F631DD3F94}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		Policies = $0
+		$0.TextStylePolicy = $1
+		$1.FileWidth = 132
+		$1.EolMarker = Unix
+		$1.scope = text/plain
 	EndGlobalSection
 EndGlobal

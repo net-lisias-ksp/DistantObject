@@ -1,9 +1,11 @@
-using System.Reflection;
+﻿using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("Distant Object Enhancement KSP Plugin")]
-[assembly: AssemblyDescription("KSP Plugin to render distant planets and spacecraft")]
+// Information about this assembly is defined by the following attributes. 
+// Change them to the values specific to your project.
+
+[assembly: AssemblyTitle("MeshEngine")]
+[assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany(DistantObject.LegalMamboJambo.Company)]
 [assembly: AssemblyProduct(DistantObject.LegalMamboJambo.Product)]
@@ -20,7 +22,7 @@ using System.Runtime.InteropServices;
 // Use KSPAssembly to allow other DLLs to make this DLL a dependency in a 
 // non-hacky way in KSP.  Format is (AssemblyProduct, major, minor), and it 
 // does not appear to have a hard requirement to match the assembly version. 
-[assembly: KSPAssembly("DistantObject", DistantObject.Version.major, KDistantObjectSPe.Version.minor)]
+[assembly: KSPAssembly("MeshEngine", DistantObject.Version.major, DistantObject.Version.minor)]
 
 // The following attributes are used to specify the signing key for the assembly,
 // if desired. See the Mono documentation for more information about signing.

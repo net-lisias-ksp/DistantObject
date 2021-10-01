@@ -5,7 +5,6 @@
 			© 2014-2019 MOARdV
 			© 2014 Rubber Ducky
 */
-
 using System;
 using System.Reflection;
 using UnityEngine;
@@ -119,7 +118,10 @@ namespace DistantObject
 
         //--- Internal values
         static private bool hasLoaded = false;
-        static private string configFileName = "GameData/DistantObject/PluginData/Settings.cfg";
+        static private readonly string CONFIG_PATHNAME = System.IO.Path.Combine(
+                System.IO.Path.GetDirectoryName(typeof(DistantObjectSettings).Assembly.Location)
+                , "PluginData/Settings.cfg"
+            );
 
         static public void LoadConfig()
         {
@@ -128,7 +130,7 @@ namespace DistantObject
                 return;
             }
 
-            ConfigNode settings = ConfigNode.Load(KSPUtil.ApplicationRootPath + configFileName);
+            ConfigNode settings = ConfigNode.Load(CONFIG_PATHNAME);
 
             if (settings != null)
             {
@@ -250,7 +252,7 @@ namespace DistantObject
             skyboxBrightness.AddValue("changeSkybox", SkyboxBrightness.changeSkybox);
             skyboxBrightness.AddValue("maxBrightness", SkyboxBrightness.maxBrightness);
 
-            settings.Save(KSPUtil.ApplicationRootPath + configFileName);
+            settings.Save(CONFIG_PATHNAME);
         }
     }
 }

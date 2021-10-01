@@ -5,7 +5,6 @@
 			© 2014-2019 MOARdV
 			© 2014 Rubber Ducky
 */
-
 using System;
 using UnityEngine;
 

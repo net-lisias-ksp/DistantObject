@@ -5,10 +5,8 @@
 			© 2014-2019 MOARdV
 			© 2014 Rubber Ducky
 */
-
-using System;
 using System.Collections.Generic;
-using System.Text;
+using KSPe.Annotations;
 using UnityEngine;
 
 namespace DistantObject
@@ -16,198 +14,26 @@ namespace DistantObject
     [KSPAddon(KSPAddon.Startup.Flight, false)]
     public class VesselDraw : MonoBehaviour
     {
-        private static Dictionary<Vessel, List<GameObject>> meshListLookup = new Dictionary<Vessel, List<GameObject>>();
-        private static Dictionary<GameObject, ProtoPartSnapshot> referencePart = new Dictionary<GameObject, ProtoPartSnapshot>();
-        private static Dictionary<Vessel, bool> vesselIsBuilt = new Dictionary<Vessel, bool>();
-        private static List<Vessel> watchList = new List<Vessel>();
-
-        private static Dictionary<string, string> partModelNameLookup = new Dictionary<string, string>();
-
+        private static readonly Dictionary<Vessel, Contract.MeshEngine.Interface> meshEngineForVessel = new Dictionary<Vessel, Contract.MeshEngine.Interface>();
+        private static readonly List<Vessel> watchList = new List<Vessel>();
         private static Vessel workingTarget = null;
         private int n = 0;
 
         public static void DrawVessel(Vessel shipToDraw)
         {
-            if (!vesselIsBuilt[shipToDraw])
-            {
-                Log.detail("DistObj: Drawing vessel {0}", shipToDraw.vesselName);
-
-                vesselIsBuilt[shipToDraw] = true;
-
-                List<ProtoPartSnapshot> partList = shipToDraw.protoVessel.protoPartSnapshots;
-                foreach (ProtoPartSnapshot a in partList)
-                {
-                    string partName;
-                    if (a.refTransformName.Contains(" "))
-                    {
-                        partName = a.partName.Substring(0, a.refTransformName.IndexOf(" "));
-                    }
-                    else
-                    {
-                        partName = a.partName;
-                    }
-
-                    AvailablePart avPart = PartLoader.getPartInfoByName(partName);
-
-                    if (a.modules.Find(n => n.moduleName == "LaunchClamp") != null)
-                    {
-                        if (DistantObjectSettings.debugMode)
-                        {
-                            Log.detail("Ignoring part {0}", partName);
-                        }
-
-                        continue;
-                    }
-
-                    if (!partModelNameLookup.ContainsKey(partName))
-                    {
-                        partName = partName.Replace('.', '_');
-                        if (!partModelNameLookup.ContainsKey(partName))
-                        {
-                            Log.detail("DistObj ERROR: Could not find config definition for {0}", partName);
-                            continue;
-                        }
-                    }
-
-                    GameObject clone = GameDatabase.Instance.GetModel(partModelNameLookup[partName]);
-                    if (clone == null)
-                    {
-                        Log.detail("DistObj ERROR: Could not load part model {0}", partModelNameLookup[partName]);
-                        continue;
-                    }
-                    GameObject cloneMesh = Mesh.Instantiate(clone) as GameObject;
-                    clone.DestroyGameObject();
-                    cloneMesh.transform.SetParent(shipToDraw.transform);
-                    cloneMesh.transform.localPosition = a.position;
-                    cloneMesh.transform.localRotation = a.rotation;
-
-                    //check if part has TweakScale
-                    ProtoPartModuleSnapshot tweakScale = a.modules.Find(n => n.moduleName == "TweakScale");
-                    if (tweakScale != null)
-                    {
-                        float defaultScale = float.Parse(tweakScale.moduleValues.GetValue("defaultScale"));
-                        float currentScale = float.Parse(tweakScale.moduleValues.GetValue("currentScale"));
-                        float ratio = currentScale / defaultScale;
-                        if (ratio > 0.001)
-                        {    
-                            cloneMesh.transform.localScale = new Vector3(ratio, ratio, ratio);
-                            Log.detail("localScale after {0}", cloneMesh.transform.localScale);
-                        }
-                    }
-
-                    VesselRanges.Situation situation = shipToDraw.vesselRanges.GetSituationRanges(shipToDraw.situation);
-                    if (Vector3d.Distance(cloneMesh.transform.position, FlightGlobals.ship_position) < situation.load)
-                    {
-                        Log.error("Tried to draw part {0} within rendering distance of active vessel!", partName);
-                        continue;
-                    }
-                    cloneMesh.SetActive(true);
-
-                    foreach (Collider col in cloneMesh.GetComponentsInChildren<Collider>())
-                    {
-                        col.enabled = false;
-                    }
-
-                    //check if part is a solar panel
-                    ProtoPartModuleSnapshot solarPanel = a.modules.Find(n => n.moduleName == "ModuleDeployableSolarPanel");
-                    if (solarPanel != null)
-                    {
-                        if (solarPanel.moduleValues.GetValue("stateString") == "EXTENDED")
-                        {
-                            //grab the animation name specified in the part cfg
-                            string animName = avPart.partPrefab.GetComponent<ModuleDeployableSolarPanel>().animationName;
-                            //grab the actual animation istelf
-                            var animator = avPart.partPrefab.FindModelAnimators();
-                            if (animator != null && animator.Length > 0)
-                            {
-                                AnimationClip animClip = animator[0].GetClip(animName);
-                                //grab the animation control module on the actual drawn model
-                                Animation anim = cloneMesh.GetComponentInChildren<Animation>();
-                                //copy the animation over to the new part!
-                                anim.AddClip(animClip, animName);
-                                anim[animName].enabled = true;
-                                anim[animName].normalizedTime = 1f;
-                            }
-                        }
-                    }
-
-                    //check if part is a light
-                    ProtoPartModuleSnapshot light = a.modules.Find(n => n.moduleName == "ModuleLight");
-                    if (light != null)
-                    {
-                        //Oddly enough the light already renders no matter what, so we'll kill the module if it's suppsed to be turned off
-                        if (light.moduleValues.GetValue("isOn") == "False")
-                        {
-                            Destroy(cloneMesh.GetComponentInChildren<Light>());
-                        }
-                    }
-
-                    //check if part is a landing gear
-                    ProtoPartModuleSnapshot landingGear = a.modules.Find(n => n.moduleName == "ModuleWheelDeployment");
-                    if (landingGear != null)
-                    {
-                        // MOARdV TODO: This wasn't really right to start with.
-                        // There is no field "savedAnimationTime".
-                        //if (landingGear.moduleValues.GetValue("savedAnimationTime") != "0")
-                        {
-                            //grab the animation name specified in the part cfg
-                            string animName = avPart.partPrefab.GetComponent<ModuleWheels.ModuleWheelDeployment>().animationStateName;
-                            var animator = avPart.partPrefab.FindModelAnimators();
-                            if (animator != null && animator.Length > 0)
-                            {
-                                //grab the actual animation istelf
-                                AnimationClip animClip = animator[0].GetClip(animName);
-                                //grab the animation control module on the actual drawn model
-                                Animation anim = cloneMesh.GetComponentInChildren<Animation>();
-                                //copy the animation over to the new part!
-                                anim.AddClip(animClip, animName);
-                                anim[animName].enabled = true;
-                                anim[animName].normalizedTime = 1f;
-                            }
-                        }
-                    }
-
-                    //check if part has a generic animation
-                    ProtoPartModuleSnapshot animGeneric = a.modules.Find(n => n.moduleName == "ModuleAnimateGeneric");
-                    if (animGeneric != null)
-                    {
-                        if (animGeneric.moduleValues.GetValue("animTime") != "0")
-                        {
-                            //grab the animation name specified in the part cfg
-                            string animName = avPart.partPrefab.GetComponent<ModuleAnimateGeneric>().animationName;
-                            var animator = avPart.partPrefab.FindModelAnimators();
-                            if (animator != null && animator.Length > 0)
-                            {
-                                //grab the actual animation istelf
-                                AnimationClip animClip = animator[0].GetClip(animName);
-                                //grab the animation control module on the actual drawn model
-                                Animation anim = cloneMesh.GetComponentInChildren<Animation>();
-                                //copy the animation over to the new part!
-                                anim.AddClip(animClip, animName);
-                                anim[animName].enabled = true;
-                                anim[animName].normalizedTime = 1f;
-                            }
-                        }
-                    }
-
-                    referencePart.Add(cloneMesh, a);
-                    meshListLookup[shipToDraw].Add(cloneMesh);
-                }
-            }
+            if (!meshEngineForVessel.ContainsKey(shipToDraw))
+                meshEngineForVessel[shipToDraw] = Contract.MeshEngine.CreateFor(shipToDraw);
+            meshEngineForVessel[shipToDraw].Draw();
         }
 
         public static void CheckErase(Vessel shipToErase)
         {
-            if (vesselIsBuilt[shipToErase])
+            if (meshEngineForVessel.ContainsKey(shipToErase))
             {
                 Log.detail("DistObj: Erasing vessel {0} (vessel unloaded)", shipToErase.vesselName);
 
-                foreach (GameObject mesh in meshListLookup[shipToErase])
-                {
-                    UnityEngine.GameObject.Destroy(mesh);
-                }
-                vesselIsBuilt[shipToErase] = false;
-                meshListLookup[shipToErase].Clear();
+                meshEngineForVessel[shipToErase].Destroy();
+                meshEngineForVessel.Remove(shipToErase);
                 watchList.Remove(shipToErase);
                 workingTarget = null;
             }
@@ -215,30 +41,18 @@ namespace DistantObject
 
         public static void VesselCheck(Vessel shipToCheck)
         {
+            if (!meshEngineForVessel.ContainsKey(shipToCheck))
+            {
+                watchList.Add(shipToCheck);
+                Log.detail("DistObj: Adding new definition for {0}", shipToCheck.vesselName);
+            }
             if (Vector3d.Distance(shipToCheck.GetWorldPos3D(), FlightGlobals.ship_position) < DistantObjectSettings.DistantVessel.maxDistance && !shipToCheck.loaded)
-            {
-                if (!vesselIsBuilt.ContainsKey(shipToCheck))
-                {
-                    meshListLookup.Add(shipToCheck, new List<GameObject>());
-                    vesselIsBuilt.Add(shipToCheck, false);
-                    watchList.Add(shipToCheck);
-                    Log.detail("DistObj: Adding new definition for {0}", shipToCheck.vesselName);
-                }
                 DrawVessel(shipToCheck);
-            }
             else
-            {
-                if (!vesselIsBuilt.ContainsKey(shipToCheck))
-                {
-                    meshListLookup.Add(shipToCheck, new List<GameObject>());
-                    vesselIsBuilt.Add(shipToCheck, false);
-                    watchList.Add(shipToCheck);
-                    Log.detail("DistObj: Adding new definition for {0}", shipToCheck.vesselName);
-                }
                 CheckErase(shipToCheck);
-            }
         }
 
+        [UsedImplicitly]
         private void FixedUpdate()
         {
             if (DistantObjectSettings.DistantVessel.renderVessels)
@@ -249,13 +63,10 @@ namespace DistantObject
                     {
                         Log.detail("DistObj: Erasing vessel {0} (vessel destroyed)", watchList[i].vesselName);
 
-                        if (vesselIsBuilt.ContainsKey(watchList[i]))
+                        if (meshEngineForVessel.ContainsKey(watchList[i]))
                         {
-                            vesselIsBuilt.Remove(watchList[i]);
-                        }
-                        if (meshListLookup.ContainsKey(watchList[i]))
-                        {
-                            meshListLookup.Remove(watchList[i]);
+                            meshEngineForVessel[watchList[i]].Destroy();
+                            meshEngineForVessel.Remove(watchList[i]);
                         }
                         watchList.Remove(watchList[i]);
                         workingTarget = null;
@@ -297,72 +108,20 @@ namespace DistantObject
             }
         }
 
-        public void Awake()
+        [UsedImplicitly]
+        private void Awake()
         {
             //Load settings
             DistantObjectSettings.LoadConfig();
 
-            meshListLookup.Clear();
-            referencePart.Clear();
-            vesselIsBuilt.Clear();
+            meshEngineForVessel.Clear();
             watchList.Clear();
-            partModelNameLookup.Clear();
 
-            if (DistantObjectSettings.DistantVessel.renderVessels)
-            {
-                bool sawErrors = false;
-                foreach (UrlDir.UrlConfig urlConfig in GameDatabase.Instance.GetConfigs("PART"))
-                {
-                    ConfigNode cfgNode = ConfigNode.Load(urlConfig.parent.fullPath);
-                    foreach (ConfigNode node in cfgNode.nodes)
-                    {
-                        if (node.GetValue("name") == urlConfig.name)
-                        {
-                            cfgNode = node;
-                            break;
-                        }
-                    }
-
-                    if (cfgNode.HasValue("name"))
-                    {
-                        string partName = cfgNode.GetValue("name");
-                        string url = urlConfig.parent.url.Substring(0, urlConfig.parent.url.LastIndexOf("/"));
-                        if (cfgNode.HasValue("mesh"))
-                        { 
-                            string modelName = cfgNode.GetValue("mesh");
-                            modelName = System.IO.Path.GetFileNameWithoutExtension(modelName);
-                            Log.detail("Addint {0} {1}/{2}", partName, url, modelName);
-                            partModelNameLookup.Add(partName, url + "/" + modelName);
-                        }
-                        else if (cfgNode.HasNode("MODEL"))
-                        {
-                            ConfigNode cn = cfgNode.GetNode("MODEL");
-                            string modelName = cn?.GetValue("model");
-                            Log.detail("Addint {0} {1}", partName, modelName);
-                            partModelNameLookup.Add(partName, modelName);
-                        }
-                        else
-                        {
-                            Log.trace("Could not find a model for part {0}.  Part will not render for VesselDraw.", partName);
-                            sawErrors = true;
-                        }
-                    }
-                    else
-                    {
-                        Log.trace("Could not find ConfigNode for part {0}.  Part will not render for VesselDraw.", urlConfig.name);
-                        sawErrors = true;
-                    }
-                }
-
-                Log.dbg("VesselDraw initialized");
-                if (sawErrors) Log.error("Some parts do not have ConfigNode entries in the game database.  Some distant vessels will be missing pieces.");
-            }
-            else
-            {
+            if (!DistantObjectSettings.DistantVessel.renderVessels)
                 Log.trace("VesselDraw disabled");
-            }
         }
 
+        [UsedImplicitly]
         private void OnDestroy()
         {
             Log.dbg("VesselDraw OnDestroy");

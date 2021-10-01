@@ -6,6 +6,7 @@
 			© 2014 Rubber Ducky
 */
 using System;
+
 namespace DistantObject
 {
 	public static class LegalMamboJambo
