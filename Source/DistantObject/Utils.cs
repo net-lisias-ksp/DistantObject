@@ -222,6 +222,7 @@ namespace DistantObject
             }
 
             hasLoaded = true;
+            Commit();
         }
 
         static public void SaveConfig()
@@ -252,7 +253,13 @@ namespace DistantObject
             skyboxBrightness.AddValue("changeSkybox", SkyboxBrightness.changeSkybox);
             skyboxBrightness.AddValue("maxBrightness", SkyboxBrightness.maxBrightness);
 
+            Commit();
             settings.Save(CONFIG_PATHNAME);
+        }
+
+        private static void Commit()
+        {
+            if (null != VesselDraw.Instance) VesselDraw.Instance.SetActiveTo(DistantVessel.renderVessels);
         }
     }
 }
