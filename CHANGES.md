@@ -1,5 +1,7 @@
 # Distant Object Enhancement (DOE) :: Changes
 
+* 2021-1001: 2.1.1.1 (LisiasT) for 1.4.5 <= KSP <= 1.12.2 **EXPERIMENTAL**
+	+ **Huge** performance improvements (at least for Potatoes like my rig).
 * 2021-1001: 2.1.1.0 (LisiasT) for 1.4.5 <= KSP <= 1.12.2 **EXPERIMENTAL**
 	+ Über refactoring
 		- Creating a shareable MeshEngine

@@ -39,7 +39,7 @@ Detailed installation instructions are now on its own file (see the [In a Hurry]
 
 ## License:
 
-This work is licensed under [CC-BY 4.0I](https://creativecommons.org/licenses/by/4.0/)
+Except when otherwise specified (check the files' header), this work is licensed under [CC-BY 4.0I](https://creativecommons.org/licenses/by/4.0/)
 
 * You are free to:
 	+ Share — copy and redistribute the material in any medium or format
