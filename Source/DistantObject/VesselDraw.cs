@@ -75,7 +75,7 @@ namespace DistantObject
 
                 if (DistantObjectSettings.DistantVessel.renderMode == 0)
                 {
-                    var target = FlightGlobals.fetch.VesselTarget;
+                    ITargetable target = FlightGlobals.fetch.VesselTarget;
                     if (target != null)
                     {
                         if (target.GetType().Name == "Vessel")

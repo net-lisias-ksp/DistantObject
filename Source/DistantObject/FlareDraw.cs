@@ -351,7 +351,7 @@ namespace DistantObject
 #endif
             // See if there are vessels that need to be removed from our live
             // list
-            foreach (var v in vesselFlares)
+            foreach (KeyValuePair<Vessel, VesselFlare> v in vesselFlares)
             {
                 if (v.Key.orbit.referenceBody != FlightGlobals.ActiveVessel.orbit.referenceBody || v.Key.loaded == true || !situations.Contains(v.Key.situation) || v.Value.referenceShip == null)
                 {
