@@ -106,6 +106,16 @@ namespace DistantObject
                     }
                 }
             }
+            else if (0 != meshEngineForVessel.Count)
+            {
+                workingTarget = null;
+                watchList.Clear();
+                foreach(KeyValuePair<Vessel, Contract.MeshEngine.Interface> tuple in meshEngineForVessel)
+                {
+                    Log.detail("Erasing vessel {0} (DOE deactivated)", tuple.Key.vesselName);
+                    tuple.Value.Destroy();
+                }
+            }
         }
 
         [UsedImplicitly]
