@@ -4,6 +4,8 @@ Distant Object Enhancement (DOE) is a visual enhancement mod that makes objects 
 
 Distant Object Enhancement /L is DOE under Lisias' management!
 
+**THIS IS AN EXPERIMENTAL BRANCH. DO NOT USE ON "PRODUCTION" INSTALLMENTS!!**
+
 
 ## In a Hurry
 
