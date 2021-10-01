@@ -48,47 +48,50 @@ namespace DistantObject.MeshEngine
 					continue;
 				}
 
-				if (!Database.partModel.ContainsKey(partName))
+				if (!Database.PartModelDB.ContainsKey(partName))
 				{
 					partName = partName.Replace('.', '_');
-					if (!Database.partModel.ContainsKey(partName))
+					if (!Database.PartModelDB.ContainsKey(partName))
 					{
-						Log.detail("DistObj ERROR: Could not find config definition for {0}", partName);
+						Log.error("Could not find config definition for {0}", partName);
 						continue;
 					}
 				}
 
-				GameObject clone = GameDatabase.Instance.GetModel(Database.partModel[partName]);
-				if (clone == null)
-				{
-					Log.detail("DistObj ERROR: Could not load part model {0}", Database.partModel[partName]);
-					continue;
+				foreach(string modelName in Database.PartModelDB.Get(partName))
+				{ 
+					GameObject clone = GameDatabase.Instance.GetModel(modelName);
+					if (clone == null)
+					{
+						Log.error("Could not load part model {0}", Database.PartModelDB.Get(modelName));
+						continue;
+					}
+
+					GameObject cloneMesh = Mesh.Instantiate(clone) as GameObject;
+					clone.DestroyGameObject();
+					cloneMesh.transform.SetParent(this.vessel.transform);
+					cloneMesh.transform.localPosition = a.position;
+					cloneMesh.transform.localRotation = a.rotation;
+
+					VesselRanges.Situation situation = this.vessel.vesselRanges.GetSituationRanges(this.vessel.situation);
+					if (Vector3d.Distance(cloneMesh.transform.position, FlightGlobals.ship_position) < situation.load)
+					{
+						Log.error("Tried to draw part {0} within rendering distance of active vessel!", partName);
+						continue;
+					}
+					cloneMesh.SetActive(true);
+
+					foreach (Collider col in cloneMesh.GetComponentsInChildren<Collider>())
+					{
+						col.enabled = false;
+					}
+
+					foreach (ProtoPartModuleSnapshot module in a.modules)
+						cloneMesh = DistantObject.MeshEngine.Contract.Module.Render(cloneMesh, a, avPart, module);
+
+					this.referencePart.Add(cloneMesh, a);
+					this.meshList.Add(cloneMesh);
 				}
-
-				GameObject cloneMesh = Mesh.Instantiate(clone) as GameObject;
-				clone.DestroyGameObject();
-				cloneMesh.transform.SetParent(this.vessel.transform);
-				cloneMesh.transform.localPosition = a.position;
-				cloneMesh.transform.localRotation = a.rotation;
-
-				VesselRanges.Situation situation = this.vessel.vesselRanges.GetSituationRanges(this.vessel.situation);
-				if (Vector3d.Distance(cloneMesh.transform.position, FlightGlobals.ship_position) < situation.load)
-				{
-					Log.error("Tried to draw part {0} within rendering distance of active vessel!", partName);
-					continue;
-				}
-				cloneMesh.SetActive(true);
-
-				foreach (Collider col in cloneMesh.GetComponentsInChildren<Collider>())
-				{
-					col.enabled = false;
-				}
-
-				foreach (ProtoPartModuleSnapshot module in a.modules)
-					cloneMesh = DistantObject.MeshEngine.Contract.Module.Render(cloneMesh, a, avPart, module);
-
-				this.referencePart.Add(cloneMesh, a);
-				this.meshList.Add(cloneMesh);
 			}
 		}
 
