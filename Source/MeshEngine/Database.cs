@@ -58,7 +58,7 @@ namespace DistantObject.MeshEngine
 
 					// There's no point on tryint to render the Prebuilt parts. Their meshes are not available.
 					if (partName.StartsWith("kerbalEVA")) continue;
-					if (partName.StartsWith("flag")) continue;
+					if (partName == "flag") continue;
 
 					string url = urlConfig.parent.url.Substring(0, urlConfig.parent.url.LastIndexOf("/"));
 					if (cfgNode.HasValue("mesh"))
