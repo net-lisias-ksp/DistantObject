@@ -31,6 +31,7 @@ namespace DistantObject
         private bool ignoreDebris = false;
         private bool changeSkybox = true;
         private float maxBrightness = 0.25f;
+        private bool debugMode = false;
         private bool useToolbar = true;
         private bool useAppLauncher = true;
         private bool onlyInSpaceCenter = false;
@@ -57,6 +58,7 @@ namespace DistantObject
             DistantObjectSettings.SkyboxBrightness.changeSkybox = changeSkybox;
             DistantObjectSettings.SkyboxBrightness.maxBrightness = maxBrightness;
 
+            DistantObjectSettings.debugMode = debugMode;
             DistantObjectSettings.useToolbar = useToolbar;
             DistantObjectSettings.useAppLauncher = useAppLauncher;
             DistantObjectSettings.onlyInSpaceCenter = onlyInSpaceCenter;
@@ -86,6 +88,7 @@ namespace DistantObject
             changeSkybox = DistantObjectSettings.SkyboxBrightness.changeSkybox;
             maxBrightness = DistantObjectSettings.SkyboxBrightness.maxBrightness;
 
+            debugMode = DistantObjectSettings.debugMode;
             useToolbar = DistantObjectSettings.useToolbar;
             useAppLauncher = DistantObjectSettings.useAppLauncher || !ToolbarManager.ToolbarAvailable;
             onlyInSpaceCenter = DistantObjectSettings.onlyInSpaceCenter;
@@ -321,10 +324,7 @@ namespace DistantObject
 
             //--- Misc. ------------------------------------------------------
             GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
-            { 
-                bool debugMode = GUILayout.Toggle(Log.level == KSPe.Util.Log.Level.DETAIL, "Debug Mode");
-                Log.level = (debugMode ? KSPe.Util.Log.Level.DETAIL : KSPe.Util.Log.Level.INFO);
-            }
+            debugMode = GUILayout.Toggle(debugMode, "Debug Mode");
             GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
             useAppLauncher = GUILayout.Toggle(useAppLauncher, "Use KSP AppLauncher (may require restart)");
@@ -399,6 +399,7 @@ namespace DistantObject
             changeSkybox = true;
             maxBrightness = 0.25f;
 
+            debugMode = false;
             useToolbar = true;
             useAppLauncher = true;
             onlyInSpaceCenter = true;
