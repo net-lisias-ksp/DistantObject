@@ -42,16 +42,7 @@ namespace DistantObject.MeshEngine
 			bool sawErrors = false;
 			foreach (UrlDir.UrlConfig urlConfig in GameDatabase.Instance.GetConfigs("PART"))
 			{
-				ConfigNode cfgNode = ConfigNode.Load(urlConfig.parent.fullPath);
-				foreach (ConfigNode node in cfgNode.nodes)
-				{
-					if (node.GetValue("name") == urlConfig.name)
-					{
-						cfgNode = node;
-						break;
-					}
-				}
-
+				ConfigNode cfgNode = urlConfig.config;
 				if (cfgNode.HasValue("name"))
 				{
 					string partName = cfgNode.GetValue("name");
@@ -65,8 +56,7 @@ namespace DistantObject.MeshEngine
 					{
 						string modelName = cfgNode.GetValue("mesh");
 						modelName = System.IO.Path.GetFileNameWithoutExtension(modelName);
-						Log.detail("Addint {0} {1}/{2}", partName, url, modelName);
-						PartModelDB.Add(partName, url + "/" + modelName);
+						AddModelToPart(partName, url + "/" + modelName);
 					}
 					else if (cfgNode.HasNode("MODEL"))
 					{
@@ -74,8 +64,7 @@ namespace DistantObject.MeshEngine
 						foreach (ConfigNode cn in cna)
 						{ 
 							string modelName = cn?.GetValue("model");
-							Log.detail("Addint {0} {1}", partName, modelName);
-							PartModelDB.Add(partName, modelName);
+							AddModelToPart(partName, modelName);
 						}
 					}
 					else
@@ -93,6 +82,12 @@ namespace DistantObject.MeshEngine
 
 			Log.dbg("VesselDraw initialized");
 			if (sawErrors) Log.error("Some parts do not have ConfigNode entries in the game database.  Some distant vessels will be missing pieces.");
+		}
+
+		private static void AddModelToPart(string partName, string modelPath)
+		{
+			Log.detail("Addint {0} {1}", partName, modelPath);
+			PartModelDB.Add(partName, modelPath);
 		}
 	}
 }
