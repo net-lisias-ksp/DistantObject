@@ -571,39 +571,22 @@ namespace DistantObject
         // Update the mousever name (if applicable)
         private void UpdateNameShown()
         {
+            if (!DistantObjectSettings.DistantFlare.showNames) return;
+
             showNameTransform = null;
-            if (DistantObjectSettings.DistantFlare.showNames)
             {
                 Ray mouseRay = FlightCamera.fetch.mainCamera.ScreenPointToRay(Input.mousePosition);
 
                 // Detect CelestialBody mouseovers
                 double bestRadius = -1.0;
-                foreach (BodyFlare bodyFlare in bodyFlares)
+                foreach (BodyFlare bodyFlare in bodyFlares) if (bodyFlare.body != FlightGlobals.ActiveVessel.mainBody)
                 {
-                    if (bodyFlare.body == FlightGlobals.ActiveVessel.mainBody)
-                    {
-                        continue;
-                    }
-
                     if (bodyFlare.meshRenderer.material.color.a > 0.0f)
                     {
                         Vector3d vectorToBody = bodyFlare.body.position - mouseRay.origin;
                         double mouseBodyAngle = Vector3d.Angle(vectorToBody, mouseRay.direction);
                         if (mouseBodyAngle < 1.0)
-                        {
-                            if (bodyFlare.body.Radius > bestRadius)
-                            {
-                                double distance = Vector3d.Distance(FlightCamera.fetch.mainCamera.transform.position, bodyFlare.body.position);
-                                double angularSize = Mathf.Rad2Deg * bodyFlare.body.Radius / distance;
-                                if (angularSize < 0.2)
-                                {
-                                    bestRadius = bodyFlare.body.Radius;
-                                    showNameTransform = bodyFlare.body.transform;
-                                    showNameString = KSP.Localization.Localizer.Format("<<1>>", bodyFlare.body.bodyDisplayName);
-                                    showNameColor = bodyFlare.color;
-                                }
-                            }
-                        }
+                            bestRadius = this.PrepareBodyName(bodyFlare, bestRadius);
                     }
                 }
 
@@ -618,26 +601,47 @@ namespace DistantObject
                             Vector3d vectorToVessel = vesselFlare.referenceShip.transform.position - mouseRay.origin;
                             double mouseVesselAngle = Vector3d.Angle(vectorToVessel, mouseRay.direction);
                             if (mouseVesselAngle < 1.0)
-                            {
-                                float brightness = vesselFlare.brightness;
-                                if (brightness > bestBrightness)
-                                {
-                                    bestBrightness = brightness;
-                                    showNameTransform = vesselFlare.referenceShip.transform;
-                                    showNameString = vesselFlare.referenceShip.vesselName;
-                                    showNameColor = Color.white;
-                                }
-                            }
+                                bestBrightness = this.PrepareVesselName(vesselFlare, bestBrightness);
                         }
                     }
                 }
             }
         }
 
-        //--------------------------------------------------------------------
-        // Awake()
-        // Load configs, set up the callback, 
-        private void Awake()
+		private double PrepareBodyName(BodyFlare bodyFlare, double bestRadius)
+		{
+			if (bodyFlare.body.Radius > bestRadius)
+			{
+				double distance = Vector3d.Distance(FlightCamera.fetch.mainCamera.transform.position, bodyFlare.body.position);
+				double angularSize = Mathf.Rad2Deg * bodyFlare.body.Radius / distance;
+				if (angularSize < 0.2)
+				{
+					showNameTransform = bodyFlare.body.transform;
+					showNameString = KSP.Localization.Localizer.Format("<<1>>", bodyFlare.body.bodyDisplayName);
+					showNameColor = bodyFlare.color;
+					return bodyFlare.body.Radius;
+				}
+			}
+			return bestRadius;
+		}
+
+		private float PrepareVesselName(VesselFlare vesselFlare, float bestBrightness)
+		{
+			float brightness = vesselFlare.brightness;
+			if (brightness > bestBrightness)
+			{
+				showNameTransform = vesselFlare.referenceShip.transform;
+				showNameString = vesselFlare.referenceShip.vesselName;
+				showNameColor = Color.white;
+				return brightness;
+			}
+			return bestBrightness;
+		}
+
+		//--------------------------------------------------------------------
+		// Awake()
+		// Load configs, set up the callback, 
+		private void Awake()
         {
             DistantObjectSettings.LoadConfig();
 
@@ -883,25 +887,48 @@ namespace DistantObject
         private GUIStyle flyoverTextStyle = new GUIStyle();
         private Rect flyoverTextPosition = new Rect(0.0f, 0.0f, 100.0f, 20.0f);
 
-        //--------------------------------------------------------------------
-        // OnGUI
-        // Draws flare names when enabled
-        private void OnGUI()
-        {
-            if (DistantObjectSettings.DistantFlare.flaresEnabled && DistantObjectSettings.DistantFlare.showNames && !MapView.MapIsEnabled && showNameTransform != null)
-            {
-                Vector3 screenPos = FlightCamera.fetch.mainCamera.WorldToScreenPoint(showNameTransform.position);
-                flyoverTextPosition.x = screenPos.x;
-                flyoverTextPosition.y = Screen.height - screenPos.y - 20.0f;
-                flyoverTextStyle.normal.textColor = showNameColor;
-                GUI.Label(flyoverTextPosition, showNameString, flyoverTextStyle);
-            }
-        }
+		//--------------------------------------------------------------------
+		// OnGUI
+		// Draws flare names when enabled
+		private void OnGUI()
+		{
+			if (MapView.MapIsEnabled || !(DistantObjectSettings.DistantFlare.flaresEnabled && DistantObjectSettings.DistantFlare.showNames)) return;
 
-        //--------------------------------------------------------------------
-        // SetFOV
-        // Provides an external plugin the opportunity to set the FoV.
-        public static void SetFOV(float FOV)
+			if (Input.GetMouseButton(1) && Event.current.modifiers == EventModifiers.Alt)
+			{
+				foreach (BodyFlare bodyFlare in bodyFlares) if (bodyFlare.body != FlightGlobals.ActiveVessel.mainBody)
+				{
+    				this.showNameTransform = null;
+					this.PrepareBodyName(bodyFlare, -1.0);
+					if (null != this.showNameTransform) this.ShowNameTransformPosition();
+				}
+
+				foreach (VesselFlare vesselFlare in vesselFlares.Values) if (vesselFlare.referenceShip != FlightGlobals.ActiveVessel)
+				{
+    				this.showNameTransform = null;
+					this.PrepareVesselName(vesselFlare, 0.01f);
+					if (null != this.showNameTransform) this.ShowNameTransformPosition();
+				}
+
+				this.showNameTransform = null;
+			}
+			else if (null != showNameTransform)
+				this.ShowNameTransformPosition();
+		}
+
+		private void ShowNameTransformPosition()
+		{
+			Vector3 screenPos = FlightCamera.fetch.mainCamera.WorldToScreenPoint(showNameTransform.position);
+			flyoverTextPosition.x = screenPos.x;
+			flyoverTextPosition.y = Screen.height - screenPos.y - 20.0f;
+			flyoverTextStyle.normal.textColor = showNameColor;
+			GUI.Label(flyoverTextPosition, showNameString, flyoverTextStyle);
+		}
+
+		//--------------------------------------------------------------------
+		// SetFOV
+		// Provides an external plugin the opportunity to set the FoV.
+		public static void SetFOV(float FOV)
         {
             if (ExternalControl)
             {
