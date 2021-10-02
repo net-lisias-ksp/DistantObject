@@ -80,13 +80,13 @@ namespace DistantObject.MeshEngine
 					}
 					else
 					{
-						Log.trace("Could not find a model for part {0}.  Part will not render for VesselDraw.", partName);
+						Log.error("Could not find a model for part {0}.  Part will not render for VesselDraw.", partName);
 						sawErrors = true;
 					}
 				}
 				else
 				{
-					Log.trace("Could not find ConfigNode for part {0}.  Part will not render for VesselDraw.", urlConfig.name);
+					Log.error("Could not find ConfigNode for part {0}.  Part will not render for VesselDraw.", urlConfig.name);
 					sawErrors = true;
 				}
 			}

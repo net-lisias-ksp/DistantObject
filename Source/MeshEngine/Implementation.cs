@@ -61,11 +61,7 @@ namespace DistantObject.MeshEngine
 				foreach(string modelName in Database.PartModelDB.Get(partName))
 				{ 
 					GameObject clone = GameDatabase.Instance.GetModel(modelName);
-					if (clone == null)
-					{
-						Log.error("Could not load part model {0}", Database.PartModelDB.Get(modelName));
-						continue;
-					}
+					if (clone == null) continue;
 
 					GameObject cloneMesh = Mesh.Instantiate(clone) as GameObject;
 					clone.DestroyGameObject();
