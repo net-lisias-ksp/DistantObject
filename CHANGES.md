@@ -1,5 +1,11 @@
 # Distant Object Enhancement (DOE) :: Changes
 
+* 2021-1002: 2.1.1.3 (LisiasT) for 1.4.5 <= KSP <= 1.12.2 **EXPERIMENTAL**
+	+ New Render Mode to allow smooth transitions at the cost of memory.
+		- Vessels are not removed from the cache, unless destroyed
+		- My use **a lot** of memory!
+	+ Option to show the names of all visible bodies
+		- Use <ALT> while RightClicking the mouse.
 * 2021-1002: 2.1.1.2 (LisiasT) for 1.4.5 <= KSP <= 1.12.2 **EXPERIMENTAL**
 	+ Preventing some borderline situations to throw Exceptions on the MeshEngine
 	+ Some more performance fixes
