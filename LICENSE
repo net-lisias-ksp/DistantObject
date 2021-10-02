@@ -1,0 +1,13 @@
+Distant Object Enhancement /L licensing terms.
+
+* Distant Object Enhancement /L is double licensed as follows:
+    + SKL 1.0 https://ksp.lisias.net/SKL-1_0.txt
+    + GPL 2.0 https://www.gnu.org/licenses/gpl-2.0.txt
+    + If by some reason the GPL would be invalid for you, rest assured that you still retain the right to Use the Work under SKL 1.0.
+* KSPe.Light is licensed to DOE /L under [SKL 1.0]
+    + KSPe.Light is a lightweight version of KSPe, a component from KSP API Extensions /L.
+    + This library is not meant to general public consumption. Use KSP API Extensions at https://github.com/net-lisias-ksp/KSPAPIExtensions/releases instead.
+* Distant Object Enhancement Continued (DOEc) and previous are licensed under CC-BY 4.0 International
+    + available at https://github.com/net-lisias-ksp/DistantObject/tree/Source/CC-BY-40i
+
+© 2021 LisiasT
