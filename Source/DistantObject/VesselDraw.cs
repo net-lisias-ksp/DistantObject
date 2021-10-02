@@ -5,7 +5,6 @@
 			© 2014-2019 MOARdV
 			© 2014 Rubber Ducky
 */
-using System;
 using System.Collections.Generic;
 using KSPe.Annotations;
 using UnityEngine;
@@ -19,18 +18,10 @@ namespace DistantObject
 		internal static VesselDraw Instance => INSTANCE;
 
         private static readonly Dictionary<Vessel, Contract.MeshEngine.Interface> meshEngineForVessel = new Dictionary<Vessel, Contract.MeshEngine.Interface>();
-        private static readonly List<Vessel> watchList = new List<Vessel>();
         private static Vessel workingTarget = null;	// Used on Rendering Mode 0 (Only Targeted as rendered)
         private int n = 0;
 
-        public static void DrawVessel(Vessel shipToDraw)
-        {
-            if (!meshEngineForVessel.ContainsKey(shipToDraw))
-                meshEngineForVessel[shipToDraw] = Contract.MeshEngine.CreateFor(shipToDraw);
-            meshEngineForVessel[shipToDraw].Draw();
-        }
-
-        public static void CheckErase(Vessel shipToErase)
+        private static void CheckErase(Vessel shipToErase)
         {
             if (meshEngineForVessel.ContainsKey(shipToErase))
             {
@@ -38,23 +29,24 @@ namespace DistantObject
 
                 meshEngineForVessel[shipToErase].Destroy();
                 meshEngineForVessel.Remove(shipToErase);
-                watchList.Remove(shipToErase);
                 workingTarget = null;
             }
         }
 
-        public static void VesselCheck(Vessel shipToCheck)
-        {
-            if (!meshEngineForVessel.ContainsKey(shipToCheck))
-            {
-                watchList.Add(shipToCheck);
-                Log.detail("Adding new definition for {0}", shipToCheck.vesselName);
-            }
-            if (Vector3d.Distance(shipToCheck.GetWorldPos3D(), FlightGlobals.ship_position) < DistantObjectSettings.DistantVessel.maxDistance && !shipToCheck.loaded)
-                DrawVessel(shipToCheck);
-            else
-                CheckErase(shipToCheck);
-        }
+		private static void VesselCheck(Vessel vessel)
+		{
+			if (Vector3d.Distance(vessel.GetWorldPos3D(), FlightGlobals.ship_position) < DistantObjectSettings.DistantVessel.maxDistance && !vessel.loaded)
+			{
+				if (!meshEngineForVessel.ContainsKey(vessel))
+				{
+					Log.detail("Adding new definition for {0}", vessel.vesselName);
+					meshEngineForVessel[vessel] = Contract.MeshEngine.CreateFor(vessel);
+				}
+				meshEngineForVessel[vessel].Draw();
+			}
+			else
+				CheckErase(vessel);
+		}
 
 		[UsedImplicitly]
 		private void Update()
@@ -99,7 +91,6 @@ namespace DistantObject
             DistantObjectSettings.LoadConfig();
 
             meshEngineForVessel.Clear();
-            watchList.Clear();
         }
 
 		[UsedImplicitly]
@@ -138,7 +129,6 @@ namespace DistantObject
 			Log.trace("VesselDraw disabled");
 			this.enabled = false;
 			workingTarget = null;
-			watchList.Clear();
 			foreach (KeyValuePair<Vessel, Contract.MeshEngine.Interface> tuple in meshEngineForVessel)
 			{
 				Log.detail("Erasing vessel {0} (DOE deactivated)", tuple.Key.vesselName);
@@ -156,18 +146,13 @@ namespace DistantObject
 		{
 			Log.dbg("Vessel {0} was Destroyed.", vessel.vesselName);
 
-			if(watchList.Contains(vessel))
+			if (meshEngineForVessel.ContainsKey(vessel))
 			{
-				Log.detail("Erasing vessel {0} (vessel destroyed)", vessel.vesselName);
-
-				if (meshEngineForVessel.ContainsKey(vessel))
-				{
-					meshEngineForVessel[vessel].Destroy();
-					meshEngineForVessel.Remove(vessel);
-				}
-				watchList.Remove(vessel);
-				workingTarget = null;
+				Log.detail("Erasing vessel {0} from the engine.", vessel.vesselName);
+				meshEngineForVessel[vessel].Destroy();
+				meshEngineForVessel.Remove(vessel);
 			}
+			workingTarget = null;
 		}
 	}
 }
