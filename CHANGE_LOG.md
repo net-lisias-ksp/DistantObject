@@ -1,5 +1,9 @@
 # Distant Object Enhancement (DOE) :: Change Log
 
+* 2021-1002: 2.1.1.2 (LisiasT) for 1.4.5 <= KSP <= 1.12.2 **EXPERIMENTAL**
+	+ Preventing some borderline situations to throw Exceptions on the MeshEngine
+	+ Some more performance fixes
+	+ Small mistakes corrected
 * 2021-1001: 2.1.1.1 (LisiasT) for 1.4.5 <= KSP <= 1.12.2 **EXPERIMENTAL**
 	+ **Huge** performance improvements (at least for Potatoes like my rig).
 * 2021-1001: 2.1.1.0 (LisiasT) for 1.4.5 <= KSP <= 1.12.2 **EXPERIMENTAL**
