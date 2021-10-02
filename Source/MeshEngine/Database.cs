@@ -56,7 +56,7 @@ namespace DistantObject.MeshEngine
 					{
 						string modelName = cfgNode.GetValue("mesh");
 						modelName = System.IO.Path.GetFileNameWithoutExtension(modelName);
-						AddModelToPart(partName, url + "/" + modelName);
+						sawErrors = AddModelToPart(partName, url + "/" + modelName);
 					}
 					else if (cfgNode.HasNode("MODEL"))
 					{
@@ -64,7 +64,7 @@ namespace DistantObject.MeshEngine
 						foreach (ConfigNode cn in cna)
 						{ 
 							string modelName = cn?.GetValue("model");
-							AddModelToPart(partName, modelName);
+							sawErrors = AddModelToPart(partName, modelName);
 						}
 					}
 					else
@@ -84,10 +84,16 @@ namespace DistantObject.MeshEngine
 			if (sawErrors) Log.error("Some parts do not have ConfigNode entries in the game database.  Some distant vessels will be missing pieces.");
 		}
 
-		private static void AddModelToPart(string partName, string modelPath)
-		{
-			Log.detail("Addint {0} {1}", partName, modelPath);
-			PartModelDB.Add(partName, modelPath);
+		private static bool AddModelToPart(string partName, string modelPath)
+		{	// TODO: Find the right place to initialise this thing, so we don't need to check on the drawing phase!
+			//if (null != GameDatabase.Instance.GetModel(modelPath))
+			//{ 
+				Log.detail("Addint {0} {1}", partName, modelPath);
+				PartModelDB.Add(partName, modelPath);
+				return false;
+			//}
+			//Log.error("Could not find the mesh for the model {0} from part {1}.  Part will not render for VesselDraw.", modelPath, partName);
+			//return true;
 		}
 	}
 }

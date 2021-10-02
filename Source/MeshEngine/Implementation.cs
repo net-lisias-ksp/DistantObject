@@ -61,7 +61,7 @@ namespace DistantObject.MeshEngine
 				foreach(string modelName in Database.PartModelDB.Get(partName))
 				{ 
 					GameObject clone = GameDatabase.Instance.GetModel(modelName);
-					if (clone == null) continue;
+					if (null == clone) continue; // Silently fails. Checking and logging errors at this place is a fatal performance killer!
 
 					GameObject cloneMesh = Mesh.Instantiate(clone) as GameObject;
 					clone.DestroyGameObject();
