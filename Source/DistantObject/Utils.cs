@@ -97,11 +97,19 @@ namespace DistantObject
             static public float debrisBrightness = 0.15f;
         }
 
+        public enum ERenderMode
+        {
+            RenderTargetOnly = 0,
+            RenderAll = 1,
+            RenderAllDontForget = 2,
+            SIZE = 3
+        }
+
         public struct DistantVessel
         {
             static public bool renderVessels = false;
             static public float maxDistance = 750000.0f;
-            static public int renderMode = 1;
+            static public ERenderMode renderMode = ERenderMode.RenderTargetOnly;
             static public bool ignoreDebris = false;
         }
 
@@ -198,7 +206,7 @@ namespace DistantObject
                     }
                     if (distantVessel.HasValue("renderMode"))
                     {
-                        DistantVessel.renderMode = int.Parse(distantVessel.GetValue("renderMode"));
+                        DistantVessel.renderMode = (ERenderMode)int.Parse(distantVessel.GetValue("renderMode"));
                     }
                     if (distantVessel.HasValue("ignoreDebris"))
                     {
@@ -246,7 +254,7 @@ namespace DistantObject
             ConfigNode distantVessel = settings.AddNode("DistantVessel");
             distantVessel.AddValue("renderVessels", DistantVessel.renderVessels);
             distantVessel.AddValue("maxDistance", DistantVessel.maxDistance);
-            distantVessel.AddValue("renderMode", DistantVessel.renderMode);
+            distantVessel.AddValue("renderMode", (int)DistantVessel.renderMode);
             distantVessel.AddValue("ignoreDebris", DistantVessel.ignoreDebris);
 
             ConfigNode skyboxBrightness = settings.AddNode("SkyboxBrightness");

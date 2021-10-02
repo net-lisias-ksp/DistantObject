@@ -27,7 +27,7 @@ namespace DistantObject
         private bool showNames = false;
         private bool renderVessels = false;
         private float maxDistance = 750000f;
-        private int renderMode = 1;
+        private DistantObjectSettings.ERenderMode renderMode = DistantObjectSettings.ERenderMode.RenderTargetOnly;
         private bool ignoreDebris = false;
         private bool changeSkybox = true;
         private float maxBrightness = 0.25f;
@@ -186,6 +186,13 @@ namespace DistantObject
             }
         }
 
+        private readonly string[] RENDER_MODE_LABEL =
+        {
+            "Render Targeted Vessel Only",
+            "Render All Unloaded Vessels",
+            "Render All Unloaded Vessels Smoother (memory intensive!)",
+        };
+
         private void mainGUI(int windowID)
         {
             GUIStyle styleWindow = new GUIStyle(GUI.skin.window);
@@ -275,20 +282,14 @@ namespace DistantObject
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
-                if (GUILayout.Button(renderMode == 0 ? "Render All Unloaded Vessels" : "Render Targeted Vessel Only"))
+                GUILayout.Label(RENDER_MODE_LABEL[(int)renderMode]);
+                if (GUILayout.Button("Change"))
                 {
-                    if (renderMode == 0)
-                    {
-                        renderMode = 1;
-                    }
-                    else
-                    {
-                        renderMode = 0;
-                    }
+                    renderMode = (DistantObjectSettings.ERenderMode)((int)(++renderMode)%(int)DistantObjectSettings.ERenderMode.SIZE);
                 }
                 GUILayout.EndHorizontal();
 
-                if (renderMode == 1)
+                if (renderMode > DistantObjectSettings.ERenderMode.RenderTargetOnly)
                 {
                     GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
                     ignoreDebris = GUILayout.Toggle(ignoreDebris, "Ignore Debris");
@@ -393,7 +394,7 @@ namespace DistantObject
 
             renderVessels = false;
             maxDistance = 750000f;
-            renderMode = 1;
+            renderMode = DistantObjectSettings.ERenderMode.RenderTargetOnly;
             ignoreDebris = false;
 
             changeSkybox = true;
