@@ -58,11 +58,23 @@ namespace DistantObject.MeshEngine
 					}
 				}
 
+#if REMOVE_FAILED_PARTS
+				List<string> dejects = new List<string>();
+#endif
 				foreach(string modelName in Database.PartModelDB.Get(partName))
 				{ 
 					GameObject clone = GameDatabase.Instance.GetModel(modelName);
-					if (null == clone) continue; // Silently fails. Checking and logging errors at this place is a fatal performance killer!
 
+					// FIXME: I want to get rid of this whole check. See Database.Init for details.
+#if REMOVE_FAILED_PARTS
+					if (null == clone)
+					{
+						Log.error("Mesh for model {0} not found! Part {1} will be rendered incomplete (if at all). Removing it from the pool", modelName, partName);
+						dejects.Add(modelName);
+					}
+#else
+					if (null == clone) continue; // Silently fails. Checking and logging errors at this place is a fatal performance killer!
+#endif
 					GameObject cloneMesh = Mesh.Instantiate(clone) as GameObject;
 					clone.DestroyGameObject();
 					cloneMesh.transform.SetParent(this.vessel.transform);
@@ -88,6 +100,9 @@ namespace DistantObject.MeshEngine
 					this.referencePart.Add(cloneMesh, a);
 					this.meshList.Add(cloneMesh);
 				}
+#if REMOVE_FAILED_PARTS
+				Database.PartModelDB.Remove(dejects);
+#endif
 			}
 		}
 

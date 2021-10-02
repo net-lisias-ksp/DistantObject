@@ -35,6 +35,13 @@ namespace DistantObject.MeshEngine
 				if (DB.ContainsKey(partName)) return DB[partName];
 				return EMPTY;
 			}
+
+			internal static void Remove(List<string> dejects)
+			{
+				if (0 == dejects.Count) return;
+				foreach (string s in dejects)
+					DB.Remove(s);
+			}
 		}
 
 		internal static void Init()
@@ -85,7 +92,13 @@ namespace DistantObject.MeshEngine
 		}
 
 		private static bool AddModelToPart(string partName, string modelPath)
-		{	// TODO: Find the right place to initialise this thing, so we don't need to check on the drawing phase!
+		{	// TODO: Find the right place to initialise this thing, so we don't need to check sanityon the drawing phase!
+			//
+			// The problem is that by callig this on some Awake or Start a lot of parts that would work on the
+			// MeshEngine Update bork on the spot - and I just don't understand why.
+			//
+			// I need to find why **some** GameDatabase.Instance.GetModel borks on Awake/Start and works on Update!
+
 			//if (null != GameDatabase.Instance.GetModel(modelPath))
 			//{ 
 				Log.detail("Addint {0} {1}", partName, modelPath);
