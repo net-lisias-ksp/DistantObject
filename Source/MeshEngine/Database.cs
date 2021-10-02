@@ -29,9 +29,11 @@ namespace DistantObject.MeshEngine
 				return DB.ContainsKey(partName);
 			}
 
+			private static readonly List<string> EMPTY = new List<string>();
 			internal static IEnumerable<string> Get(string partName)
 			{
-				return DB[partName];
+				if (DB.ContainsKey(partName)) return DB[partName];
+				return EMPTY;
 			}
 		}
 
