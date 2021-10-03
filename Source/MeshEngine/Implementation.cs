@@ -79,6 +79,14 @@ namespace DistantObject.MeshEngine
 
 				if (!this.meshes.ContainsKey(a)) continue; // Fails silently.
 
+				// NOTE: This code (until the foreach ProtoPartModuleSnapshot below) could be successfuly migreted into the BuildMeshDatabase,
+				// as once a vessel goes into Rails (i.e., it's "unloaded" and became available only as a ProtoVessel), it's not expected
+				// that it will change - it's the whole reason we put things into Rails! :)
+				//
+				// However, some add'ons as PersistantRotation, effectivelly changes the ProtoVessel over time!
+				//
+				// So I decided to keep doing these things here (what theoretically is "wasteful") in order to be compatible with
+				// these guys.
 				GameObject cloneMesh = this.meshes[a];
 
 				cloneMesh.transform.SetParent(this.vessel.transform);
@@ -91,13 +99,14 @@ namespace DistantObject.MeshEngine
 					Log.error("Tried to draw part {0} within rendering distance of active vessel!", partName);
 					continue;
 				}
-				cloneMesh.SetActive(true);
 
+				cloneMesh.SetActive(true);
 				foreach (Collider col in cloneMesh.GetComponentsInChildren<Collider>())
 				{
 					col.enabled = false;
 				}
 
+				// This is the foreach I mentioned on the NOTE above.
 				foreach (ProtoPartModuleSnapshot module in a.modules)
 					cloneMesh = DistantObject.MeshEngine.Contract.Module.Render(cloneMesh, a, PartLoader.getPartInfoByName(partName), module);
 			}
