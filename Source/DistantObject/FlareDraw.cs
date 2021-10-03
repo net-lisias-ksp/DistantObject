@@ -7,6 +7,7 @@
 */
 using System;
 using System.Collections.Generic;
+using KSPe.Annotations;
 using UnityEngine;
 
 //#define SHOW_FIXEDUPDATE_TIMING
@@ -136,6 +137,9 @@ namespace DistantObject
     [KSPAddon(KSPAddon.Startup.Flight, false)]
     public class FlareDraw : MonoBehaviour
     {
+		private static FlareDraw INSTANCE = null;
+		internal static FlareDraw Instance => INSTANCE;
+
         enum FlareType
         {
             Celestial,
@@ -143,8 +147,8 @@ namespace DistantObject
             Debris
         }
 
-        private List<BodyFlare> bodyFlares = new List<BodyFlare>();
-        private Dictionary<Vessel, VesselFlare> vesselFlares = new Dictionary<Vessel, VesselFlare>();
+        private readonly List<BodyFlare> bodyFlares = new List<BodyFlare>();
+        private readonly Dictionary<Vessel, VesselFlare> vesselFlares = new Dictionary<Vessel, VesselFlare>();
 
         private static float camFOV;
         private Vector3d camPos;
@@ -160,7 +164,7 @@ namespace DistantObject
 
         private static bool ExternalControl = false;
 
-        private List<Vessel.Situations> situations = new List<Vessel.Situations>();
+        private readonly List<Vessel.Situations> situations = new List<Vessel.Situations>();
 
         private string showNameString = null;
         private Transform showNameTransform = null;
@@ -443,7 +447,7 @@ namespace DistantObject
                 }
             }
 
-            if (targetSize < (camFOV / 500.0f) && isVisible && !MapView.MapIsEnabled)
+            if (targetSize < (camFOV / 500.0f) && isVisible)
             {
                 // Work in HSL space.  That allows us to do dimming of color
                 // by adjusting the lightness value without any hue shifting.
@@ -465,6 +469,7 @@ namespace DistantObject
                 //alpha = 1.0f;
                 //dimming = 1.0f;
                 flareMR.material.color = ResourceUtilities.HSL2RGB(hslColor.x, hslColor.y, hslColor.z * dimming, alpha);
+                flareMesh.SetActive(DistantObjectSettings.SkyboxBrightness.changeSkybox);
             }
             else
             {
@@ -528,7 +533,7 @@ namespace DistantObject
 
             float sunDimFactor = 1.0f;
             float skyboxDimFactor;
-            if (DistantObjectSettings.SkyboxBrightness.changeSkybox == true)
+            if (DistantObjectSettings.SkyboxBrightness.changeSkybox)
             {
                 // Apply fudge factors here so people who turn off the skybox don't turn off the flares, too.
                 // And avoid a divide-by-zero.
@@ -641,8 +646,11 @@ namespace DistantObject
 		//--------------------------------------------------------------------
 		// Awake()
 		// Load configs, set up the callback, 
-		private void Awake()
+        [UsedImplicitly]
+        private void Awake()
         {
+            INSTANCE = this;
+
             DistantObjectSettings.LoadConfig();
 
             Dictionary<string, Vessel.Situations> namedSituations = new Dictionary<string, Vessel.Situations> {
@@ -668,15 +676,6 @@ namespace DistantObject
                 {
                     Log.trace("Unable to find situation '{0}' in my known situations atlas", sit);
                 }
-            }
-
-            if (DistantObjectSettings.DistantFlare.flaresEnabled)
-            {
-                Log.trace("FlareDraw enabled");
-            }
-            else
-            {
-                Log.trace("FlareDraw disabled");
             }
 
             sunRadiusSquared = FlightGlobals.Bodies[0].Radius * FlightGlobals.Bodies[0].Radius;
@@ -737,6 +736,8 @@ namespace DistantObject
                 b.scaledRenderer = null;
             }
             bodyFlares.Clear();
+
+            INSTANCE = null;
         }
 
         //--------------------------------------------------------------------
@@ -756,45 +757,29 @@ namespace DistantObject
         //--------------------------------------------------------------------
         // FixedUpdate
         // Update visible vessel list
-        public void FixedUpdate()
+        [UsedImplicitly]
+        private void FixedUpdate()
         {
-            // Log.dbg("FixedUpdate"); Really bad idea...
+            if (MapView.MapIsEnabled) return;
 
-            if (DistantObjectSettings.DistantFlare.flaresEnabled && !MapView.MapIsEnabled)
+            if (bigHammer)
             {
-                if (bigHammer)
+                foreach (VesselFlare v in vesselFlares.Values)
                 {
-                    foreach (VesselFlare v in vesselFlares.Values)
-                    {
-                        DestroyVesselFlare(v);
-                    }
-                    vesselFlares.Clear();
-                    bigHammer = false;
+                    DestroyVesselFlare(v);
                 }
+                vesselFlares.Clear();
+                bigHammer = false;
+            }
 
-                // MOARdV TODO: Make this callback-based instead of polling
-                GenerateVesselFlares();
-            }
-            else if (!DistantObjectSettings.DistantFlare.flaresEnabled)
-            {
-                if (vesselFlares.Count > 0)
-                {
-                    foreach (VesselFlare v in vesselFlares.Values)
-                    {
-                        DestroyVesselFlare(v);
-                    }
-                    vesselFlares.Clear();
-                }
-                for (int i = 0; i < bodyFlares.Count; ++i)
-                {
-                    bodyFlares[i].bodyMesh.SetActive(false);
-                }
-            }
+            // MOARdV TODO: Make this callback-based instead of polling
+            GenerateVesselFlares();
         }
 
         //--------------------------------------------------------------------
         // Update
         // Update flare positions and visibility
+        [UsedImplicitly]
         private void Update()
         {
             showNameTransform = null;
@@ -890,6 +875,7 @@ namespace DistantObject
 		//--------------------------------------------------------------------
 		// OnGUI
 		// Draws flare names when enabled
+		[UsedImplicitly]
 		private void OnGUI()
 		{
 			if (MapView.MapIsEnabled || !(DistantObjectSettings.DistantFlare.flaresEnabled && DistantObjectSettings.DistantFlare.showNames)) return;
@@ -944,5 +930,32 @@ namespace DistantObject
         {
             ExternalControl = Control;
         }
-    }
+
+		internal void SetActiveTo(bool changeSkybox)
+		{
+			if (changeSkybox)
+				this.Activate();
+			else
+				this.Deactivate();
+		}
+
+		private void Activate()
+		{
+			Log.trace("FlareDraw enabled");
+			this.enabled = true;
+		}
+
+		private void Deactivate()
+		{
+			Log.trace("FlareDraw disabled");
+			this.enabled = false;
+
+			foreach (VesselFlare v in this.vesselFlares.Values)
+				DestroyVesselFlare(v);
+			this.vesselFlares.Clear();
+
+			for (int i = 0;i < bodyFlares.Count;++i)
+				bodyFlares[i].bodyMesh.SetActive(false);
+		}
+	}
 }

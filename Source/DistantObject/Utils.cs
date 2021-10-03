@@ -269,6 +269,8 @@ namespace DistantObject
         {
              Log.level = (debugMode ? KSPe.Util.Log.Level.DETAIL : KSPe.Util.Log.Level.INFO);
              if (null != VesselDraw.Instance) VesselDraw.Instance.SetActiveTo(DistantVessel.renderVessels);
+             if (null != FlareDraw.Instance) FlareDraw.Instance.SetActiveTo(DistantFlare.flaresEnabled);
+             if (null != DarkenSky.Instance) FlareDraw.Instance.SetActiveTo(SkyboxBrightness.changeSkybox);
         }
     }
 }
