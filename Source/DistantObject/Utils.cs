@@ -133,10 +133,7 @@ namespace DistantObject
 
         static public void LoadConfig()
         {
-            if (hasLoaded)
-            {
-                return;
-            }
+            if (hasLoaded) return;
 
             ConfigNode settings = ConfigNode.Load(CONFIG_PATHNAME);
 
@@ -265,7 +262,7 @@ namespace DistantObject
             settings.Save(CONFIG_PATHNAME);
         }
 
-        private static void Commit()
+        internal static void Commit()
         {
              Log.level = (debugMode ? KSPe.Util.Log.Level.DETAIL : KSPe.Util.Log.Level.INFO);
              if (null != VesselDraw.Instance) VesselDraw.Instance.SetActiveTo(DistantVessel.renderVessels);

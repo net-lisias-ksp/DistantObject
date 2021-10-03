@@ -124,6 +124,7 @@ namespace DistantObject
 			GameEvents.onVesselCreate.Add(this.OnVesselCreate);
 			GameEvents.onVesselChange.Add(this.OnVesselChange);
 			GameEvents.onVesselDestroy.Add(this.OnVesselDestroy);
+			DistantObjectSettings.Commit();
 		}
 
 		[UsedImplicitly]
@@ -139,6 +140,9 @@ namespace DistantObject
 
 		internal void SetActiveTo(bool renderVessels)
 		{
+			this.enabled = false;	// Guarantee this is disabled on every scene but the intended ones!
+			if (!HighLogic.LoadedSceneIsFlight) return;
+
 			if (renderVessels)
 				this.Activate();
 			else

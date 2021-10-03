@@ -6,6 +6,7 @@
 			© 2014 Rubber Ducky
 */
 using System;
+using KSPe.Annotations;
 using UnityEngine;
 
 namespace DistantObject
@@ -21,7 +22,8 @@ namespace DistantObject
         private float glareFadeLimit = 0.0f;
         private bool restorableGalaxyCube = false;
 
-        public void Awake()
+		[UsedImplicitly]
+        private void Awake()
         {
             INSTANCE = this;
 
@@ -43,7 +45,14 @@ namespace DistantObject
             }
         }
 
-        public void OnDestroy()
+		[UsedImplicitly]
+		private void Start()
+		{
+			DistantObjectSettings.Commit();
+		}
+
+		[UsedImplicitly]
+		private void OnDestroy()
         {
             if (GalaxyCubeControl.Instance != null && restorableGalaxyCube)
             {
@@ -55,7 +64,8 @@ namespace DistantObject
             INSTANCE = null;
         }
 
-        public void Update()
+		[UsedImplicitly]
+        private void Update()
         {
             if (null == GalaxyCubeControl.Instance || MapView.MapIsEnabled) return;
 

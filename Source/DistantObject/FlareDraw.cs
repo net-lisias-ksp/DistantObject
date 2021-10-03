@@ -686,6 +686,12 @@ namespace DistantObject
             GameEvents.onVesselWillDestroy.Add(RemoveVesselFlare);
         }
 
+		[UsedImplicitly]
+		private void Start()
+		{
+			DistantObjectSettings.Commit();
+		}
+
         //--------------------------------------------------------------------
         // DestroyVesselFlare
         // Destroy the things associated with a VesselFlare
