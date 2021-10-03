@@ -15,32 +15,23 @@ namespace DistantObject.MeshEngine
 	public class Implementation : DistantObject.Contract.MeshEngine.Interface
 	{
 		private readonly Vessel vessel;
-		private readonly List<GameObject> meshList = new List<GameObject>();
-		private Dictionary<GameObject, ProtoPartSnapshot> referencePart = new Dictionary<GameObject, ProtoPartSnapshot>();
+		private readonly Dictionary<ProtoPartSnapshot, GameObject> meshes = new Dictionary<ProtoPartSnapshot, GameObject>();
 
 		public Implementation(Vessel vessel)
 		{
 			this.vessel = vessel;
+			this.BuildMeshDatabase();
 		}
 
-		void DistantObject.Contract.MeshEngine.Interface.Draw()
+		private void BuildMeshDatabase()
 		{
-			Log.detail("Drawing vessel {0}", this.vessel.vesselName);
-
 			List<ProtoPartSnapshot> partList = this.vessel.protoVessel.protoPartSnapshots;
 			foreach (ProtoPartSnapshot a in partList)
-			{
-				string partName;
-				if (a.refTransformName.Contains(" "))
-				{
-					partName = a.partName.Substring(0, a.refTransformName.IndexOf(" "));
-				}
-				else
-				{
-					partName = a.partName;
-				}
-
-				AvailablePart avPart = PartLoader.getPartInfoByName(partName);
+			{ 
+				string partName = (a.refTransformName.Contains(" "))
+						? a.partName.Substring(0, a.refTransformName.IndexOf(" "))
+						: a.partName
+					;
 
 				if (MeshEngine.Contract.Module.IsBlackListed(a))
 				{
@@ -58,61 +49,65 @@ namespace DistantObject.MeshEngine
 					}
 				}
 
-#if REMOVE_FAILED_PARTS
-				List<string> dejects = new List<string>();
-#endif
 				foreach(string modelName in Database.PartModelDB.Get(partName))
 				{ 
 					GameObject clone = GameDatabase.Instance.GetModel(modelName);
 
-					// FIXME: I want to get rid of this whole check. See Database.Init for details.
-#if REMOVE_FAILED_PARTS
 					if (null == clone)
 					{
-						Log.error("Mesh for model {0} not found! Part {1} will be rendered incomplete (if at all). Removing it from the pool", modelName, partName);
-						dejects.Add(modelName);
-					}
-#else
-					if (null == clone) continue; // Silently fails. Checking and logging errors at this place is a fatal performance killer!
-#endif
-					GameObject cloneMesh = Mesh.Instantiate(clone) as GameObject;
-					clone.DestroyGameObject();
-					cloneMesh.transform.SetParent(this.vessel.transform);
-					cloneMesh.transform.localPosition = a.position;
-					cloneMesh.transform.localRotation = a.rotation;
-
-					VesselRanges.Situation situation = this.vessel.vesselRanges.GetSituationRanges(this.vessel.situation);
-					if (Vector3d.Distance(cloneMesh.transform.position, FlightGlobals.ship_position) < situation.load)
-					{
-						Log.error("Tried to draw part {0} within rendering distance of active vessel!", partName);
+						Log.error("Failed to load model {0} for part {1} from vessel {2}! Vessel will not be rendered as expected!", modelName, a.partName, this.vessel.vesselName);
 						continue;
 					}
-					cloneMesh.SetActive(true);
 
-					foreach (Collider col in cloneMesh.GetComponentsInChildren<Collider>())
-					{
-						col.enabled = false;
-					}
-
-					foreach (ProtoPartModuleSnapshot module in a.modules)
-						cloneMesh = DistantObject.MeshEngine.Contract.Module.Render(cloneMesh, a, avPart, module);
-
-					this.referencePart.Add(cloneMesh, a);
-					this.meshList.Add(cloneMesh);
+					GameObject cloneMesh = Mesh.Instantiate(clone) as GameObject;
+					clone.DestroyGameObject();
+					this.meshes[a] = cloneMesh;
 				}
-#if REMOVE_FAILED_PARTS
-				Database.PartModelDB.Remove(dejects);
-#endif
+			}
+		}
+
+		void DistantObject.Contract.MeshEngine.Interface.Draw()
+		{
+			Log.detail("Drawing vessel {0}", this.vessel.vesselName);
+
+			foreach (ProtoPartSnapshot a in this.vessel.protoVessel.protoPartSnapshots)
+			{ 
+				string partName = (a.refTransformName.Contains(" "))
+						? a.partName.Substring(0, a.refTransformName.IndexOf(" "))
+						: a.partName
+					;
+
+				if (!this.meshes.ContainsKey(a)) continue; // Fails silently.
+
+				GameObject cloneMesh = this.meshes[a];
+
+				cloneMesh.transform.SetParent(this.vessel.transform);
+				cloneMesh.transform.localPosition = a.position;
+				cloneMesh.transform.localRotation = a.rotation;
+
+				VesselRanges.Situation situation = this.vessel.vesselRanges.GetSituationRanges(this.vessel.situation);
+				if (Vector3d.Distance(cloneMesh.transform.position, FlightGlobals.ship_position) < situation.load)
+				{
+					Log.error("Tried to draw part {0} within rendering distance of active vessel!", partName);
+					continue;
+				}
+				cloneMesh.SetActive(true);
+
+				foreach (Collider col in cloneMesh.GetComponentsInChildren<Collider>())
+				{
+					col.enabled = false;
+				}
+
+				foreach (ProtoPartModuleSnapshot module in a.modules)
+					cloneMesh = DistantObject.MeshEngine.Contract.Module.Render(cloneMesh, a, PartLoader.getPartInfoByName(partName), module);
 			}
 		}
 
 		void DistantObject.Contract.MeshEngine.Interface.Destroy()
 		{
-			this.referencePart.Clear();
-
-			foreach (GameObject mesh in this.meshList)
-				UnityEngine.GameObject.Destroy(mesh);
-			this.meshList.Clear();
+			foreach (KeyValuePair<ProtoPartSnapshot, GameObject> mesh in this.meshes)
+				UnityEngine.GameObject.Destroy(mesh.Value);
+			this.meshes.Clear();
 		}
 	}
 }
