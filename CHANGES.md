@@ -1,5 +1,9 @@
 # Distant Object Enhancement (DOE) :: Changes
 
+* 2021-1003: 2.1.1.4 (LisiasT) for 1.4.5 <= KSP <= 1.12.2 **EXPERIMENTAL**
+	+ Some adjustments while handling the vessel's Life Cycle on VesselDraw.
+	+ CPU savings on DarkenSky and FlareDraw.
+	+ Another **huge** performance enhancement on VesselDraw! :)
 * 2021-1002: 2.1.1.3 (LisiasT) for 1.4.5 <= KSP <= 1.12.2 **EXPERIMENTAL**
 	+ New Render Mode to allow smooth transitions at the cost of memory.
 		- Vessels are not removed from the cache, unless destroyed
