@@ -29,7 +29,7 @@ namespace DistantObject
 
                 meshEngineForVessel[shipToErase].Destroy();
                 meshEngineForVessel.Remove(shipToErase);
-                workingTarget = null;
+                workingTarget = shipToErase == workingTarget ? null : workingTarget;
             }
         }
 
@@ -59,6 +59,27 @@ namespace DistantObject
 			{
 				Log.detail("Adding new definition for {0}", vessel.vesselName);
 				meshEngineForVessel[vessel] = Contract.MeshEngine.CreateFor(vessel);
+			}
+		}
+
+		private void DoHouseKeeping()
+		{
+			switch(DistantObjectSettings.DistantVessel.renderMode)
+			{
+				case DistantObjectSettings.ERenderMode.RenderTargetOnly:
+				{
+					List<Vessel> list = new List<Vessel>(meshEngineForVessel.Keys);
+					foreach (Vessel i in list) if (i != workingTarget)
+						CheckErase(i);
+				}  break;
+
+				case DistantObjectSettings.ERenderMode.RenderAll:
+				{
+					List<Vessel> list = new List<Vessel>(meshEngineForVessel.Keys);
+					foreach (Vessel i in list) CheckErase(i);
+				} break;
+
+				default: break;
 			}
 		}
 
@@ -156,6 +177,7 @@ namespace DistantObject
 		{
 			Log.trace("VesselDraw enabled");
 			this.enabled = true;
+			this.DoHouseKeeping();
 		}
 
 		private void Deactivate()
