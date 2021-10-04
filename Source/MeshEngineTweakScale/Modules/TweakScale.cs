@@ -34,7 +34,7 @@ namespace DistantObject.MeshEngine.TweakScale.Modules
 			if (ratio > 0.001)
 			{
 				mesh.transform.localScale = new Vector3(ratio, ratio, ratio);
-				Log.detail("localScale after {0}", mesh.transform.localScale);
+				Log.dbg("localScale after {0}", mesh.transform.localScale);
 			}
 			return mesh;
 		}
