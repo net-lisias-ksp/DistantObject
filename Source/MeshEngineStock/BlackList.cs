@@ -14,7 +14,7 @@ namespace DistantObject.MeshEngine.Stock
 {
 	public class BlackList:DistantObject.MeshEngine.Contract.Module.IBlackList
 	{
-		private static readonly string[] BLACKLIST = { "LaunchClamp" };
+		private static readonly string[] BLACKLIST = { "LaunchClamp", "CModuleLinkedMesh" };
 
 		public BlackList()
 		{
