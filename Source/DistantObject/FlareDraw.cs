@@ -674,7 +674,7 @@ namespace DistantObject
                 }
                 else
                 {
-                    Log.trace("Unable to find situation '{0}' in my known situations atlas", sit);
+                    Log.warn("Unable to find situation '{0}' in my known situations atlas", sit);
                 }
             }
 
