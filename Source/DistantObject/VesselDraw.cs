@@ -83,6 +83,11 @@ namespace DistantObject
 			}
 		}
 
+		private static readonly List<VesselType> FORBIDDEN_VESSELS = new List<VesselType>(new VesselType[]{
+				VesselType.EVA,
+				VesselType.Flag,
+				VesselType.SpaceObject
+			});
 		[UsedImplicitly]
 		private void Update()
 		{
@@ -93,7 +98,7 @@ namespace DistantObject
 					ITargetable target = FlightGlobals.fetch.VesselTarget;
 					if (target != null)
 					{
-						if (target.GetType().Name == "Vessel")
+						if (target is Vessel && !FORBIDDEN_VESSELS.Contains(((Vessel)target).vesselType))
 						{
 							workingTarget = FlightGlobals.Vessels.Find(index => index.GetName() == target.GetName());
 							CheckDraw(workingTarget);
@@ -111,7 +116,7 @@ namespace DistantObject
 					if (n >= FlightGlobals.Vessels.Count)
 						n = 0;
 
-					if (FlightGlobals.Vessels[n].vesselType != VesselType.Flag && FlightGlobals.Vessels[n].vesselType != VesselType.EVA && (FlightGlobals.Vessels[n].vesselType != VesselType.Debris || !DistantObjectSettings.DistantVessel.ignoreDebris))
+					if (!FORBIDDEN_VESSELS.Contains(FlightGlobals.Vessels[n].vesselType) && !(FlightGlobals.Vessels[n].vesselType is VesselType.Debris  && DistantObjectSettings.DistantVessel.ignoreDebris))
 						CheckDraw(FlightGlobals.Vessels[n]);
 				} break;
 
@@ -121,7 +126,7 @@ namespace DistantObject
 					if (n >= FlightGlobals.Vessels.Count)
 						n = 0;
 
-					if (FlightGlobals.Vessels[n].vesselType != VesselType.Flag && FlightGlobals.Vessels[n].vesselType != VesselType.EVA && (FlightGlobals.Vessels[n].vesselType != VesselType.Debris || !DistantObjectSettings.DistantVessel.ignoreDebris))
+					if (!FORBIDDEN_VESSELS.Contains(FlightGlobals.Vessels[n].vesselType) && !(FlightGlobals.Vessels[n].vesselType is VesselType.Debris  && DistantObjectSettings.DistantVessel.ignoreDebris))
 						LazyCheckDraw(FlightGlobals.Vessels[n]);
 				} break;
 			}
