@@ -1,6 +1,14 @@
 # Distant Object Enhancement :: Known Issues
 
-* Parts from ReStock does not work properly. yet. :)
+* Not all parts work. Yet. :)
+	+ Procedural Parts
+		+ Fairings
+	+ ReStock's Probodobodyne Stayputnik (the Stock one works)
+		- Probably more. 
+* The following parts are **not** supported at all:
+	+ LaunchClamps
+	+ Fuel Ducts
+	+ Strut Connectors 
 
 - - -
 
