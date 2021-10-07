@@ -28,6 +28,15 @@ check() {
 		echo "Absent Release and Debug dirs. Nothingn to do! Rebuild!"
 		exit -2
 	fi
+
+	if [ ! -f "./GameData/$TARGETBINDIR/KSPe.Light.DOE.dll" ] ; then
+		if [ ! -f "${LIB}/KSPe.Light.DOE.dll" ] ; then
+			echo "KSPe.Light.DOE not found!!! Aborting."
+			read line
+			exit -1
+		fi
+		cp "${LIB}/KSPe.Light.DOE.dll" "./GameData/$TARGETBINDIR/"
+	fi
 }
 
 deploy() {
