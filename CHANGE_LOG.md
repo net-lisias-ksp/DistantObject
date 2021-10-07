@@ -1,5 +1,18 @@
 # Distant Object Enhancement (DOE) :: Change Log
 
+* 2021-1007: 2.1.1.5 (LisiasT) for 1.4.5 <= KSP <= 1.12.2
+	+ Über refactoring
+		- Creating a shareable MeshEngine
+		- Decoupling PartModule details from the Engine
+			- Now it can be extended by creating new DLLs, instead of recompiling the thing!
+	+ Adding (preliminary) support for ReStock
+		- To tell you the true, just a more thoughtfully implementation of Stock MODEL sections.   
+	+ Significant performance enhancements and CPU savings
+	+ New Render Mode to allow smooth transitions at the cost of memory.
+		- Vessels are not removed from the cache, unless destroyed
+		- May use **a lot** of memory!
+	+ Option to show the names of all visible bodies
+		- Use \<ALT\> while RightClicking the mouse.
 * 2021-1003: 2.1.1.4 (LisiasT) for 1.4.5 <= KSP <= 1.12.2 **EXPERIMENTAL**
 	+ Some adjustments while handling the vessel's Life Cycle on VesselDraw.
 	+ CPU savings on DarkenSky and FlareDraw.
@@ -7,9 +20,9 @@
 * 2021-1002: 2.1.1.3 (LisiasT) for 1.4.5 <= KSP <= 1.12.2 **EXPERIMENTAL**
 	+ New Render Mode to allow smooth transitions at the cost of memory.
 		- Vessels are not removed from the cache, unless destroyed
-		- My use **a lot** of memory!
+		- May use **a lot** of memory!
 	+ Option to show the names of all visible bodies
-		- Use <ALT> while RightClicking the mouse.
+		- Use \<ALT\> while RightClicking the mouse.
 * 2021-1002: 2.1.1.2 (LisiasT) for 1.4.5 <= KSP <= 1.12.2 **EXPERIMENTAL**
 	+ Preventing some borderline situations to throw Exceptions on the MeshEngine
 	+ Some more performance fixes
