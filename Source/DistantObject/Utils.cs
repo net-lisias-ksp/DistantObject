@@ -266,10 +266,14 @@ namespace DistantObject
 
         internal static void Commit()
         {
-             Log.level = (debugMode ? KSPe.Util.Log.Level.DETAIL : KSPe.Util.Log.Level.INFO);
-             if (null != VesselDraw.Instance) VesselDraw.Instance.SetActiveTo(DistantVessel.renderVessels);
-             if (null != FlareDraw.Instance) FlareDraw.Instance.SetActiveTo(DistantFlare.flaresEnabled);
-             if (null != DarkenSky.Instance) FlareDraw.Instance.SetActiveTo(SkyboxBrightness.changeSkybox);
+            #if !DEBUG
+            Log.level = (debugMode ? KSPe.Util.Log.Level.DETAIL : KSPe.Util.Log.Level.INFO);
+            #else
+            Log.level = KSPe.Util.Log.Level.TRACE;
+            #endif
+            if (null != VesselDraw.Instance) VesselDraw.Instance.SetActiveTo(DistantVessel.renderVessels);
+            if (null != FlareDraw.Instance) FlareDraw.Instance.SetActiveTo(DistantFlare.flaresEnabled);
+            if (null != DarkenSky.Instance) FlareDraw.Instance.SetActiveTo(SkyboxBrightness.changeSkybox);
         }
     }
 }

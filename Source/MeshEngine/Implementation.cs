@@ -35,7 +35,7 @@ namespace DistantObject.MeshEngine
 
 				if (MeshEngine.Contract.Module.IsBlackListed(a))
 				{
-					Log.detail("Ignoring part {0}", partName);
+					Log.trace("Ignoring part {0}", partName);
 					continue;
 				}
 
@@ -55,7 +55,7 @@ namespace DistantObject.MeshEngine
 
 					if (null == clone)
 					{
-						Log.error("Failed to load model {0} for part {1} from vessel {2}! Vessel will not be rendered as expected!", modelName, a.partName, this.vessel.vesselName);
+						Log.warn("Failed to load model {0} for part {1} from vessel {2}! Vessel will not be rendered as expected!", modelName, a.partName, this.vessel.vesselName);
 						continue;
 					}
 
@@ -68,7 +68,7 @@ namespace DistantObject.MeshEngine
 
 		void DistantObject.Contract.MeshEngine.Interface.Draw()
 		{
-			Log.detail("Drawing vessel {0}", this.vessel.vesselName);
+			Log.trace("Drawing vessel {0}", this.vessel.vesselName);
 
 			foreach (ProtoPartSnapshot a in this.vessel.protoVessel.protoPartSnapshots)
 			{ 

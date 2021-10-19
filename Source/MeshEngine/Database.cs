@@ -101,7 +101,7 @@ namespace DistantObject.MeshEngine
 
 			//if (null != GameDatabase.Instance.GetModel(modelPath))
 			//{ 
-				Log.detail("Addint {0} {1}", partName, modelPath);
+				Log.trace("Addint {0} {1}", partName, modelPath);
 				PartModelDB.Add(partName, modelPath);
 				return false;
 			//}
