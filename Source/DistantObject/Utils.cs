@@ -139,6 +139,23 @@ namespace DistantObject
 
             if (settings != null)
             {
+                if (settings.HasValue("debugMode"))
+                {
+                    debugMode = bool.Parse(settings.GetValue("debugMode"));
+                }
+                if (settings.HasValue("useToolbar"))
+                {
+                    useToolbar = bool.Parse(settings.GetValue("useToolbar"));
+                }
+                if (settings.HasValue("useAppLauncher"))
+                {
+                    useAppLauncher = bool.Parse(settings.GetValue("useAppLauncher"));
+                }
+                if (settings.HasValue("onlyInSpaceCenter"))
+                {
+                    onlyInSpaceCenter = bool.Parse(settings.GetValue("onlyInSpaceCenter"));
+                }
+
                 if (settings.HasNode("DistantFlare"))
                 {
                     ConfigNode distantFlare = settings.GetNode("DistantFlare");
@@ -170,22 +187,6 @@ namespace DistantObject
                     if (distantFlare.HasValue("showNames"))
                     {
                         DistantFlare.showNames = bool.Parse(distantFlare.GetValue("showNames"));
-                    }
-                    if (distantFlare.HasValue("debugMode"))
-                    {
-                        debugMode = bool.Parse(distantFlare.GetValue("debugMode"));
-                    }
-                    if (distantFlare.HasValue("useToolbar"))
-                    {
-                        useToolbar = bool.Parse(distantFlare.GetValue("useToolbar"));
-                    }
-                    if (distantFlare.HasValue("useAppLauncher"))
-                    {
-                        useAppLauncher = bool.Parse(distantFlare.GetValue("useAppLauncher"));
-                    }
-                    if (distantFlare.HasValue("onlyInSpaceCenter"))
-                    {
-                        onlyInSpaceCenter = bool.Parse(distantFlare.GetValue("onlyInSpaceCenter"));
                     }
                 }
 
@@ -234,6 +235,11 @@ namespace DistantObject
         {
             ConfigNode settings = new ConfigNode();
 
+            settings.AddValue("debugMode", debugMode);
+            settings.AddValue("useToolbar", useToolbar);
+            settings.AddValue("useAppLauncher", useAppLauncher);
+            settings.AddValue("onlyInSpaceCenter", onlyInSpaceCenter);
+
             ConfigNode distantFlare = settings.AddNode("DistantFlare");
             distantFlare.AddValue("flaresEnabled", DistantFlare.flaresEnabled);
             distantFlare.AddValue("flareSaturation", DistantFlare.flareSaturation);
@@ -243,10 +249,6 @@ namespace DistantObject
             distantFlare.AddValue("debrisBrightness", DistantFlare.debrisBrightness);
             distantFlare.AddValue("situations", DistantFlare.situations);
             distantFlare.AddValue("showNames", DistantFlare.showNames);
-            distantFlare.AddValue("debugMode", debugMode);
-            distantFlare.AddValue("useToolbar", useToolbar);
-            distantFlare.AddValue("useAppLauncher", useAppLauncher);
-            distantFlare.AddValue("onlyInSpaceCenter", onlyInSpaceCenter);
 
             ConfigNode distantVessel = settings.AddNode("DistantVessel");
             distantVessel.AddValue("renderVessels", DistantVessel.renderVessels);
