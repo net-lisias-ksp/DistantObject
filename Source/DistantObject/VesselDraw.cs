@@ -189,6 +189,7 @@ namespace DistantObject
 		private void Awake()
 		{
 			INSTANCE = this;
+			Object.DontDestroyOnLoad(this);
 		}
 
 		[UsedImplicitly]
