@@ -9,9 +9,9 @@ using UnityEngine;
 
 namespace DistantObject
 {
-    public partial class SettingsGui : MonoBehaviour
+    partial class SettingsGui : MonoBehaviour
     {
-        public static IButton buttonDOSettings = null;
+        private static IButton buttonDOSettings = null;
 
         private void toolbarButton()
         {

@@ -8,78 +8,42 @@
 using System.Collections.Generic;
 using KSPe.Annotations;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace DistantObject
 {
-    [KSPAddon(KSPAddon.Startup.MainMenu, true)]
-    public class VesselDraw : MonoBehaviour
-    {
-		private static VesselDraw INSTANCE = null;
-		internal static VesselDraw Instance => INSTANCE;
+	[KSPAddon(KSPAddon.Startup.Flight, false)]
+	public class VesselDraw:MonoBehaviour
+	{
+		private static VesselDraw __instance = null;
+		internal static VesselDraw Instance => __instance;
 
-        private static readonly Dictionary<Vessel, Contract.MeshEngine.Interface> meshEngineForVessel = new Dictionary<Vessel, Contract.MeshEngine.Interface>();
-        private static Vessel workingTarget = null;	// Used on Rendering Mode 0 (Only Targeted as rendered)
-        private int n = 0;
+		private Vessel workingTarget = null; // Used on Rendering Mode 0 (Only Targeted as rendered)
+		private int n = 0;  // Clever trick to allow checking one vessel per frame! Nice!
 
-        private static void CheckErase(Vessel shipToErase)
-        {
-            if (meshEngineForVessel.ContainsKey(shipToErase))
-            {
-                Log.detail("Erasing vessel {0} (vessel unloaded)", shipToErase.vesselName);
+		private void CheckErase(Vessel shipToErase)
+		{
+			this.workingTarget = shipToErase == this.workingTarget ? null : this.workingTarget;
+			VesselDrawDatabase.Instance.CheckErase(shipToErase);
+		}
 
-                meshEngineForVessel[shipToErase].Destroy();
-                meshEngineForVessel.Remove(shipToErase);
-                workingTarget = shipToErase == workingTarget ? null : workingTarget;
-            }
-        }
-
-		private static void CheckDraw(Vessel vessel)
+		private void CheckDraw(Vessel vessel)
 		{
 			if (!vessel.loaded && Vector3d.Distance(vessel.GetWorldPos3D(), FlightGlobals.ship_position) < DistantObjectSettings.DistantVessel.maxDistance)
 			{
-				VesselCheck(vessel);
-				meshEngineForVessel[vessel].Draw();
+				VesselDrawDatabase.Instance.VesselCheck(vessel);
+				VesselDrawDatabase.Instance.Draw(vessel);
 			}
 			else
-				CheckErase(vessel);
+				this.CheckErase(vessel);
 		}
 
-		private static void LazyCheckDraw(Vessel vessel)
+		private void LazyCheckDraw(Vessel vessel)
 		{
-			VesselCheck(vessel);
+			VesselDrawDatabase.Instance.VesselCheck(vessel);
 			if (!vessel.loaded && Vector3d.Distance(vessel.GetWorldPos3D(), FlightGlobals.ship_position) < DistantObjectSettings.DistantVessel.maxDistance)
 			{
-				meshEngineForVessel[vessel].Draw();
-			}
-		}
-
-		private static void VesselCheck(Vessel vessel)
-		{
-			if (!meshEngineForVessel.ContainsKey(vessel))
-			{
-				Log.detail("Adding new definition for {0}", vessel.vesselName);
-				meshEngineForVessel[vessel] = Contract.MeshEngine.CreateFor(vessel);
-			}
-		}
-
-		private void DoHouseKeeping()
-		{
-			switch(DistantObjectSettings.DistantVessel.renderMode)
-			{
-				case DistantObjectSettings.ERenderMode.RenderTargetOnly:
-				{
-					List<Vessel> list = new List<Vessel>(meshEngineForVessel.Keys);
-					foreach (Vessel i in list) if (i != workingTarget)
-						CheckErase(i);
-				}  break;
-
-				case DistantObjectSettings.ERenderMode.RenderAll:
-				{
-					List<Vessel> list = new List<Vessel>(meshEngineForVessel.Keys);
-					foreach (Vessel i in list) CheckErase(i);
-				} break;
-
-				default: break;
+				VesselDrawDatabase.Instance.Draw(vessel);
 			}
 		}
 
@@ -100,58 +64,52 @@ namespace DistantObject
 					{
 						if (target is Vessel && !FORBIDDEN_VESSELS.Contains(((Vessel)target).vesselType))
 						{
-							workingTarget = FlightGlobals.Vessels.Find(index => index.GetName() == target.GetName());
-							CheckDraw(workingTarget);
+							this.workingTarget = FlightGlobals.Vessels.Find(index => index.GetName() == target.GetName());
+							this.CheckDraw(workingTarget);
 						}
-						else if (workingTarget != null)
-							CheckErase(workingTarget);
+						else if (null != this.workingTarget)
+							this.CheckErase(workingTarget);
 					}
-					else if (workingTarget != null)
-						CheckErase(workingTarget);
+					else if (null != this.workingTarget)
+						this.CheckErase(workingTarget);
 				} break;
 
 				case DistantObjectSettings.ERenderMode.RenderAll:
 				{
-					n += 1;
-					if (n >= FlightGlobals.Vessels.Count)
-						n = 0;
-
-					if (!FORBIDDEN_VESSELS.Contains(FlightGlobals.Vessels[n].vesselType) && !(FlightGlobals.Vessels[n].vesselType is VesselType.Debris  && DistantObjectSettings.DistantVessel.ignoreDebris))
-						CheckDraw(FlightGlobals.Vessels[n]);
+					n = ++n % FlightGlobals.Vessels.Count;
+					if (!FORBIDDEN_VESSELS.Contains(FlightGlobals.Vessels[n].vesselType) && !(FlightGlobals.Vessels[n].vesselType is VesselType.Debris && DistantObjectSettings.DistantVessel.ignoreDebris))
+						this.CheckDraw(FlightGlobals.Vessels[n]);
 				} break;
 
 				case DistantObjectSettings.ERenderMode.RenderAllDontForget:
 				{
-					n += 1;
-					if (n >= FlightGlobals.Vessels.Count)
-						n = 0;
-
-					if (!FORBIDDEN_VESSELS.Contains(FlightGlobals.Vessels[n].vesselType) && !(FlightGlobals.Vessels[n].vesselType is VesselType.Debris  && DistantObjectSettings.DistantVessel.ignoreDebris))
-						LazyCheckDraw(FlightGlobals.Vessels[n]);
+					n = ++n % FlightGlobals.Vessels.Count;
+					if (!FORBIDDEN_VESSELS.Contains(FlightGlobals.Vessels[n].vesselType) && !(FlightGlobals.Vessels[n].vesselType is VesselType.Debris && DistantObjectSettings.DistantVessel.ignoreDebris))
+						this.LazyCheckDraw(FlightGlobals.Vessels[n]);
 				} break;
 			}
 		}
 
-        [UsedImplicitly]
-        private void Awake()
-        {
-            INSTANCE = this;
+		[UsedImplicitly]
+		private void Awake()
+		{
+			__instance = this;
 
-            //Load settings
-            DistantObjectSettings.LoadConfig();
-
-            meshEngineForVessel.Clear();
-            Object.DontDestroyOnLoad(this);
-        }
+			//Load settings
+			DistantObjectSettings.LoadConfig();
+		}
 
 		[UsedImplicitly]
 		private void Start()
 		{
-			GameEvents.onGameSceneSwitchRequested.Add(this.OnGameSceneSwitchRequested);
+			Log.dbg("VesselDraw Start");
 			GameEvents.onVesselChange.Add(this.OnVesselChange);
 			GameEvents.onVesselGoOnRails.Add(this.OnVesselGoOnRails);
 			GameEvents.onVesselGoOffRails.Add(this.OnVesselGoOffRails);
 			GameEvents.onVesselWillDestroy.Add(this.OnVesselWillDestroy);
+
+			VesselDrawDatabase.Instance.DoHouseKeeping(workingTarget);
+
 			DistantObjectSettings.Commit();
 		}
 
@@ -163,71 +121,159 @@ namespace DistantObject
 			GameEvents.onVesselGoOffRails.Add(this.OnVesselGoOffRails);
 			GameEvents.onVesselGoOnRails.Add(this.OnVesselGoOnRails);
 			GameEvents.onVesselChange.Remove(this.OnVesselChange);
-			GameEvents.onGameSceneSwitchRequested.Remove(this.OnGameSceneSwitchRequested);
-			INSTANCE = null;
+			__instance = null;
 		}
 
 		internal void SetActiveTo(bool renderVessels)
 		{
-			this.enabled = false;	// Guarantee this is disabled on every scene but the intended ones!
-			if (!HighLogic.LoadedSceneIsFlight) return;
-
-			if (renderVessels)
-				this.Activate();
-			else
-				this.Deactivate();
-		}
-
-		private void Activate()
-		{
-			Log.trace("VesselDraw enabled");
-			this.enabled = true;
-			this.DoHouseKeeping();
-		}
-
-		private void Deactivate()
-		{
-			Log.trace("VesselDraw disabled");
-			this.enabled = false;
-			workingTarget = null;
-			foreach (KeyValuePair<Vessel, Contract.MeshEngine.Interface> tuple in meshEngineForVessel)
-			{
-				Log.detail("Erasing vessel {0} (DOE deactivated)", tuple.Key.vesselName);
-				tuple.Value.Destroy();
-			}
-			meshEngineForVessel.Clear();
-		}
-
-		private void OnGameSceneSwitchRequested(GameEvents.FromToAction<GameScenes, GameScenes> data)
-		{
-			if (data.to.Equals(GameScenes.MAINMENU))	this.Deactivate();
-			else if (data.to.Equals(GameScenes.FLIGHT))	this.SetActiveTo(DistantObjectSettings.DistantVessel.renderVessels);
+			Log.detail("VesselDraw.SetActiveTo {0}, it was {1}", renderVessels, this.enabled);
+			this.enabled = renderVessels;
+			VesselDrawDatabase.Instance.DoHouseKeeping(this.workingTarget);
 		}
 
 		private void OnVesselChange(Vessel vessel)
 		{
-			Log.dbg("Vessel {0} was Changeg.", vessel.vesselName);
+			Log.detail("Vessel {0} was Changes.", vessel.vesselName);
 			CheckErase(vessel);	// Current meshes are invalid, we need to reaload them later.
 		}
 
 		private void OnVesselGoOnRails(Vessel vessel)
 		{
-			Log.dbg("Vessel {0} Gone ON Rails.", vessel.vesselName);
+			Log.detail("Vessel {0} Gone ON Rails.", vessel.vesselName);
 			if (DistantObjectSettings.DistantVessel.renderMode >= DistantObjectSettings.ERenderMode.RenderAllDontForget && vessel.GetType().Name == "Vessel")
-				VesselCheck(vessel);
+				VesselDrawDatabase.Instance.VesselCheck(vessel);
 		}
 
 		private void OnVesselGoOffRails(Vessel vessel)
 		{
-			Log.dbg("Vessel {0} Gone OFF Rails.", vessel.vesselName);
+			Log.detail("Vessel {0} Gone OFF Rails.", vessel.vesselName);
 			CheckErase(vessel);	// Current meshes are invalid, we need to reaload them later.
 		}
 
 		private void OnVesselWillDestroy(Vessel vessel)
 		{
-			Log.dbg("Vessel {0} was Destroyed.", vessel.vesselName);
+			Log.detail("Vessel {0} was Destroyed.", vessel.vesselName);
 			if (vessel.Equals(workingTarget)) workingTarget = null;
 			CheckErase(vessel);
+		}
+	}
+
+	[KSPAddon(KSPAddon.Startup.MainMenu, true)]
+	public class VesselDrawDatabase:MonoBehaviour
+	{
+		private static VesselDrawDatabase INSTANCE = null;
+		internal static VesselDrawDatabase Instance => INSTANCE;
+
+		private readonly Dictionary<Vessel, Contract.MeshEngine.Interface> meshEngineForVessel = new Dictionary<Vessel, Contract.MeshEngine.Interface>();
+
+		[UsedImplicitly]
+		private void Awake()
+		{
+			INSTANCE = this;
+		}
+
+		[UsedImplicitly]
+		private void Start()
+		{
+			GameEvents.onGameSceneSwitchRequested.Add(this.OnGameSceneSwitchRequested);
+			SceneManager.sceneLoaded += OnSceneLoaded;
+		}
+
+		[UsedImplicitly]
+		private void Destroy()
+		{
+			SceneManager.sceneLoaded -= OnSceneLoaded;
+			GameEvents.onGameSceneSwitchRequested.Remove(this.OnGameSceneSwitchRequested);
+		}
+
+		internal void ClearBD()
+		{
+			foreach (KeyValuePair<Vessel, Contract.MeshEngine.Interface> tuple in this.meshEngineForVessel)
+			{
+				Log.detail("Erasing vessel {0} (DOE deactivated)", tuple.Key.vesselName);
+				tuple.Value.Destroy();
+			}
+			this.meshEngineForVessel.Clear();
+		}
+
+		internal void Draw(Vessel vessel) => this.meshEngineForVessel[vessel].Draw();
+
+		internal void VesselCheck(Vessel vessel)
+		{
+			if (!this.meshEngineForVessel.ContainsKey(vessel))
+			{
+				Log.detail("Adding new definition for {0}", vessel.vesselName);
+				this.meshEngineForVessel[vessel] = Contract.MeshEngine.CreateFor(vessel);
+			}
+		}
+
+		internal void CheckErase(Vessel shipToErase)
+		{
+			if (this.meshEngineForVessel.ContainsKey(shipToErase))
+			{
+				Log.detail("Erasing vessel {0} (vessel unloaded)", shipToErase.vesselName);
+
+				this.meshEngineForVessel[shipToErase].Destroy();
+				this.meshEngineForVessel.Remove(shipToErase);
+			}
+		}
+
+		internal void DoHouseKeeping(Vessel workingTarget = null)
+		{
+			switch(DistantObjectSettings.DistantVessel.renderMode)
+			{
+				case DistantObjectSettings.ERenderMode.RenderTargetOnly:
+				{
+					List<Vessel> list = new List<Vessel>(meshEngineForVessel.Keys);
+					foreach (Vessel i in list) if (i != workingTarget)
+						CheckErase(i);
+				}  break;
+
+				case DistantObjectSettings.ERenderMode.RenderAll:
+				{
+					List<Vessel> list = new List<Vessel>(meshEngineForVessel.Keys);
+					foreach (Vessel i in list) if (Vector3d.Distance(i.GetWorldPos3D(), FlightGlobals.ship_position) >= DistantObjectSettings.DistantVessel.maxDistance)
+						CheckErase(i);
+				} break;
+
+				default: break;
+			}
+		}
+
+		private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+		{
+			Log.detail("Scene changed to {0} mode {1} ({2})", scene, mode, HighLogic.LoadedScene);
+
+			switch (HighLogic.LoadedScene)
+			{
+				case GameScenes.FLIGHT:
+					this.DoHouseKeeping();
+					break;
+				default:
+					break;
+			}
+		}
+
+		private void OnGameSceneSwitchRequested(GameEvents.FromToAction<GameScenes, GameScenes> scenes)
+		{
+			Log.detail("Scene will change from {0} to {1}", scenes.from, scenes.to);
+			switch (scenes.from)
+			{
+				case GameScenes.FLIGHT:
+					switch (scenes.to)
+					{
+						case GameScenes.SPACECENTER:
+						case GameScenes.TRACKSTATION:
+							break;
+						default:
+							this.ClearBD();
+							break;
+					}
+					break;
+
+				default:
+					break;
+			}
 		}
 	}
 }
