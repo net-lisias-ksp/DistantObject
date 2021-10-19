@@ -220,6 +220,12 @@ namespace DistantObject
 
 		internal void DoHouseKeeping(Vessel workingTarget = null)
 		{
+			if (!VesselDraw.Instance.enabled)
+			{
+				this.ClearBD();
+				return;
+			}
+
 			switch(DistantObjectSettings.DistantVessel.renderMode)
 			{
 				case DistantObjectSettings.ERenderMode.RenderTargetOnly:
