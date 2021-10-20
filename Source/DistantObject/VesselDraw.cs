@@ -127,8 +127,6 @@ namespace DistantObject
 			GameEvents.onVesselGoOffRails.Add(this.OnVesselGoOffRails);
 			GameEvents.onVesselWillDestroy.Add(this.OnVesselWillDestroy);
 
-			VesselDrawDatabase.Instance.DoHouseKeeping(workingTarget);
-
 			DistantObjectSettings.Commit();
 		}
 
@@ -250,14 +248,14 @@ namespace DistantObject
 			{
 				case DistantObjectSettings.ERenderMode.RenderTargetOnly:
 				{
-					List<Vessel> list = new List<Vessel>(meshEngineForVessel.Keys);
+					List<Vessel> list = new List<Vessel>(this.meshEngineForVessel.Keys);
 					foreach (Vessel i in list) if (i != workingTarget)
 						CheckErase(i);
 				}  break;
 
 				case DistantObjectSettings.ERenderMode.RenderAll:
 				{
-					List<Vessel> list = new List<Vessel>(meshEngineForVessel.Keys);
+					List<Vessel> list = new List<Vessel>(this.meshEngineForVessel.Keys);
 					foreach (Vessel i in list) if (Vector3d.Distance(i.GetWorldPos3D(), FlightGlobals.ship_position) >= DistantObjectSettings.DistantVessel.maxDistance)
 						CheckErase(i);
 				} break;
@@ -273,7 +271,8 @@ namespace DistantObject
 			switch (HighLogic.LoadedScene)
 			{
 				case GameScenes.FLIGHT:
-					this.DoHouseKeeping();
+					// This is being done by VesselDraw's Start, as it's being instantiated on every Flight again.
+					//this.DoHouseKeeping();
 					break;
 				default:
 					break;
