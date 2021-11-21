@@ -292,7 +292,7 @@ namespace DistantObject
             #endif
             if (null != VesselDraw.Instance) VesselDraw.Instance.SetActiveTo(DistantVessel.renderVessels);
             if (null != FlareDraw.Instance) FlareDraw.Instance.SetActiveTo(DistantFlare.flaresEnabled);
-            if (null != DarkenSky.Instance) FlareDraw.Instance.SetActiveTo(SkyboxBrightness.changeSkybox);
+            if (null != DarkenSky.Instance) DarkenSky.Instance.SetActiveTo(SkyboxBrightness.changeSkybox);
         }
     }
 }
