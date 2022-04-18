@@ -1,5 +1,8 @@
 # Distant Object Enhancement (DOE) :: Changes
 
+* 2022-0418: 2.1.1.7 (LisiasT) for KSP >= 1.3.1
+	+ A major screwup on Mono's libraries was detected and worked around by KSPe.Light.
+	+ Formalizes support for KSP 1.3.1. #HURRAY!!
 * 2021-1020: 2.1.1.6 (LisiasT) for 1.4.1 <= KSP <= 1.12.2
 	+ Some brain-farts of mine on handling Scene switch were fixed
 		- Thanks for the [report](https://forum.kerbalspaceprogram.com/index.php?/topic/205063-145/&do=findComment&comment=4044226), [dartgently](https://forum.kerbalspaceprogram.com/index.php?/profile/204885-darthgently/)!
