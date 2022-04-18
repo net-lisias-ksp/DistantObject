@@ -68,6 +68,7 @@
     <Compile Include="Startup.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="Contracts\MeshEngine.cs" />
+    <Compile Include="Properties\Configuration.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\Version.tt">
