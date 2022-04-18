@@ -37,6 +37,7 @@ namespace DistantObject
 		{
 			try
 			{
+				KSPe.Util.Compatibility.Check<Startup>();
 				KSPe.Util.Installation.Check<Startup>();
 			}
 			catch (KSPe.Util.InstallmentException e)
@@ -46,7 +47,7 @@ namespace DistantObject
 			}
 
 			{ 
-				using (KSPe.Util.SystemTools.Assembly.Loader a = new KSPe.Util.SystemTools.Assembly.Loader<Startup>())
+				using (KSPe.Util.SystemTools.Assembly.Loader<Startup> a = new KSPe.Util.SystemTools.Assembly.Loader<Startup>())
 				{
 					a.LoadAndStartup("MeshEngine");
 				}
