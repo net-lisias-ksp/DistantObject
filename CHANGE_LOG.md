@@ -1,5 +1,8 @@
 # Distant Object Enhancement (DOE) :: Change Log
 
+* 2022-0724: 2.1.1.8 (LisiasT) for KSP >= 1.3.1
+	+ A memory leak was detected and fixed.
+	+ Updates KSPe.Light to fix a borderline situation related to the "unreparse" stunt.
 * 2022-0418: 2.1.1.7 (LisiasT) for KSP >= 1.3.1
 	+ A major screwup on Mono's libraries was detected and worked around by KSPe.Light.
 	+ Formalizes support for KSP 1.3.1. #HURRAY!!
