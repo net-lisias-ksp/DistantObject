@@ -144,6 +144,9 @@ namespace DistantObject
 			this.relativeRadiusSquared = Math.Pow(body.Radius / FlightGlobals.Bodies[1].Radius, 2.0);
 			this.bodyRadiusSquared = body.Radius * body.Radius;
 			this.mesh.SetActive(DistantObjectSettings.DistantFlare.flaresEnabled);
+
+			// LisiasT: Movint the body flares to layer 8, behing the Atmosphere.
+			this.meshRenderer.gameObject.layer = 8;
 		}
 
 		~BodyFlare()
