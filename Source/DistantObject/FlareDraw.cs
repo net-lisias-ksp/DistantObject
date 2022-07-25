@@ -91,6 +91,21 @@ namespace DistantObject
 			if (null != this.mesh)
 				UnityEngine.Object.Destroy(this.mesh);
 		}
+
+		// Faster, but by some reason Minmus is not triggered by this one!
+		public bool IsVisibleFrom2(Camera camera)
+		{
+			Vector3 vector = (camera.transform.position - this.meshRenderer.transform.position);
+			float angle = Vector3.Angle(FlightCamera.fetch.mainCamera.transform.forward, vector);
+			return (angle > FlightCamera.fetch.mainCamera.fieldOfView / 2);
+		}
+
+		// Slower but precise
+		public bool IsVisibleFrom(Camera camera)
+		{
+			Vector3 screenPoint = camera.WorldToViewportPoint(this.meshRenderer.transform.position);
+			return screenPoint.z > 0 && screenPoint.x > 0 && screenPoint.x < 1 && screenPoint.y > 0 && screenPoint.y < 1;
+		}
 	}
 
 	// @ 1920x1080, 1 pixel with 60* FoV covers about 2 minutes of arc / 0.03 degrees
@@ -283,7 +298,7 @@ namespace DistantObject
 		private Dictionary<CelestialBody, Color> bodyColors => __bodyColors ?? (__bodyColors = buildBodyColors());
 		private static Dictionary<CelestialBody, Color> __bodyColors;
 		private static Dictionary<CelestialBody, Color> buildBodyColors()
-		{ 
+		{
 			Dictionary<CelestialBody, Color> r = new Dictionary<CelestialBody, Color>();
 			foreach (UrlDir.UrlConfig node in GameDatabase.Instance.GetConfigs("CelestialBodyColor"))
 			{
@@ -624,7 +639,7 @@ namespace DistantObject
 							Vector3d vectorToBody = bodyFlare.body.position - mouseRay.origin;
 							double mouseBodyAngle = Vector3d.Angle(vectorToBody, mouseRay.direction);
 							if (mouseBodyAngle < 1.0)
-								bestRadius = this.PrepareBodyName(bodyFlare, bestRadius);
+								bestRadius = this.PrepareName(bodyFlare, bestRadius);
 						}
 					}
 
@@ -639,14 +654,14 @@ namespace DistantObject
 							Vector3d vectorToVessel = vesselFlare.referenceShip.transform.position - mouseRay.origin;
 							double mouseVesselAngle = Vector3d.Angle(vectorToVessel, mouseRay.direction);
 							if (mouseVesselAngle < 1.0)
-								bestBrightness = this.PrepareVesselName(vesselFlare, bestBrightness);
+								bestBrightness = this.PrepareName(vesselFlare, bestBrightness);
 						}
 					}
 				}
 			}
 		}
 
-		private double PrepareBodyName(BodyFlare bodyFlare, double bestRadius)
+		private double PrepareName(BodyFlare bodyFlare, double bestRadius)
 		{
 			if (bodyFlare.body.Radius > bestRadius)
 			{
@@ -663,7 +678,15 @@ namespace DistantObject
 			return bestRadius;
 		}
 
-		private float PrepareVesselName(VesselFlare vesselFlare, float bestBrightness)
+		private void PrepareName(BodyFlare bodyFlare)
+		{
+			if (!bodyFlare.IsVisibleFrom(FlightCamera.fetch.mainCamera)) return;
+			showNameTransform = bodyFlare.body.transform;
+			showNameString = KSP.Localization.Localizer.Format("<<1>>", bodyFlare.body.bodyDisplayName);
+			showNameColor = bodyFlare.color;
+		}
+
+		private float PrepareName(VesselFlare vesselFlare, float bestBrightness)
 		{
 			float brightness = vesselFlare.brightness;
 			if (brightness > bestBrightness)
@@ -674,6 +697,14 @@ namespace DistantObject
 				return brightness;
 			}
 			return bestBrightness;
+		}
+
+		private void PrepareName(VesselFlare vesselFlare)
+		{
+			if (!vesselFlare.IsVisibleFrom(FlightCamera.fetch.mainCamera)) return;
+			showNameTransform = vesselFlare.referenceShip.transform;
+			showNameString = vesselFlare.referenceShip.vesselName;
+			showNameColor = Color.white;
 		}
 
 		//--------------------------------------------------------------------
@@ -878,18 +909,18 @@ namespace DistantObject
 			if (Input.GetMouseButton(1) && Event.current.modifiers == EventModifiers.Alt)
 			{
 				foreach (BodyFlare bodyFlare in bodyFlares) if (bodyFlare.body != FlightGlobals.ActiveVessel.mainBody)
-				{
-					this.showNameTransform = null;
-					this.PrepareBodyName(bodyFlare, 0);
-					if (null != this.showNameTransform) this.ShowNameTransformPosition();
-				}
+					{
+						this.showNameTransform = null;
+						this.PrepareName(bodyFlare);
+						if (null != this.showNameTransform) this.ShowNameTransformPosition();
+					}
 
 				foreach (VesselFlare vesselFlare in vesselFlares.Values) if (vesselFlare.referenceShip != FlightGlobals.ActiveVessel)
-				{
-					this.showNameTransform = null;
-					this.PrepareVesselName(vesselFlare, 0);
-					if (null != this.showNameTransform) this.ShowNameTransformPosition();
-				}
+					{
+						this.showNameTransform = null;
+						this.PrepareName(vesselFlare);
+						if (null != this.showNameTransform) this.ShowNameTransformPosition();
+					}
 
 				this.showNameTransform = null;
 			}
