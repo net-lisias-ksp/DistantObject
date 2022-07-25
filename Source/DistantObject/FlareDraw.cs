@@ -93,7 +93,7 @@ namespace DistantObject
 		}
 
 		// Faster, but by some reason Minmus is not triggered by this one!
-		public bool IsVisibleFrom2(Camera camera)
+		public bool IsOnFieldOfViewOf2(Camera camera)
 		{
 			Vector3 vector = (camera.transform.position - this.meshRenderer.transform.position);
 			float angle = Vector3.Angle(FlightCamera.fetch.mainCamera.transform.forward, vector);
@@ -101,7 +101,7 @@ namespace DistantObject
 		}
 
 		// Slower but precise
-		public bool IsVisibleFrom(Camera camera)
+		public bool IsOnFieldOfViewOf(Camera camera)
 		{
 			Vector3 screenPoint = camera.WorldToViewportPoint(this.meshRenderer.transform.position);
 			return screenPoint.z > 0 && screenPoint.x > 0 && screenPoint.x < 1 && screenPoint.y > 0 && screenPoint.y < 1;
@@ -683,7 +683,7 @@ namespace DistantObject
 
 		private void PrepareName(BodyFlare bodyFlare)
 		{
-			if (!bodyFlare.IsVisibleFrom(FlightCamera.fetch.mainCamera)) return;
+			if (!bodyFlare.IsOnFieldOfViewOf(FlightCamera.fetch.mainCamera)) return;
 			showNameTransform = bodyFlare.body.transform;
 			showNameString = KSP.Localization.Localizer.Format("<<1>>", bodyFlare.body.bodyDisplayName);
 			showNameColor = bodyFlare.color;
@@ -704,7 +704,7 @@ namespace DistantObject
 
 		private void PrepareName(VesselFlare vesselFlare)
 		{
-			if (!vesselFlare.IsVisibleFrom(FlightCamera.fetch.mainCamera)) return;
+			if (!vesselFlare.IsOnFieldOfViewOf(FlightCamera.fetch.mainCamera)) return;
 			showNameTransform = vesselFlare.referenceShip.transform;
 			showNameString = vesselFlare.referenceShip.vesselName;
 			showNameColor = Color.white;
