@@ -106,6 +106,16 @@ namespace DistantObject
 			Vector3 screenPoint = camera.WorldToViewportPoint(this.meshRenderer.transform.position);
 			return screenPoint.z > 0 && screenPoint.x > 0 && screenPoint.x < 1 && screenPoint.y > 0 && screenPoint.y < 1;
 		}
+
+		public bool IsVisibleFrom(Camera camera)
+		{
+			if (!this.IsOnFieldOfViewOf(camera)) return false;
+			Vector3 heading = this.meshRenderer.transform.position - camera.transform.position;
+			Vector3 direction = heading.normalized;
+			if (Physics.Linecast(camera.transform.position, this.meshRenderer.bounds.center, out RaycastHit hit))
+				return hit.transform.name == this.meshRenderer.transform.name;
+			return true;
+		}
 	}
 
 	// @ 1920x1080, 1 pixel with 60* FoV covers about 2 minutes of arc / 0.03 degrees
@@ -666,6 +676,7 @@ namespace DistantObject
 
 		private double PrepareName(BodyFlare bodyFlare, double bestRadius)
 		{
+			if (!bodyFlare.IsVisibleFrom(FlightCamera.fetch.mainCamera)) return bestRadius;
 			if (bodyFlare.body.Radius > bestRadius)
 			{
 				double distance = Vector3d.Distance(FlightCamera.fetch.mainCamera.transform.position, bodyFlare.body.position);
@@ -691,6 +702,7 @@ namespace DistantObject
 
 		private float PrepareName(VesselFlare vesselFlare, float bestBrightness)
 		{
+			if (!vesselFlare.IsVisibleFrom(FlightCamera.fetch.mainCamera)) return bestBrightness;
 			float brightness = vesselFlare.brightness;
 			if (brightness > bestBrightness)
 			{
