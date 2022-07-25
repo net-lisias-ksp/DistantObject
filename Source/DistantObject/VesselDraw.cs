@@ -135,8 +135,8 @@ namespace DistantObject
 		{
 			Log.dbg("VesselDraw OnDestroy");
 			GameEvents.onVesselWillDestroy.Remove(this.OnVesselWillDestroy);
-			GameEvents.onVesselGoOffRails.Add(this.OnVesselGoOffRails);
-			GameEvents.onVesselGoOnRails.Add(this.OnVesselGoOnRails);
+			GameEvents.onVesselGoOffRails.Remove(this.OnVesselGoOffRails);
+			GameEvents.onVesselGoOnRails.Remove(this.OnVesselGoOnRails);
 			GameEvents.onVesselChange.Remove(this.OnVesselChange);
 			__instance = null;
 		}
