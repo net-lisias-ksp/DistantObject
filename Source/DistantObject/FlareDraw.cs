@@ -37,26 +37,14 @@ namespace DistantObject
 {
 	abstract class Flare
 	{
-		private const string MODEL = "DistantObject/Flare/model";
-
 		public readonly GameObject mesh;
 		public readonly MeshRenderer meshRenderer;
 		public readonly Vector4 hslColor;
 		public abstract double sizeInDegrees { get; }
 
-		private GameObject getModel()
+		public Flare(string name, GameObject flare, Color colour)
 		{
-			// DistantObject/Flare/model has extents of (0.5, 0.5, 0.0), a 1/2 meter wide square.
-			GameObject r = GameDatabase.Instance.GetModel("DistantObject/Flare/model");
-			Log.assert(() => null != r, "Model {0} not loaded!", MODEL);
-			return r;
-		}
-		private static GameObject __flare;
-		private GameObject flare => __flare ?? (__flare = getModel());
-
-		public Flare(string name, Color colour)
-		{
-			GameObject flareMesh = Mesh.Instantiate(this.flare) as GameObject;
+			GameObject flareMesh = Mesh.Instantiate(flare) as GameObject;
 			UnityEngine.Object.Destroy(flareMesh.GetComponent<Collider>());
 			flareMesh.name = name;
 			flareMesh.SetActive(true);
@@ -151,7 +139,7 @@ namespace DistantObject
 		private readonly double relativeRadiusSquared;
 		private readonly double bodyRadiusSquared;
 
-		internal BodyFlare(CelestialBody body, Dictionary<CelestialBody, Color> bodyColors) : base(body.bodyName, (bodyColors.ContainsKey(body)) ? bodyColors[body] : Color.white)
+		internal BodyFlare(CelestialBody body, GameObject flare, Dictionary<CelestialBody, Color> bodyColors) : base(body.bodyName, flare, (bodyColors.ContainsKey(body)) ? bodyColors[body] : Color.white)
 		{
 			this.body = body;
 			Renderer scaledRenderer = body.MapObject.transform.GetComponent<Renderer>();
@@ -163,8 +151,7 @@ namespace DistantObject
 			this.mesh.SetActive(DistantObjectSettings.DistantFlare.flaresEnabled);
 
 			// LisiasT: Movint the body flares to layer 8, behing the Atmosphere.
-			//this.meshRenderer.gameObject.layer = 8;
-			// But that made the damned flares being rendered behind the planets, screwing up the feature. (sigh)
+			this.meshRenderer.gameObject.layer = 8;
 		}
 
 		~BodyFlare()
@@ -216,7 +203,7 @@ namespace DistantObject
 		public readonly float luminosity;
 		public float brightness;
 
-		internal VesselFlare(Vessel referenceShip) : base(referenceShip.vesselName, Color.white)
+		internal VesselFlare(Vessel referenceShip, GameObject flare) : base(referenceShip.vesselName, flare, Color.white)
 		{
 			this.referenceShip = referenceShip;
 			this.luminosity = 5.0f + Mathf.Pow(referenceShip.GetTotalMass(), 1.25f);
@@ -274,6 +261,8 @@ namespace DistantObject
 		private static FlareDraw INSTANCE = null;
 		internal static FlareDraw Instance => INSTANCE;
 
+		private const string MODEL = "DistantObject/Flare/model";
+
 		enum FlareType
 		{
 			Celestial,
@@ -311,6 +300,8 @@ namespace DistantObject
 		private bool bigHammer = false;
 		private List<Vessel> deadVessels = new List<Vessel>();
 
+		private GameObject flare;
+
 #if SHOW_FIXEDUPDATE_TIMING
         private Stopwatch stopwatch = new Stopwatch();
 #endif
@@ -344,7 +335,7 @@ namespace DistantObject
 		// Add a new vessel flare to our library
 		private void AddVesselFlare(Vessel referenceShip)
 		{
-			VesselFlare vesselFlare = new VesselFlare(referenceShip);
+			VesselFlare vesselFlare = new VesselFlare(referenceShip, this.flare);
 			vesselFlares.Add(referenceShip, vesselFlare);
 		}
 
@@ -406,7 +397,7 @@ namespace DistantObject
 				if (body != FlightGlobals.Bodies[0] && body?.MapObject != null)
 				{
 					largestSMA = Math.Max(largestSMA, body.orbit.semiMajorAxis);
-					BodyFlare bf = new BodyFlare(body, this.bodyColors);
+					BodyFlare bf = new BodyFlare(body, this.flare, this.bodyColors);
 					bodyFlares.Add(bf);
 					Log.dbg("Body {0}:{1} added to bodyFlares.", body.bodyName, body.displayName);
 				}
@@ -737,6 +728,10 @@ namespace DistantObject
 		{
 			INSTANCE = this;
 
+			// DistantObject/Flare/model has extents of (0.5, 0.5, 0.0), a 1/2 meter wide square.
+			this.flare = GameDatabase.Instance.GetModel(MODEL);
+			Log.assert(() => null != this.flare, "Flare model {0} not found", MODEL);
+
 			DistantObjectSettings.LoadConfig();
 
 			Dictionary<string, Vessel.Situations> namedSituations = new Dictionary<string, Vessel.Situations> {
@@ -781,8 +776,10 @@ namespace DistantObject
 		//--------------------------------------------------------------------
 		// OnDestroy()
 		// Clean up after ourselves.
+		[UsedImplicitly]
 		private void OnDestroy()
 		{
+			this.flare.DestroyGameObject(); this.flare = null;
 			GameEvents.onVesselWillDestroy.Remove(RemoveVesselFlare);
 			foreach (VesselFlare v in vesselFlares.Values)
 				v.Destroy();
