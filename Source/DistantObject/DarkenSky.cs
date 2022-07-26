@@ -86,7 +86,13 @@ namespace DistantObject
 		[UsedImplicitly]
         private void Update()
         {
-            if (null == GalaxyCubeControl.Instance || MapView.MapIsEnabled) return;
+            if (null == GalaxyCubeControl.Instance) return;
+            if (MapView.MapIsEnabled)
+            {
+				GalaxyCubeControl.Instance.maxGalaxyColor = this.galaxyColor;
+				GalaxyCubeControl.Instance.glareFadeLimit = this.glareFadeLimit;
+                return;
+            }
 
             Color color = new Color(DistantObjectSettings.SkyboxBrightness.maxBrightness, DistantObjectSettings.SkyboxBrightness.maxBrightness, DistantObjectSettings.SkyboxBrightness.maxBrightness);
             Vector3d camPos = FlightCamera.fetch.mainCamera.transform.position;
