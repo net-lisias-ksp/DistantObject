@@ -163,7 +163,8 @@ namespace DistantObject
 			this.mesh.SetActive(DistantObjectSettings.DistantFlare.flaresEnabled);
 
 			// LisiasT: Movint the body flares to layer 8, behing the Atmosphere.
-			this.meshRenderer.gameObject.layer = 8;
+			//this.meshRenderer.gameObject.layer = 8;
+			// But that made the damned flares being rendered behind the planets, screwing up the feature. (sigh)
 		}
 
 		~BodyFlare()
