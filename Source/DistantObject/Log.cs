@@ -71,6 +71,11 @@ namespace DistantObject
 			log.error(e, msg, @params);
 		}
 
+		public static void assert(Func<bool> f, string msg, params object[] @params)
+		{
+			log.assert(f, msg, @params);
+		}
+
 		[ConditionalAttribute("DEBUG")]
 		public static void dbg(string msg, params object[] @params)
 		{

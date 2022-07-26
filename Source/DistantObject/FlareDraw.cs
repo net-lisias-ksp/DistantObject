@@ -37,15 +37,22 @@ namespace DistantObject
 {
 	abstract class Flare
 	{
+		private const string MODEL = "DistantObject/Flare/model";
+
 		public readonly GameObject mesh;
 		public readonly MeshRenderer meshRenderer;
 		public readonly Vector4 hslColor;
 		public abstract double sizeInDegrees { get; }
 
-		private static GameObject __flare;
-		private GameObject flare =>
+		private GameObject getModel()
+		{
 			// DistantObject/Flare/model has extents of (0.5, 0.5, 0.0), a 1/2 meter wide square.
-			__flare ?? (__flare = GameDatabase.Instance.GetModel("DistantObject/Flare/model"));
+			GameObject r = GameDatabase.Instance.GetModel("DistantObject/Flare/model");
+			Log.assert(() => null != r, "Model {0} not loaded!", MODEL);
+			return r;
+		}
+		private static GameObject __flare;
+		private GameObject flare => __flare ?? (__flare = getModel());
 
 		public Flare(string name, Color colour)
 		{
@@ -205,7 +212,6 @@ namespace DistantObject
 		public override double sizeInDegrees => 5.0;
 
 		public Vessel referenceShip;
-		public readonly GameObject flareMesh;
 		public readonly float luminosity;
 		public float brightness;
 
@@ -228,15 +234,15 @@ namespace DistantObject
 			{
 				Vector3d targetVectorToCam = camPos - referenceShip.transform.position;
 				float targetDist = (float)Vector3d.Distance(referenceShip.transform.position, camPos);
-				bool activeSelf = flareMesh.activeSelf;
+				bool activeSelf = this.mesh.activeSelf;
 				if (targetDist > 750000.0f && activeSelf)
 				{
-					flareMesh.SetActive(false);
+					this.mesh.SetActive(false);
 					activeSelf = false;
 				}
 				else if (targetDist < 750000.0f && !activeSelf)
 				{
-					flareMesh.SetActive(true);
+					this.mesh.SetActive(true);
 					activeSelf = true;
 				}
 
@@ -244,18 +250,18 @@ namespace DistantObject
 				{
 					brightness = Mathf.Log10(luminosity) * (1.0f - Mathf.Pow(targetDist / 750000.0f, 1.25f));
 
-					flareMesh.transform.position = camPos - targetDist * targetVectorToCam.normalized;
-					flareMesh.transform.LookAt(camPos);
+					this.mesh.transform.position = camPos - targetDist * targetVectorToCam.normalized;
+					this.mesh.transform.LookAt(camPos);
 					float resizeFactor = (0.002f * targetDist * brightness * (0.7f + .99f * camFOV) / 70.0f) * DistantObjectSettings.DistantFlare.flareSize;
 
-					flareMesh.transform.localScale = new Vector3(resizeFactor, resizeFactor, resizeFactor);
+					this.mesh.transform.localScale = new Vector3(resizeFactor, resizeFactor, resizeFactor);
 					Log.dbg("Resizing vessel flare {0} to {1} - brightness {2}, luminosity {3}", referenceShip.vesselName, resizeFactor, brightness, luminosity);
 				}
 			}
 			catch
 			{
 				// If anything went whack, let's disable ourselves
-				flareMesh.SetActive(false);
+				this.mesh.SetActive(false);
 				referenceShip = null;
 			}
 		}
@@ -459,7 +465,7 @@ namespace DistantObject
 		// CheckDraw
 		// Checks if the given mesh should be drawn.
 		private void CheckDraw(BodyFlare bodyFlre) => this.CheckDraw(bodyFlre, bodyFlre.body.transform.position, bodyFlre.body.referenceBody, FlareType.Celestial);
-		private void CheckDraw(VesselFlare vesselFlare) => this.CheckDraw(vesselFlare, vesselFlare.flareMesh.transform.position, vesselFlare.referenceShip.mainBody, (vesselFlare.referenceShip.vesselType == VesselType.Debris) ? FlareType.Debris : FlareType.Vessel);
+		private void CheckDraw(VesselFlare vesselFlare) => this.CheckDraw(vesselFlare, vesselFlare.mesh.transform.position, vesselFlare.referenceShip.mainBody, (vesselFlare.referenceShip.vesselType == VesselType.Debris) ? FlareType.Debris : FlareType.Vessel);
 		private void CheckDraw(Flare flare, Vector3d position, CelestialBody referenceBody, FlareType flareType)
 		{
 			Vector3d targetVectorToSun = FlightGlobals.Bodies[0].position - position;
@@ -646,15 +652,15 @@ namespace DistantObject
 				// Detect CelestialBody mouseovers
 				double bestRadius = -1.0;
 				foreach (BodyFlare bodyFlare in bodyFlares) if (bodyFlare.body != FlightGlobals.ActiveVessel.mainBody)
+				{
+					if (bodyFlare.meshRenderer.material.color.a > 0.0f)
 					{
-						if (bodyFlare.meshRenderer.material.color.a > 0.0f)
-						{
-							Vector3d vectorToBody = bodyFlare.body.position - mouseRay.origin;
-							double mouseBodyAngle = Vector3d.Angle(vectorToBody, mouseRay.direction);
-							if (mouseBodyAngle < 1.0)
-								bestRadius = this.PrepareName(bodyFlare, bestRadius);
-						}
+						Vector3d vectorToBody = bodyFlare.body.position - mouseRay.origin;
+						double mouseBodyAngle = Vector3d.Angle(vectorToBody, mouseRay.direction);
+						if (mouseBodyAngle < 1.0)
+							bestRadius = this.PrepareName(bodyFlare, bestRadius);
 					}
+				}
 
 				if (showNameTransform == null)
 				{
@@ -662,7 +668,7 @@ namespace DistantObject
 					float bestBrightness = 0.01f; // min luminosity to show vessel name
 					foreach (VesselFlare vesselFlare in vesselFlares.Values)
 					{
-						if (vesselFlare.flareMesh.activeSelf && vesselFlare.meshRenderer.material.color.a > 0.0f)
+						if (vesselFlare.mesh.activeSelf && vesselFlare.meshRenderer.material.color.a > 0.0f)
 						{
 							Vector3d vectorToVessel = vesselFlare.referenceShip.transform.position - mouseRay.origin;
 							double mouseVesselAngle = Vector3d.Angle(vectorToVessel, mouseRay.direction);
@@ -840,7 +846,7 @@ namespace DistantObject
 
 					foreach (VesselFlare vesselFlare in vesselFlares.Values)
 					{
-						vesselFlare.flareMesh.SetActive(false);
+						vesselFlare.mesh.SetActive(false);
 					}
 				}
 				else
@@ -886,7 +892,7 @@ namespace DistantObject
 						{
 							vesselFlare.Update(camPos, camFOV);
 
-							if (vesselFlare.flareMesh.activeSelf)
+							if (vesselFlare.mesh.activeSelf)
 								this.CheckDraw(vesselFlare);
 						}
 						catch
