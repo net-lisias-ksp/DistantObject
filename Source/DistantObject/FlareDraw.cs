@@ -91,8 +91,8 @@ namespace DistantObject
 		public bool IsOnFieldOfViewOf2(Camera camera)
 		{
 			Vector3 vector = (camera.transform.position - this.meshRenderer.transform.position);
-			float angle = Vector3.Angle(FlightCamera.fetch.mainCamera.transform.forward, vector);
-			return (angle > FlightCamera.fetch.mainCamera.fieldOfView / 2);
+			float angle = Vector3.Angle(camera.transform.forward, vector);
+			return (angle > camera.fieldOfView / 2);
 		}
 
 		// Slower but precise
@@ -105,8 +105,6 @@ namespace DistantObject
 		public bool IsVisibleFrom(Camera camera)
 		{
 			if (!this.IsOnFieldOfViewOf(camera)) return false;
-			Vector3 heading = this.meshRenderer.transform.position - camera.transform.position;
-			Vector3 direction = heading.normalized;
 			if (Physics.Linecast(camera.transform.position, this.meshRenderer.bounds.center, out RaycastHit hit))
 				return hit.transform.name == this.meshRenderer.transform.name;
 			return true;
@@ -274,6 +272,7 @@ namespace DistantObject
 		private readonly Dictionary<Vessel, VesselFlare> vesselFlares = new Dictionary<Vessel, VesselFlare>();
 
 		private static float camFOV;
+		private Camera cam;
 		private Vector3d camPos;
 		private float atmosphereFactor = 1.0f;
 		private float dimFactor = 1.0f;
@@ -607,7 +606,7 @@ namespace DistantObject
 			// angle between the camera and the sun.  We need to do this because
 			// KSP's sun dimming effect is not applied to maxGalaxyColor, so we
 			// really don't know how much dimming is being done.
-			float angCamToSun = Vector3.Angle(FlightCamera.fetch.mainCamera.transform.forward, sunBodyAngle);
+			float angCamToSun = Vector3.Angle(this.cam.transform.forward, sunBodyAngle);
 			if (angCamToSun < (camFOV * 0.5f))
 			{
 				bool isVisible = true;
@@ -639,7 +638,7 @@ namespace DistantObject
 
 			showNameTransform = null;
 			{
-				Ray mouseRay = FlightCamera.fetch.mainCamera.ScreenPointToRay(Input.mousePosition);
+				Ray mouseRay = this.cam.ScreenPointToRay(Input.mousePosition);
 
 				// Detect CelestialBody mouseovers
 				double bestRadius = -1.0;
@@ -674,10 +673,10 @@ namespace DistantObject
 
 		private double PrepareName(BodyFlare bodyFlare, double bestRadius)
 		{
-			if (!bodyFlare.IsVisibleFrom(FlightCamera.fetch.mainCamera)) return bestRadius;
+			if (!bodyFlare.IsVisibleFrom(this.cam)) return bestRadius;
 			if (bodyFlare.body.Radius > bestRadius)
 			{
-				double distance = Vector3d.Distance(FlightCamera.fetch.mainCamera.transform.position, bodyFlare.body.position);
+				double distance = Vector3d.Distance(this.cam.transform.position, bodyFlare.body.position);
 				double angularSize = Mathf.Rad2Deg * bodyFlare.body.Radius / distance;
 				if (angularSize < 0.2)
 				{
@@ -692,7 +691,7 @@ namespace DistantObject
 
 		private void PrepareName(BodyFlare bodyFlare)
 		{
-			if (!bodyFlare.IsOnFieldOfViewOf(FlightCamera.fetch.mainCamera)) return;
+			if (!bodyFlare.IsOnFieldOfViewOf(this.cam)) return;
 			showNameTransform = bodyFlare.body.transform;
 			showNameString = KSP.Localization.Localizer.Format("<<1>>", bodyFlare.body.bodyDisplayName);
 			showNameColor = bodyFlare.color;
@@ -700,7 +699,7 @@ namespace DistantObject
 
 		private float PrepareName(VesselFlare vesselFlare, float bestBrightness)
 		{
-			if (!vesselFlare.IsVisibleFrom(FlightCamera.fetch.mainCamera)) return bestBrightness;
+			if (!vesselFlare.IsVisibleFrom(this.cam)) return bestBrightness;
 			float brightness = vesselFlare.brightness;
 			if (brightness > bestBrightness)
 			{
@@ -714,7 +713,7 @@ namespace DistantObject
 
 		private void PrepareName(VesselFlare vesselFlare)
 		{
-			if (!vesselFlare.IsOnFieldOfViewOf(FlightCamera.fetch.mainCamera)) return;
+			if (!vesselFlare.IsOnFieldOfViewOf(this.cam)) return;
 			showNameTransform = vesselFlare.referenceShip.transform;
 			showNameString = vesselFlare.referenceShip.vesselName;
 			showNameColor = Color.white;
@@ -853,7 +852,8 @@ namespace DistantObject
                 stopwatch.Reset();
                 stopwatch.Start();
 #endif
-					camPos = FlightCamera.fetch.mainCamera.transform.position;
+					this.cam = FlightCamera.fetch.mainCamera;
+					this.camPos = this.cam.transform.position;
 
 					Vector3d targetVectorToCam = camPos - FlightGlobals.Bodies[0].position;
 
@@ -863,7 +863,7 @@ namespace DistantObject
 
 					if (!ExternalControl)
 					{
-						camFOV = FlightCamera.fetch.mainCamera.fieldOfView;
+						camFOV = this.cam.fieldOfView;
 					}
 
 					// Log.dbg("Update"); Really bad idea...
@@ -949,7 +949,7 @@ namespace DistantObject
 
 		private void ShowNameTransformPosition()
 		{
-			Vector3 screenPos = FlightCamera.fetch.mainCamera.WorldToScreenPoint(showNameTransform.position);
+			Vector3 screenPos = this.cam.WorldToScreenPoint(showNameTransform.position);
 			flyoverTextPosition.x = screenPos.x;
 			flyoverTextPosition.y = Screen.height - screenPos.y - 20.0f;
 			flyoverTextStyle.normal.textColor = showNameColor;
