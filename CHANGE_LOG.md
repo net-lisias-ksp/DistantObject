@@ -1,5 +1,12 @@
 # Distant Object Enhancement (DOE) :: Change Log
 
+* 2022-0727: 2.1.1.9 (LisiasT) for KSP >= 1.3.1
+	+ Bug hunting release.
+	+ Closes issues:
+		- [#16](https://github.com/net-lisias-ksp/DistantObject/issues/16) Update KSPe.Light for KSPe
+		- [#15](https://github.com/net-lisias-ksp/DistantObject/issues/15) When switching to the MAP, the skybox keeps the current DOE's state!
+		- [#10](https://github.com/net-lisias-ksp/DistantObject/issues/10) Prevent the body label on mouseover to be activated when there's something between...
+		- [#8](https://github.com/net-lisias-ksp/DistantObject/issues/8) Labels on ALT+RMB are being drawn twice...
 * 2022-0724: 2.1.1.8 (LisiasT) for KSP >= 1.3.1
 	+ A memory leak was detected and fixed.
 	+ Updates KSPe.Light to fix a borderline situation related to the "unreparse" stunt.

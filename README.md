@@ -78,7 +78,6 @@ See [NOTICE](./NOTICE) for further copyright and trademarks notices.
 * [Rubber Ducky](https://forum.kerbalspaceprogram.com/index.php?/profile/26395-rubber-ducky/) ROOT
 	+ [Forum](https://forum.kerbalspaceprogram.com/index.php?/topic/63457-*)
 	+ [Box.com](https://app.box.com/s/7xdwo92oc00dkjxkilwb) V 1.3.1
-	+ [SpaceDock](https://spacedock.info/mod/?????/?????)
 	+ [Github](https://github.com/duckytopia/DistantObject)
 * [MOARdV](https://forum.kerbalspaceprogram.com/index.php?/profile/60950-moardv/) Previous Maintainer
 	+ [Forum](https://forum.kerbalspaceprogram.com/index.php?/topic/89214-*) 
