@@ -41,9 +41,11 @@ namespace DistantObject
 		public readonly MeshRenderer meshRenderer;
 		public readonly Vector4 hslColor;
 		public abstract double sizeInDegrees { get; }
+		protected readonly int defaultLayer;
 
-		public Flare(string name, GameObject flare, Color colour)
+		public Flare(string name, GameObject flare, Color colour, int defaultLayer)
 		{
+			this.defaultLayer = defaultLayer;
 			GameObject flareMesh = Mesh.Instantiate(flare) as GameObject;
 			UnityEngine.Object.Destroy(flareMesh.GetComponent<Collider>());
 			flareMesh.name = name;
@@ -66,7 +68,7 @@ namespace DistantObject
 			// Renderer layers: http://wiki.kerbalspaceprogram.com/wiki/API:Layers
 
 			flareMR.receiveShadows = false;
-			flareMR.gameObject.layer = 15;
+			flareMR.gameObject.layer = defaultLayer;
 			flareMR.material.shader = Shader.Find("KSP/Alpha/Unlit Transparent");
 			flareMR.material.color = colour;
 			flareMR.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
@@ -137,7 +139,7 @@ namespace DistantObject
 		private readonly double relativeRadiusSquared;
 		private readonly double bodyRadiusSquared;
 
-		internal BodyFlare(CelestialBody body, GameObject flare, Dictionary<CelestialBody, Color> bodyColors) : base(body.bodyName, flare, (bodyColors.ContainsKey(body)) ? bodyColors[body] : Color.white)
+		internal BodyFlare(CelestialBody body, GameObject flare, Dictionary<CelestialBody, Color> bodyColors, int defaultLayer) : base(body.bodyName, flare, (bodyColors.ContainsKey(body)) ? bodyColors[body] : Color.white, defaultLayer)
 		{
 			this.body = body;
 			Renderer scaledRenderer = body.MapObject.transform.GetComponent<Renderer>();
@@ -147,9 +149,6 @@ namespace DistantObject
 			this.relativeRadiusSquared = Math.Pow(body.Radius / FlightGlobals.Bodies[1].Radius, 2.0);
 			this.bodyRadiusSquared = body.Radius * body.Radius;
 			this.mesh.SetActive(DistantObjectSettings.DistantFlare.flaresEnabled);
-
-			// LisiasT: Movint the body flares to layer 8, behing the Atmosphere.
-			this.meshRenderer.gameObject.layer = 8;
 		}
 
 		~BodyFlare()
@@ -201,7 +200,7 @@ namespace DistantObject
 		public readonly float luminosity;
 		public float brightness;
 
-		internal VesselFlare(Vessel referenceShip, GameObject flare) : base(referenceShip.vesselName, flare, Color.white)
+		internal VesselFlare(Vessel referenceShip, GameObject flare, int defaultLayer) : base(referenceShip.vesselName, flare, Color.white, defaultLayer)
 		{
 			this.referenceShip = referenceShip;
 			this.luminosity = 5.0f + Mathf.Pow(referenceShip.GetTotalMass(), 1.25f);
@@ -260,6 +259,7 @@ namespace DistantObject
 		internal static FlareDraw Instance => INSTANCE;
 
 		private const string MODEL = "DistantObject/Flare/model";
+		private const int DEFAULT_LAYER = 15;
 
 		enum FlareType
 		{
@@ -334,7 +334,7 @@ namespace DistantObject
 		// Add a new vessel flare to our library
 		private void AddVesselFlare(Vessel referenceShip)
 		{
-			VesselFlare vesselFlare = new VesselFlare(referenceShip, this.flare);
+			VesselFlare vesselFlare = new VesselFlare(referenceShip, this.flare, DEFAULT_LAYER);
 			vesselFlares.Add(referenceShip, vesselFlare);
 		}
 
@@ -396,7 +396,7 @@ namespace DistantObject
 				if (body != FlightGlobals.Bodies[0] && body?.MapObject != null)
 				{
 					largestSMA = Math.Max(largestSMA, body.orbit.semiMajorAxis);
-					BodyFlare bf = new BodyFlare(body, this.flare, this.bodyColors);
+					BodyFlare bf = new BodyFlare(body, this.flare, this.bodyColors, DEFAULT_LAYER);
 					bodyFlares.Add(bf);
 					Log.dbg("Body {0}:{1} added to bodyFlares.", body.bodyName, body.displayName);
 				}
