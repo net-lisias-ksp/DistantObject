@@ -25,8 +25,11 @@
 		If not, see <https://www.gnu.org/licenses/>.
 */
 using System;
-using System.Reflection;
 using UnityEngine;
+
+using KSPe;
+using IO = KSPe.IO;
+
 
 namespace DistantObject
 {
@@ -99,6 +102,10 @@ namespace DistantObject
     class Constants
     {
         static internal readonly string DistantObject = "Distant Object Enhancement v" + Version.Text;
+		internal const string SETTINGS_FILE = "Settings.cfg";
+		static internal readonly string REFERENCE_CONFIG_PATHNAME = IO.Hierarchy<Startup>.GAMEDATA.Solve("PluginData", SETTINGS_FILE);
+		static internal readonly string CONFIG_DIRECTORY = IO.Hierarchy<Startup>.PLUGINDATA.Solve();
+		static internal readonly string CONFIG_PATHNAME = IO.Hierarchy<Startup>.PLUGINDATA.Solve(SETTINGS_FILE);
     }
 
     class DistantObjectSettings
@@ -145,110 +152,52 @@ namespace DistantObject
 
         //--- Internal values
         static private bool hasLoaded = false;
-        static private readonly string CONFIG_PATHNAME = System.IO.Path.Combine(
-                System.IO.Path.GetDirectoryName(typeof(DistantObjectSettings).Assembly.Location)
-                , "PluginData/Settings.cfg"
-            );
+		static public void LoadConfig()
+		{
+			if (hasLoaded) return;
 
-        static public void LoadConfig()
-        {
-            if (hasLoaded) return;
+			ConfigNode configNode = ConfigNode.Load(Constants.CONFIG_PATHNAME);
+			if (null == configNode) configNode = ConfigNode.Load(Constants.REFERENCE_CONFIG_PATHNAME);
+			if (null == configNode) return;
 
-            ConfigNode settings = ConfigNode.Load(CONFIG_PATHNAME);
+			ConfigNodeWithSteroids settings = ConfigNodeWithSteroids.from(configNode);
 
-            if (settings != null)
-            {
-                if (settings.HasValue("debugMode"))
-                {
-                    debugMode = bool.Parse(settings.GetValue("debugMode"));
-                }
-                if (settings.HasValue("useToolbar"))
-                {
-                    useToolbar = bool.Parse(settings.GetValue("useToolbar"));
-                }
-                if (settings.HasValue("useAppLauncher"))
-                {
-                    useAppLauncher = bool.Parse(settings.GetValue("useAppLauncher"));
-                }
-                if (settings.HasValue("onlyInSpaceCenter"))
-                {
-                    onlyInSpaceCenter = bool.Parse(settings.GetValue("onlyInSpaceCenter"));
-                }
+			debugMode = settings.GetValue<bool>("debugMode", debugMode);
+			useToolbar = settings.GetValue<bool>("useToolbar", useToolbar);
+			useAppLauncher = settings.GetValue<bool>("useAppLauncher", useAppLauncher);
+			onlyInSpaceCenter = settings.GetValue<bool>("onlyInSpaceCenter", onlyInSpaceCenter);
 
-                if (settings.HasNode("DistantFlare"))
-                {
-                    ConfigNode distantFlare = settings.GetNode("DistantFlare");
+			if (settings.HasNode("DistantFlare"))
+			{
+				ConfigNodeWithSteroids distantFlare = ConfigNodeWithSteroids.from(settings.GetNode("DistantFlare"));
+				DistantFlare.flaresEnabled = distantFlare.GetValue<bool>("flaresEnabled", DistantFlare.flaresEnabled);
+				DistantFlare.flareSaturation = distantFlare.GetValue<float>("flareSaturation", DistantFlare.flareSaturation);
+				DistantFlare.flareSize = distantFlare.GetValue<float>("flareSize", DistantFlare.flareSize);
+				DistantFlare.flareBrightness = distantFlare.GetValue<float>("flareBrightness", DistantFlare.flareBrightness);
+				DistantFlare.ignoreDebrisFlare = distantFlare.GetValue<bool>("ignoreDebrisFlare", DistantFlare.ignoreDebrisFlare);
+				DistantFlare.debrisBrightness = distantFlare.GetValue<float>("debrisBrightness", DistantFlare.debrisBrightness);
+				DistantFlare.showNames = distantFlare.GetValue<bool>("showNames", DistantFlare.showNames);
+			}
 
-                    if (distantFlare.HasValue("flaresEnabled"))
-                    {
-                        DistantFlare.flaresEnabled = bool.Parse(distantFlare.GetValue("flaresEnabled"));
-                    }
-                    if (distantFlare.HasValue("flareSaturation"))
-                    {
-                        DistantFlare.flareSaturation = float.Parse(distantFlare.GetValue("flareSaturation"));
-                    }
-                    if (distantFlare.HasValue("flareSize"))
-                    {
-                        DistantFlare.flareSize = float.Parse(distantFlare.GetValue("flareSize"));
-                    }
-                    if (distantFlare.HasValue("flareBrightness"))
-                    {
-                        DistantFlare.flareBrightness = float.Parse(distantFlare.GetValue("flareBrightness"));
-                    }
-                    if (distantFlare.HasValue("ignoreDebrisFlare"))
-                    {
-                        DistantFlare.ignoreDebrisFlare = bool.Parse(distantFlare.GetValue("ignoreDebrisFlare"));
-                    }
-                    if (distantFlare.HasValue("debrisBrightness"))
-                    {
-                        DistantFlare.debrisBrightness = float.Parse(distantFlare.GetValue("debrisBrightness"));
-                    }
-                    if (distantFlare.HasValue("showNames"))
-                    {
-                        DistantFlare.showNames = bool.Parse(distantFlare.GetValue("showNames"));
-                    }
-                }
+			if (settings.HasNode("DistantVessel"))
+			{
+				ConfigNodeWithSteroids distantVessel = ConfigNodeWithSteroids.from(settings.GetNode("DistantVessel"));
+				DistantVessel.renderVessels = distantVessel.GetValue<bool>("renderVessels", DistantVessel.renderVessels);
+				DistantVessel.maxDistance = distantVessel.GetValue<float>("maxDistance", DistantVessel.maxDistance);
+				DistantVessel.renderMode = (ERenderMode)distantVessel.GetValue<int>("renderMode", (int)DistantVessel.renderMode);
+				DistantVessel.ignoreDebris = distantVessel.GetValue<bool>("ignoreDebris", DistantVessel.ignoreDebris);
+			}
 
-                if (settings.HasNode("DistantVessel"))
-                {
-                    ConfigNode distantVessel = settings.GetNode("DistantVessel");
+			if (settings.HasNode("SkyboxBrightness"))
+			{
+				ConfigNodeWithSteroids skyboxBrightness = ConfigNodeWithSteroids.from(settings.GetNode("SkyboxBrightness"));
+				SkyboxBrightness.changeSkybox = skyboxBrightness.GetValue<bool>("changeSkybox", SkyboxBrightness.changeSkybox);
+				SkyboxBrightness.maxBrightness = skyboxBrightness.GetValue<float>("maxBrightness", SkyboxBrightness.maxBrightness);
+			}
 
-                    if (distantVessel.HasValue("renderVessels"))
-                    {
-                        DistantVessel.renderVessels = bool.Parse(distantVessel.GetValue("renderVessels"));
-                    }
-                    if (distantVessel.HasValue("maxDistance"))
-                    {
-                        DistantVessel.maxDistance = float.Parse(distantVessel.GetValue("maxDistance"));
-                    }
-                    if (distantVessel.HasValue("renderMode"))
-                    {
-                        DistantVessel.renderMode = (ERenderMode)int.Parse(distantVessel.GetValue("renderMode"));
-                    }
-                    if (distantVessel.HasValue("ignoreDebris"))
-                    {
-                        DistantVessel.ignoreDebris = bool.Parse(distantVessel.GetValue("ignoreDebris"));
-                    }
-                }
-
-                if (settings.HasNode("SkyboxBrightness"))
-                {
-                    ConfigNode skyboxBrightness = settings.GetNode("SkyboxBrightness");
-
-                    if (skyboxBrightness.HasValue("changeSkybox"))
-                    {
-                        SkyboxBrightness.changeSkybox = bool.Parse(skyboxBrightness.GetValue("changeSkybox"));
-                    }
-                    if (skyboxBrightness.HasValue("maxBrightness"))
-                    {
-                        SkyboxBrightness.maxBrightness = float.Parse(skyboxBrightness.GetValue("maxBrightness"));
-                    }
-                }
-            }
-
-            hasLoaded = true;
-            Commit();
-        }
+			hasLoaded = true;
+			Commit();
+		}
 
         static public void SaveConfig()
         {
@@ -280,7 +229,8 @@ namespace DistantObject
             skyboxBrightness.AddValue("maxBrightness", SkyboxBrightness.maxBrightness);
 
             Commit();
-            settings.Save(CONFIG_PATHNAME);
+			if (!IO.Directory.Exists(Constants.CONFIG_DIRECTORY)) IO.Directory.CreateDirectory(Constants.CONFIG_DIRECTORY);
+            settings.Save(Constants.CONFIG_PATHNAME);
         }
 
         internal static void Commit()
