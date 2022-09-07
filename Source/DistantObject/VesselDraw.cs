@@ -48,7 +48,7 @@ namespace DistantObject
 
 		private void CheckDraw(Vessel vessel)
 		{
-			if (!vessel.loaded && Vector3d.Distance(vessel.GetWorldPos3D(), FlightGlobals.ship_position) < DistantObjectSettings.DistantVessel.maxDistance)
+			if (!vessel.loaded && Vector3d.Distance(vessel.GetWorldPos3D(), FlightGlobals.ship_position) < DistantObjectSettings.Instance.DistantVessel.maxDistance)
 			{
 				VesselDrawDatabase.Instance.VesselCheck(vessel);
 				VesselDrawDatabase.Instance.Draw(vessel);
@@ -60,7 +60,7 @@ namespace DistantObject
 		private void LazyCheckDraw(Vessel vessel)
 		{
 			VesselDrawDatabase.Instance.VesselCheck(vessel);
-			if (!vessel.loaded && Vector3d.Distance(vessel.GetWorldPos3D(), FlightGlobals.ship_position) < DistantObjectSettings.DistantVessel.maxDistance)
+			if (!vessel.loaded && Vector3d.Distance(vessel.GetWorldPos3D(), FlightGlobals.ship_position) < DistantObjectSettings.Instance.DistantVessel.maxDistance)
 			{
 				VesselDrawDatabase.Instance.Draw(vessel);
 			}
@@ -74,7 +74,7 @@ namespace DistantObject
 		[UsedImplicitly]
 		private void Update()
 		{
-			switch(DistantObjectSettings.DistantVessel.renderMode)
+			switch(DistantObjectSettings.Instance.DistantVessel.renderMode)
 			{
 				case DistantObjectSettings.ERenderMode.RenderTargetOnly:
 				{
@@ -96,14 +96,14 @@ namespace DistantObject
 				case DistantObjectSettings.ERenderMode.RenderAll:
 				{
 					n = ++n % FlightGlobals.Vessels.Count;
-					if (!FORBIDDEN_VESSELS.Contains(FlightGlobals.Vessels[n].vesselType) && !(FlightGlobals.Vessels[n].vesselType is VesselType.Debris && DistantObjectSettings.DistantVessel.ignoreDebris))
+					if (!FORBIDDEN_VESSELS.Contains(FlightGlobals.Vessels[n].vesselType) && !(FlightGlobals.Vessels[n].vesselType is VesselType.Debris && DistantObjectSettings.Instance.DistantVessel.ignoreDebris))
 						this.CheckDraw(FlightGlobals.Vessels[n]);
 				} break;
 
 				case DistantObjectSettings.ERenderMode.RenderAllDontForget:
 				{
 					n = ++n % FlightGlobals.Vessels.Count;
-					if (!FORBIDDEN_VESSELS.Contains(FlightGlobals.Vessels[n].vesselType) && !(FlightGlobals.Vessels[n].vesselType is VesselType.Debris && DistantObjectSettings.DistantVessel.ignoreDebris))
+					if (!FORBIDDEN_VESSELS.Contains(FlightGlobals.Vessels[n].vesselType) && !(FlightGlobals.Vessels[n].vesselType is VesselType.Debris && DistantObjectSettings.Instance.DistantVessel.ignoreDebris))
 						this.LazyCheckDraw(FlightGlobals.Vessels[n]);
 				} break;
 			}
@@ -115,7 +115,7 @@ namespace DistantObject
 			__instance = this;
 
 			//Load settings
-			DistantObjectSettings.LoadConfig();
+			DistantObjectSettings.Instance.LoadConfig();
 		}
 
 		[UsedImplicitly]
@@ -127,7 +127,7 @@ namespace DistantObject
 			GameEvents.onVesselGoOffRails.Add(this.OnVesselGoOffRails);
 			GameEvents.onVesselWillDestroy.Add(this.OnVesselWillDestroy);
 
-			DistantObjectSettings.Commit();
+			DistantObjectSettings.Instance.Commit();
 		}
 
 		[UsedImplicitly]
@@ -157,7 +157,7 @@ namespace DistantObject
 		private void OnVesselGoOnRails(Vessel vessel)
 		{
 			Log.detail("Vessel {0} Gone ON Rails.", vessel.vesselName);
-			if (DistantObjectSettings.DistantVessel.renderMode >= DistantObjectSettings.ERenderMode.RenderAllDontForget && vessel.GetType().Name == "Vessel")
+			if (DistantObjectSettings.Instance.DistantVessel.renderMode >= DistantObjectSettings.ERenderMode.RenderAllDontForget && vessel.GetType().Name == "Vessel")
 				VesselDrawDatabase.Instance.VesselCheck(vessel);
 		}
 
@@ -244,7 +244,7 @@ namespace DistantObject
 				return;
 			}
 
-			switch(DistantObjectSettings.DistantVessel.renderMode)
+			switch(DistantObjectSettings.Instance.DistantVessel.renderMode)
 			{
 				case DistantObjectSettings.ERenderMode.RenderTargetOnly:
 				{
@@ -256,7 +256,7 @@ namespace DistantObject
 				case DistantObjectSettings.ERenderMode.RenderAll:
 				{
 					List<Vessel> list = new List<Vessel>(this.meshEngineForVessel.Keys);
-					foreach (Vessel i in list) if (Vector3d.Distance(i.GetWorldPos3D(), FlightGlobals.ship_position) >= DistantObjectSettings.DistantVessel.maxDistance)
+					foreach (Vessel i in list) if (Vector3d.Distance(i.GetWorldPos3D(), FlightGlobals.ship_position) >= DistantObjectSettings.Instance.DistantVessel.maxDistance)
 						CheckErase(i);
 				} break;
 

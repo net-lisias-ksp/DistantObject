@@ -37,83 +37,79 @@ namespace DistantObject
         private static bool activated = false;
         private bool isActivated = false;
 
-        private bool flaresEnabled = false;
-        private float flareSaturation = 1.0f;
-        private float flareSize = 1.0f;
-        private float flareBrightness = 1.0f;
-        private bool ignoreDebrisFlare = false;
-        private float debrisBrightness = 0.15f;
-        private bool showNames = false;
-        private bool renderVessels = false;
-        private float maxDistance = 750000f;
-        private DistantObjectSettings.ERenderMode renderMode = DistantObjectSettings.ERenderMode.RenderTargetOnly;
-        private bool ignoreDebris = false;
-        private bool changeSkybox = true;
-        private float maxBrightness = 0.25f;
-        private bool debugMode = false;
-        private bool useToolbar = true;
-        private bool useAppLauncher = true;
-        private bool onlyInSpaceCenter = false;
+        private DistantObjectSettings buffer = new DistantObjectSettings();
 
         private static ApplicationLauncherButton appLauncherButton = null;
 
         private void ApplySettings()
         {
-            // Apply our local values to the settings file object, and then
-            // save it.
-            DistantObjectSettings.DistantFlare.flaresEnabled = flaresEnabled;
-            DistantObjectSettings.DistantFlare.flareSaturation = flareSaturation;
-            DistantObjectSettings.DistantFlare.flareSize = flareSize;
-            DistantObjectSettings.DistantFlare.flareBrightness = flareBrightness;
-            DistantObjectSettings.DistantFlare.ignoreDebrisFlare = ignoreDebrisFlare;
-            DistantObjectSettings.DistantFlare.debrisBrightness = debrisBrightness;
-            DistantObjectSettings.DistantFlare.showNames = showNames;
+			// Apply our local values to the settings file object, and then
+			// save it.
+			{
+				DistantObjectSettings.DistantFlareClass b = buffer.DistantFlare;
+				DistantObjectSettings.Instance.DistantFlare.flaresEnabled = b.flaresEnabled;
+				DistantObjectSettings.Instance.DistantFlare.flareSaturation = b.flareSaturation;
+				DistantObjectSettings.Instance.DistantFlare.flareSize = b.flareSize;
+				DistantObjectSettings.Instance.DistantFlare.flareBrightness = b.flareBrightness;
+				DistantObjectSettings.Instance.DistantFlare.ignoreDebrisFlare = b.ignoreDebrisFlare;
+				DistantObjectSettings.Instance.DistantFlare.debrisBrightness = b.debrisBrightness;
+				DistantObjectSettings.Instance.DistantFlare.showNames = b.showNames;
+			}
+			{
+				DistantObjectSettings.DistantVesselClass b = buffer.DistantVessel;
+				DistantObjectSettings.Instance.DistantVessel.renderVessels = b.renderVessels;
+				DistantObjectSettings.Instance.DistantVessel.maxDistance = b.maxDistance;
+				DistantObjectSettings.Instance.DistantVessel.renderMode = b.renderMode;
+				DistantObjectSettings.Instance.DistantVessel.ignoreDebris = b.ignoreDebris;
+			}
+			{
+				DistantObjectSettings.SkyboxBrightnessClass b = buffer.SkyboxBrightness;
+				DistantObjectSettings.Instance.SkyboxBrightness.changeSkybox = b.changeSkybox;
+				DistantObjectSettings.Instance.SkyboxBrightness.maxBrightness = b.maxBrightness;
+			}
+			DistantObjectSettings.Instance.debugMode = buffer.debugMode;
+            DistantObjectSettings.Instance.useToolbar = buffer.useToolbar;
+            DistantObjectSettings.Instance.useAppLauncher = buffer.useAppLauncher;
+            DistantObjectSettings.Instance.onlyInSpaceCenter = buffer.onlyInSpaceCenter;
 
-            DistantObjectSettings.DistantVessel.renderVessels = renderVessels;
-            DistantObjectSettings.DistantVessel.maxDistance = maxDistance;
-            DistantObjectSettings.DistantVessel.renderMode = renderMode;
-            DistantObjectSettings.DistantVessel.ignoreDebris = ignoreDebris;
-
-            DistantObjectSettings.SkyboxBrightness.changeSkybox = changeSkybox;
-            DistantObjectSettings.SkyboxBrightness.maxBrightness = maxBrightness;
-
-            DistantObjectSettings.debugMode = debugMode;
-            DistantObjectSettings.useToolbar = useToolbar;
-            DistantObjectSettings.useAppLauncher = useAppLauncher;
-            DistantObjectSettings.onlyInSpaceCenter = onlyInSpaceCenter;
-
-            DistantObjectSettings.SaveConfig();
+            DistantObjectSettings.Instance.SaveConfig();
         }
 
-        private void ReadSettings()
-        {
-            DistantObjectSettings.LoadConfig();
+		private void ReadSettings()
+		{
+			DistantObjectSettings.Instance.LoadConfig();
 
-            // Create local copies of the values, so we're not editing the
-            // config file until the user presses "Apply"
-            flaresEnabled = DistantObjectSettings.DistantFlare.flaresEnabled;
-            flareSaturation = DistantObjectSettings.DistantFlare.flareSaturation;
-            flareSize = DistantObjectSettings.DistantFlare.flareSize;
-            flareBrightness = DistantObjectSettings.DistantFlare.flareBrightness;
-            ignoreDebrisFlare = DistantObjectSettings.DistantFlare.ignoreDebrisFlare;
-            debrisBrightness = DistantObjectSettings.DistantFlare.debrisBrightness;
-            showNames = DistantObjectSettings.DistantFlare.showNames;
+			// Create local copies of the values, so we're not editing the
+			// config file until the user presses "Apply"
+			{
+				DistantObjectSettings.DistantFlareClass b = buffer.DistantFlare;
+				b.flaresEnabled = DistantObjectSettings.Instance.DistantFlare.flaresEnabled;
+				b.flareSaturation = DistantObjectSettings.Instance.DistantFlare.flareSaturation;
+				b.flareSize = DistantObjectSettings.Instance.DistantFlare.flareSize;
+				b.flareBrightness = DistantObjectSettings.Instance.DistantFlare.flareBrightness;
+				b.ignoreDebrisFlare = DistantObjectSettings.Instance.DistantFlare.ignoreDebrisFlare;
+				b.debrisBrightness = DistantObjectSettings.Instance.DistantFlare.debrisBrightness;
+				b.showNames = DistantObjectSettings.Instance.DistantFlare.showNames;
+			}
+			{
+				DistantObjectSettings.DistantVesselClass b = buffer.DistantVessel;
+				b.renderVessels = DistantObjectSettings.Instance.DistantVessel.renderVessels;
+				b.maxDistance = DistantObjectSettings.Instance.DistantVessel.maxDistance;
+				b.renderMode = DistantObjectSettings.Instance.DistantVessel.renderMode;
+				b.ignoreDebris = DistantObjectSettings.Instance.DistantVessel.ignoreDebris;
+			}
+			{
+				DistantObjectSettings.SkyboxBrightnessClass b = buffer.SkyboxBrightness;
+				b.changeSkybox = DistantObjectSettings.Instance.SkyboxBrightness.changeSkybox;
+				b.maxBrightness = DistantObjectSettings.Instance.SkyboxBrightness.maxBrightness;
+			}
+			buffer.debugMode = DistantObjectSettings.Instance.debugMode;
+			buffer.useToolbar = DistantObjectSettings.Instance.useToolbar;
+			buffer.useAppLauncher = DistantObjectSettings.Instance.useAppLauncher || !ToolbarManager.ToolbarAvailable;
+			buffer.onlyInSpaceCenter = DistantObjectSettings.Instance.onlyInSpaceCenter;
+		}
 
-            renderVessels = DistantObjectSettings.DistantVessel.renderVessels;
-            maxDistance = DistantObjectSettings.DistantVessel.maxDistance;
-            renderMode = DistantObjectSettings.DistantVessel.renderMode;
-            ignoreDebris = DistantObjectSettings.DistantVessel.ignoreDebris;
-
-            changeSkybox = DistantObjectSettings.SkyboxBrightness.changeSkybox;
-            maxBrightness = DistantObjectSettings.SkyboxBrightness.maxBrightness;
-
-            debugMode = DistantObjectSettings.debugMode;
-            useToolbar = DistantObjectSettings.useToolbar;
-            useAppLauncher = DistantObjectSettings.useAppLauncher || !ToolbarManager.ToolbarAvailable;
-            onlyInSpaceCenter = DistantObjectSettings.onlyInSpaceCenter;
-        }
-
-        void onAppLauncherTrue()
+		void onAppLauncherTrue()
         {
             if (appLauncherButton == null)
             {
@@ -156,7 +152,7 @@ namespace DistantObject
             {
                 button = ApplicationLauncher.Instance.AddModApplication(onAppLauncherTrue, onAppLauncherFalse,
                     null, null, null, null,
-                    (onlyInSpaceCenter) ? ApplicationLauncher.AppScenes.SPACECENTER : (ApplicationLauncher.AppScenes.FLIGHT | ApplicationLauncher.AppScenes.SPACECENTER),
+                    (buffer.onlyInSpaceCenter) ? ApplicationLauncher.AppScenes.SPACECENTER : (ApplicationLauncher.AppScenes.FLIGHT | ApplicationLauncher.AppScenes.SPACECENTER),
                     iconTexture);
 
                 if (button == null)
@@ -170,7 +166,7 @@ namespace DistantObject
 
         private void AddAppLauncherButton()
         {
-            if (useAppLauncher && appLauncherButton == null)
+            if (buffer.useAppLauncher && appLauncherButton == null)
             {
                 Log.trace("creating new appLauncher instance - " + this.GetInstanceID());
                 appLauncherButton = InitAppLauncherButton();
@@ -188,17 +184,17 @@ namespace DistantObject
 
         private void Awake()
         {
+            Log.trace("SettingsGui awake - " + this.GetInstanceID());
+
             //Load settings
             ReadSettings();
-
-            Log.trace("SettingsGui awake - " + this.GetInstanceID());
 
             GameEvents.onGUIApplicationLauncherReady.Add(AddAppLauncherButton);
             GameEvents.onGUIApplicationLauncherDestroyed.Add(RemoveAppLauncherButton);
 
             if (HighLogic.LoadedScene == GameScenes.SPACECENTER || HighLogic.LoadedScene == GameScenes.FLIGHT)
             {
-                if (useToolbar && ToolbarManager.ToolbarAvailable)
+                if (buffer.useToolbar && ToolbarManager.ToolbarAvailable)
                 {
                     toolbarButton();
                 }
@@ -227,137 +223,147 @@ namespace DistantObject
             GUILayout.EndHorizontal();
 
             //--- Flare Rendering --------------------------------------------
-            GUILayout.BeginVertical("Flare Rendering", new GUIStyle(GUI.skin.window));
-            GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
-            flaresEnabled = GUILayout.Toggle(flaresEnabled, "Enable Flares");
-            GUILayout.EndHorizontal();
+			{
+				DistantObjectSettings.DistantFlareClass b = buffer.DistantFlare;
+				GUILayout.BeginVertical("Flare Rendering", new GUIStyle(GUI.skin.window));
+				GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
+				b.flaresEnabled = GUILayout.Toggle(b.flaresEnabled, "Enable Flares");
+				GUILayout.EndHorizontal();
 
-            if (flaresEnabled)
-            {
-                GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
-                showNames = GUILayout.Toggle(showNames, "Show names on mouseover");
-                GUILayout.EndHorizontal();
+				if (b.flaresEnabled)
+				{
+					GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
+					b.showNames = GUILayout.Toggle(b.showNames, "Show names on mouseover");
+					GUILayout.EndHorizontal();
 
-                GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
-                GUILayout.Label("Flare Saturation");
-                GUILayout.EndHorizontal();
-                GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
-                flareSaturation = GUILayout.HorizontalSlider(flareSaturation, 0f, 1f, GUILayout.Width(220));
-                GUILayout.Label(string.Format("{0:0}", 100 * flareSaturation) + "%");
-                GUILayout.EndHorizontal();
+					GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
+					GUILayout.Label("Flare Saturation");
+					GUILayout.EndHorizontal();
+					GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
+					b.flareSaturation = GUILayout.HorizontalSlider(b.flareSaturation, 0f, 1f, GUILayout.Width(220));
+					GUILayout.Label(string.Format("{0:0}", 100 * b.flareSaturation) + "%");
+					GUILayout.EndHorizontal();
 
-                GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
-                GUILayout.Label("Flare Size");
-                GUILayout.EndHorizontal();
-                GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
-                flareSize = GUILayout.HorizontalSlider(flareSize, 0.5f, 1.5f, GUILayout.Width(220));
-                GUILayout.Label(string.Format("{0:0}", 100 * flareSize) + "%");
-                GUILayout.EndHorizontal();
+					GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
+					GUILayout.Label("Flare Size");
+					GUILayout.EndHorizontal();
+					GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
+					b.flareSize = GUILayout.HorizontalSlider(b.flareSize, 0.5f, 1.5f, GUILayout.Width(220));
+					GUILayout.Label(string.Format("{0:0}", 100 * b.flareSize) + "%");
+					GUILayout.EndHorizontal();
 
-                GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
-                GUILayout.Label("Flare Brightness");
-                GUILayout.EndHorizontal();
-                GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
-                flareBrightness = GUILayout.HorizontalSlider(flareBrightness, 0.0f, 1.0f, GUILayout.Width(220));
-                GUILayout.Label(string.Format("{0:0}", 100 * flareBrightness) + "%");
-                GUILayout.EndHorizontal();
+					GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
+					GUILayout.Label("Flare Brightness");
+					GUILayout.EndHorizontal();
+					GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
+					b.flareBrightness = GUILayout.HorizontalSlider(b.flareBrightness, 0.0f, 1.0f, GUILayout.Width(220));
+					GUILayout.Label(string.Format("{0:0}", 100 * b.flareBrightness) + "%");
+					GUILayout.EndHorizontal();
 
-                GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
-                ignoreDebrisFlare = !GUILayout.Toggle(!ignoreDebrisFlare, "Show Debris Flares");
-                GUILayout.EndHorizontal();
+					GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
+					b.ignoreDebrisFlare = !GUILayout.Toggle(!b.ignoreDebrisFlare, "Show Debris Flares");
+					GUILayout.EndHorizontal();
 
-                if (!ignoreDebrisFlare)
-                {
-                    GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
-                    GUILayout.Label("Debris Brightness");
-                    GUILayout.EndHorizontal();
-                    GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
-                    debrisBrightness = GUILayout.HorizontalSlider(debrisBrightness, 0f, 1f, GUILayout.Width(220));
-                    GUILayout.Label(string.Format("{0:0}", 100 * debrisBrightness) + "%");
-                    GUILayout.EndHorizontal();
-                }
-            }
-            GUILayout.EndVertical();
+					if (!b.ignoreDebrisFlare)
+					{
+						GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
+						GUILayout.Label("Debris Brightness");
+						GUILayout.EndHorizontal();
+						GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
+						b.debrisBrightness = GUILayout.HorizontalSlider(b.debrisBrightness, 0f, 1f, GUILayout.Width(220));
+						GUILayout.Label(string.Format("{0:0}", 100 * b.debrisBrightness) + "%");
+						GUILayout.EndHorizontal();
+					}
+				}
+				GUILayout.EndVertical();
+			}
 
             GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
             GUILayout.Label("");
             GUILayout.EndHorizontal();
 
             //--- Vessel Rendering -------------------------------------------
-            GUILayout.BeginVertical("Distant Vessel", new GUIStyle(GUI.skin.window));
+			{
+				DistantObjectSettings.DistantVesselClass b = buffer.DistantVessel;
+				GUILayout.BeginVertical("Distant Vessel", new GUIStyle(GUI.skin.window));
 
-            GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
-            renderVessels = GUILayout.Toggle(renderVessels, "Distant Vessel Rendering");
-            GUILayout.EndHorizontal();
+				GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
+				b.renderVessels = GUILayout.Toggle(b.renderVessels, "Distant Vessel Rendering");
+				GUILayout.EndHorizontal();
 
-            if (renderVessels)
-            {
-                GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
-                GUILayout.Label("Max Distance to Render");
-                GUILayout.EndHorizontal();
-                GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
-                maxDistance = GUILayout.HorizontalSlider(maxDistance, 2500f, 750000f, GUILayout.Width(200));
-                GUILayout.Label(string.Format("{0:0}", maxDistance) + "m");
-                GUILayout.EndHorizontal();
+				if (b.renderVessels)
+				{
+					GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
+					GUILayout.Label("Max Distance to Render");
+					GUILayout.EndHorizontal();
+					GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
+					b.maxDistance = GUILayout.HorizontalSlider(b.maxDistance, 2500f, 750000f, GUILayout.Width(200));
+					GUILayout.Label(string.Format("{0:0}", b.maxDistance) + "m");
+					GUILayout.EndHorizontal();
 
-                GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
-                GUILayout.Label(RENDER_MODE_LABEL[(int)renderMode]);
-                if (GUILayout.Button("Change"))
-                {
-                    renderMode = (DistantObjectSettings.ERenderMode)((int)(++renderMode)%(int)DistantObjectSettings.ERenderMode.SIZE);
-                }
-                GUILayout.EndHorizontal();
+					GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
+					GUILayout.Label(RENDER_MODE_LABEL[(int)b.renderMode]);
+					if (GUILayout.Button("Change"))
+					{
+						b.renderMode = (DistantObjectSettings.ERenderMode)((int)(++b.renderMode) % (int)DistantObjectSettings.ERenderMode.SIZE);
+					}
+					GUILayout.EndHorizontal();
 
-                if (renderMode > DistantObjectSettings.ERenderMode.RenderTargetOnly)
-                {
-                    GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
-                    ignoreDebris = GUILayout.Toggle(ignoreDebris, "Ignore Debris");
-                    GUILayout.EndHorizontal();
-                }
-            }
-            GUILayout.EndVertical();
+					if (b.renderMode > DistantObjectSettings.ERenderMode.RenderTargetOnly)
+					{
+						GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
+						b.ignoreDebris = GUILayout.Toggle(b.ignoreDebris, "Ignore Debris");
+						GUILayout.EndHorizontal();
+					}
+				}
+				GUILayout.EndVertical();
+			}
 
             GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
             GUILayout.Label("");
             GUILayout.EndHorizontal();
 
             //--- Skybox Brightness ------------------------------------------
-            GUILayout.BeginVertical("Skybox Dimming", new GUIStyle(GUI.skin.window));
-            GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
+			{
+				DistantObjectSettings.SkyboxBrightnessClass b = buffer.SkyboxBrightness;
+				GUILayout.BeginVertical("Skybox Dimming", new GUIStyle(GUI.skin.window));
+				GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
 
-            changeSkybox = GUILayout.Toggle(changeSkybox, "Dynamic Sky Dimming");
-            GUILayout.EndHorizontal();
+				b.changeSkybox = GUILayout.Toggle(b.changeSkybox, "Dynamic Sky Dimming");
+				GUILayout.EndHorizontal();
 
-            GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
-            GUILayout.Label("Maximum Sky Brightness");
-            GUILayout.EndHorizontal();
+				GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
+				GUILayout.Label("Maximum Sky Brightness");
+				GUILayout.EndHorizontal();
 
-            GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
-            maxBrightness = GUILayout.HorizontalSlider(maxBrightness, 0f, 1f, GUILayout.Width(220));
-            GUILayout.Label(string.Format("{0:0}", 100 * maxBrightness) + "%");
-            GUILayout.EndHorizontal();
-            GUILayout.EndVertical();
+				GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
+				b.maxBrightness = GUILayout.HorizontalSlider(b.maxBrightness, 0f, 1f, GUILayout.Width(220));
+				GUILayout.Label(string.Format("{0:0}%", 100 * b.maxBrightness));
+				GUILayout.EndHorizontal();
 
-            GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
+				GUILayout.EndVertical();
+			}
+
+			GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
             GUILayout.Label("");
             GUILayout.EndHorizontal();
 
             //--- Misc. ------------------------------------------------------
             GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
-            debugMode = GUILayout.Toggle(debugMode, "Debug Mode");
+            buffer.debugMode = GUILayout.Toggle(buffer.debugMode, "Debug Mode");
             GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
-            useAppLauncher = GUILayout.Toggle(useAppLauncher, "Use KSP AppLauncher (may require restart)");
+            buffer.useAppLauncher = GUILayout.Toggle(buffer.useAppLauncher, "Use KSP AppLauncher (may require restart)");
             GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
-            onlyInSpaceCenter = GUILayout.Toggle(onlyInSpaceCenter, "Show AppLauncher only in Space Center");
+            buffer.onlyInSpaceCenter = GUILayout.Toggle(buffer.onlyInSpaceCenter, "Show AppLauncher only in Space Center");
             GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
-            useToolbar = GUILayout.Toggle(useToolbar, "Use Blizzy's Toolbar (may require restart)");
+            buffer.useToolbar = GUILayout.Toggle(buffer.useToolbar, "Use Blizzy's Toolbar (may require restart)");
             GUILayout.EndHorizontal();
-            if (useAppLauncher == false && useToolbar == false)
+            if (buffer.useAppLauncher == false && buffer.useToolbar == false)
             {
-                useAppLauncher = true;
+                buffer.useAppLauncher = true;
             }
 
             GUILayout.BeginHorizontal(GUILayout.ExpandHeight(false));
@@ -401,29 +407,7 @@ namespace DistantObject
             }
         }
 
-        private void Reset()
-        {
-            flaresEnabled = true;
-            flareSaturation = 0.65f;
-            flareSize = 1.0f;
-            flareBrightness = 1.0f;
-            ignoreDebrisFlare = false;
-            debrisBrightness = 0.15f;
-            showNames = false;
-
-            renderVessels = false;
-            maxDistance = 750000f;
-            renderMode = DistantObjectSettings.ERenderMode.RenderTargetOnly;
-            ignoreDebris = false;
-
-            changeSkybox = true;
-            maxBrightness = 0.25f;
-
-            debugMode = false;
-            useToolbar = true;
-            useAppLauncher = true;
-            onlyInSpaceCenter = true;
-        }
+		private void Reset() => this.buffer = new DistantObjectSettings();
 
         public static void Toggle()
         {

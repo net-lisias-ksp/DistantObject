@@ -48,7 +48,7 @@ namespace DistantObject
 
             restorableGalaxyCube = false;
 
-            DistantObjectSettings.LoadConfig();
+            DistantObjectSettings.Instance.LoadConfig();
 
             if (GalaxyCubeControl.Instance != null)
             {
@@ -56,9 +56,9 @@ namespace DistantObject
                 galaxyColor = GalaxyCubeControl.Instance.maxGalaxyColor;
                 glareFadeLimit = GalaxyCubeControl.Instance.glareFadeLimit;
 
-                if (DistantObjectSettings.SkyboxBrightness.changeSkybox)
+                if (DistantObjectSettings.Instance.SkyboxBrightness.changeSkybox)
                 {
-                    GalaxyCubeControl.Instance.maxGalaxyColor = new Color(DistantObjectSettings.SkyboxBrightness.maxBrightness, DistantObjectSettings.SkyboxBrightness.maxBrightness, DistantObjectSettings.SkyboxBrightness.maxBrightness);
+                    GalaxyCubeControl.Instance.maxGalaxyColor = new Color(DistantObjectSettings.Instance.SkyboxBrightness.maxBrightness, DistantObjectSettings.Instance.SkyboxBrightness.maxBrightness, DistantObjectSettings.Instance.SkyboxBrightness.maxBrightness);
                     GalaxyCubeControl.Instance.glareFadeLimit = 1f;
                 }
             }
@@ -67,7 +67,7 @@ namespace DistantObject
 		[UsedImplicitly]
 		private void Start()
 		{
-			DistantObjectSettings.Commit();
+			DistantObjectSettings.Instance.Commit();
 		}
 
 		[UsedImplicitly]
@@ -94,7 +94,7 @@ namespace DistantObject
                 return;
             }
 
-            Color color = new Color(DistantObjectSettings.SkyboxBrightness.maxBrightness, DistantObjectSettings.SkyboxBrightness.maxBrightness, DistantObjectSettings.SkyboxBrightness.maxBrightness);
+            Color color = new Color(DistantObjectSettings.Instance.SkyboxBrightness.maxBrightness, DistantObjectSettings.Instance.SkyboxBrightness.maxBrightness, DistantObjectSettings.Instance.SkyboxBrightness.maxBrightness);
             Vector3d camPos = FlightCamera.fetch.mainCamera.transform.position;
             float camFov = FlightCamera.fetch.mainCamera.fieldOfView;
             Vector3d camAngle = FlightCamera.fetch.mainCamera.transform.forward;

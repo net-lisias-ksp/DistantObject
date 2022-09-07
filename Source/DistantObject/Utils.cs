@@ -108,22 +108,26 @@ namespace DistantObject
 		static internal readonly string CONFIG_PATHNAME = IO.Hierarchy<Startup>.PLUGINDATA.Solve(SETTINGS_FILE);
     }
 
-    class DistantObjectSettings
+	class DistantObjectSettings
     {
-        //--- Config file values
-        public struct DistantFlare
-        {
-            static public bool flaresEnabled = true;
-            static public bool ignoreDebrisFlare = false;
-            static public bool showNames = false;
-            static public float flareSaturation = 1.0f;
-            static public float flareSize = 1.0f;
-            static public float flareBrightness = 1.0f;
-            static readonly public string situations = "ORBITING,SUB_ORBITAL,ESCAPING,DOCKED,FLYING";
-            static public float debrisBrightness = 0.15f;
-        }
+		private static DistantObjectSettings __instance = null;
+		static internal DistantObjectSettings Instance = __instance ?? (__instance = new DistantObjectSettings());
+		static internal void Reset() => __instance = null;
 
-        public enum ERenderMode
+		//--- Config file values
+		public class DistantFlareClass
+		{
+			public bool flaresEnabled = true;
+			public bool ignoreDebrisFlare = false;
+			public bool showNames = false;
+			public float flareSaturation = 1.0f;
+			public float flareSize = 1.0f;
+			public float flareBrightness = 1.0f;
+			readonly public string situations = "ORBITING,SUB_ORBITAL,ESCAPING,DOCKED,FLYING";
+			public float debrisBrightness = 0.15f;
+		}
+
+		public enum ERenderMode
         {
             RenderTargetOnly = 0,
             RenderAll = 1,
@@ -131,28 +135,36 @@ namespace DistantObject
             SIZE = 3
         }
 
-        public struct DistantVessel
-        {
-            static public bool renderVessels = false;
-            static public float maxDistance = 750000.0f;
-            static public ERenderMode renderMode = ERenderMode.RenderTargetOnly;
-            static public bool ignoreDebris = false;
-        }
+		public class DistantVesselClass
+		{
+			public bool renderVessels = false;
+			public float maxDistance = 750000.0f;
+			public ERenderMode renderMode = ERenderMode.RenderTargetOnly;
+			public bool ignoreDebris = false;
+		}
 
-        public struct SkyboxBrightness
-        {
-            static public bool changeSkybox = true;
-            static public float maxBrightness = 0.25f;
-        }
+		public class SkyboxBrightnessClass
+		{
+			public bool changeSkybox = true;
+			public float maxBrightness = 0.25f;
+			public int dimFOV = 5;
+			public float referenceBodySize = 60f;
+			public float minimumSignificantBodySize = 1.0f;
+			public float minimumTargetRelativeAngle = 100f;
+		}
 
-        static public bool debugMode = false;
-        static public bool useToolbar = true;
-        static public bool useAppLauncher = true;
-        static public bool onlyInSpaceCenter = false;
+		public bool debugMode = false;
+		public bool useToolbar = true;
+		public bool useAppLauncher = true;
+		public bool onlyInSpaceCenter = false;
 
-        //--- Internal values
-        static private bool hasLoaded = false;
-		static public void LoadConfig()
+		public readonly DistantFlareClass DistantFlare = new DistantFlareClass();
+		public readonly DistantVesselClass DistantVessel = new DistantVesselClass();
+		public readonly SkyboxBrightnessClass SkyboxBrightness = new SkyboxBrightnessClass();
+
+		//--- Internal values
+		private bool hasLoaded = false;
+		public void LoadConfig()
 		{
 			if (hasLoaded) return;
 
@@ -193,13 +205,25 @@ namespace DistantObject
 				ConfigNodeWithSteroids skyboxBrightness = ConfigNodeWithSteroids.from(settings.GetNode("SkyboxBrightness"));
 				SkyboxBrightness.changeSkybox = skyboxBrightness.GetValue<bool>("changeSkybox", SkyboxBrightness.changeSkybox);
 				SkyboxBrightness.maxBrightness = skyboxBrightness.GetValue<float>("maxBrightness", SkyboxBrightness.maxBrightness);
+				SkyboxBrightness.referenceBodySize = Math.Min(1.0f,
+						skyboxBrightness.GetValue<float>("referenceBodySize", SkyboxBrightness.referenceBodySize)
+					);
+				SkyboxBrightness.dimFOV = Math.Max(0, Math.Min(10,
+						skyboxBrightness.GetValue<int>("dimFOV", SkyboxBrightness.dimFOV)
+					));
+				SkyboxBrightness.minimumSignificantBodySize = Math.Min(1.0f,
+						skyboxBrightness.GetValue<float>("minimumSignificantBodySize", SkyboxBrightness.minimumSignificantBodySize)
+					);
+				SkyboxBrightness.minimumTargetRelativeAngle = Math.Max(1, Math.Min(180,
+						skyboxBrightness.GetValue<float>("minimumTargetRelativeAngle", SkyboxBrightness.minimumTargetRelativeAngle)
+					));
 			}
 
 			hasLoaded = true;
 			Commit();
 		}
 
-        static public void SaveConfig()
+		public void SaveConfig()
         {
             ConfigNode settings = new ConfigNode();
 
@@ -227,13 +251,17 @@ namespace DistantObject
             ConfigNode skyboxBrightness = settings.AddNode("SkyboxBrightness");
             skyboxBrightness.AddValue("changeSkybox", SkyboxBrightness.changeSkybox);
             skyboxBrightness.AddValue("maxBrightness", SkyboxBrightness.maxBrightness);
+			skyboxBrightness.AddValue("dimFOV", SkyboxBrightness.dimFOV);
+			skyboxBrightness.AddValue("referenceBodySize", SkyboxBrightness.referenceBodySize);
+			skyboxBrightness.AddValue("minimumSignificantBodySize", SkyboxBrightness.minimumSignificantBodySize);
+			skyboxBrightness.AddValue("minimumTargetRelativeAngle", SkyboxBrightness.minimumTargetRelativeAngle);
 
             Commit();
 			if (!IO.Directory.Exists(Constants.CONFIG_DIRECTORY)) IO.Directory.CreateDirectory(Constants.CONFIG_DIRECTORY);
             settings.Save(Constants.CONFIG_PATHNAME);
         }
 
-        internal static void Commit()
+		internal void Commit()
         {
             #if !DEBUG
             Log.level = (debugMode ? KSPe.Util.Log.Level.DETAIL : KSPe.Util.Log.Level.INFO);
