@@ -1,5 +1,10 @@
 # Distant Object Enhancement (DOE) :: Change Log
 
+* 2022-0908: 2.1.1.10 (LisiasT) for KSP >= 1.3.1 **EXPERIMENTAL**
+	+ Fixes the Sky dimming for the Sun
+	+ Implements some parameters to customise the dimming for planets.
+	+ Work issues:
+		- [#23](https://github.com/net-lisias-ksp/DistantObject/issues/23) Parameterise the FoV of the celestial body inducing the SkyBox to dim #23 
 * 2022-0727: 2.1.1.9 (LisiasT) for KSP >= 1.3.1
 	+ Bug hunting release.
 	+ Closes issues:
