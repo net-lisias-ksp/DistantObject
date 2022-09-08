@@ -101,7 +101,7 @@ namespace DistantObject
 
     class Constants
     {
-        static internal readonly string DistantObject = "Distant Object Enhancement v" + Version.Text;
+        static internal readonly string DistantObject = "Distant Object Enhancement v" + Version.Number;
 		internal const string SETTINGS_FILE = "Settings.cfg";
 		static internal readonly string REFERENCE_CONFIG_PATHNAME = IO.Hierarchy<Startup>.GAMEDATA.Solve("PluginData", SETTINGS_FILE);
 		static internal readonly string CONFIG_DIRECTORY = IO.Hierarchy<Startup>.PLUGINDATA.Solve();
