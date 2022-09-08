@@ -58,7 +58,11 @@ namespace DistantObject
 
                 if (DistantObjectSettings.Instance.SkyboxBrightness.changeSkybox)
                 {
-                    GalaxyCubeControl.Instance.maxGalaxyColor = new Color(DistantObjectSettings.Instance.SkyboxBrightness.maxBrightness, DistantObjectSettings.Instance.SkyboxBrightness.maxBrightness, DistantObjectSettings.Instance.SkyboxBrightness.maxBrightness);
+					GalaxyCubeControl.Instance.maxGalaxyColor = new Color(
+							(float)DistantObjectSettings.Instance.SkyboxBrightness.maxBrightness,
+							(float)DistantObjectSettings.Instance.SkyboxBrightness.maxBrightness,
+							(float)DistantObjectSettings.Instance.SkyboxBrightness.maxBrightness
+						);
                     GalaxyCubeControl.Instance.glareFadeLimit = 1f;
                 }
             }
@@ -94,40 +98,41 @@ namespace DistantObject
                 return;
             }
 
-            Color color = new Color(DistantObjectSettings.Instance.SkyboxBrightness.maxBrightness, DistantObjectSettings.Instance.SkyboxBrightness.maxBrightness, DistantObjectSettings.Instance.SkyboxBrightness.maxBrightness);
             Vector3d camPos = FlightCamera.fetch.mainCamera.transform.position;
-            float camFov = FlightCamera.fetch.mainCamera.fieldOfView;
+            double camFov = FlightCamera.fetch.mainCamera.fieldOfView;
             Vector3d camAngle = FlightCamera.fetch.mainCamera.transform.forward;
 
+			double targetColorScalar = 1.0;
             for (int i = 0; i < FlightGlobals.Bodies.Count; ++i)
             {
                 double bodyRadius = FlightGlobals.Bodies[i].Radius;
                 double bodyDist = FlightGlobals.Bodies[i].GetAltitude(camPos) + bodyRadius;
-                float bodySize = Mathf.Acos((float)(Math.Sqrt(bodyDist * bodyDist - bodyRadius * bodyRadius) / bodyDist)) * Mathf.Rad2Deg;
+				double bodySize = Math.Acos((Math.Sqrt(bodyDist * bodyDist - bodyRadius * bodyRadius) / bodyDist)) * (double)Mathf.Rad2Deg;
 
-                if (bodySize > 1.0f)
-                {
-                    Vector3d bodyPosition = FlightGlobals.Bodies[i].position;
-                    Vector3d targetVectorToSun = FlightGlobals.Bodies[0].position - bodyPosition;
-                    Vector3d targetVectorToCam = camPos - bodyPosition;
+				if (bodySize > 1.0)
+				{
+					Vector3d bodyPosition = FlightGlobals.Bodies[i].position;
+					Vector3d targetVectorToSun = FlightGlobals.Bodies[0].position - bodyPosition;
+					Vector3d targetVectorToCam = camPos - bodyPosition;
 
-                    float targetRelAngle = (float)Vector3d.Angle(targetVectorToSun, targetVectorToCam);
-                    targetRelAngle = Mathf.Max(targetRelAngle, bodySize);
-                    targetRelAngle = Mathf.Min(targetRelAngle, 100.0f);
-                    targetRelAngle = 1.0f - ((targetRelAngle - bodySize) / (100.0f - bodySize));
+					double targetRelAngle = Vector3d.Angle(targetVectorToSun, targetVectorToCam);
+					targetRelAngle = Math.Max(targetRelAngle, bodySize);
+					targetRelAngle = Math.Min(targetRelAngle, 100.0);
+					targetRelAngle = 1.0 - ((targetRelAngle - bodySize) / (100.0 - bodySize));
 
-                    float CBAngle = Mathf.Max(0.0f, Vector3.Angle((bodyPosition - camPos).normalized, camAngle) - bodySize);
-                    CBAngle = 1.0f - Mathf.Min(1.0f, Math.Max(0.0f, (CBAngle - (camFov / 2.0f)) - 5.0f) / (camFov / 4.0f));
-                    bodySize = Mathf.Min(bodySize, 60.0f);
+					double CBAngle = Math.Max(0.0, Vector3.Angle((bodyPosition - camPos).normalized, camAngle) - bodySize);
+					CBAngle = 1.0 - Math.Min(1.0, Math.Max(0.0, (CBAngle - (camFov / 2.0)) - 5.0) / (camFov / 4.0));
+					bodySize = Math.Min(bodySize, 60.0);
 
-                    float colorScalar = 1.0f - (targetRelAngle * (Mathf.Sqrt(bodySize / 60.0f)) * CBAngle);
-                    color.r *= colorScalar;
-                    color.g *= colorScalar;
-                    color.b *= colorScalar;
-                }
-            }
-
-            GalaxyCubeControl.Instance.maxGalaxyColor = color;
+					double colorScalar = 1.0 - (targetRelAngle * (Math.Sqrt(bodySize / 60.0)) * CBAngle);
+					targetColorScalar = Math.Min(targetColorScalar, colorScalar);
+				}
+			}
+			{
+				float c = (float)DistantObjectSettings.Instance.SkyboxBrightness.maxBrightness;
+				Color color = new Color(c,c,c) * (float)targetColorScalar;
+				GalaxyCubeControl.Instance.maxGalaxyColor = color;
+			}
         }
 
 		internal void SetActiveTo(bool renderVessels)

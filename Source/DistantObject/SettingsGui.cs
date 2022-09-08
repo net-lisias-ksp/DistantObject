@@ -337,7 +337,7 @@ namespace DistantObject
 				GUILayout.EndHorizontal();
 
 				GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
-				b.maxBrightness = GUILayout.HorizontalSlider(b.maxBrightness, 0f, 1f, GUILayout.Width(220));
+				b.maxBrightness = GUILayout.HorizontalSlider((float)b.maxBrightness, 0f, 1f, GUILayout.Width(220));
 				GUILayout.Label(string.Format("{0:0}%", 100 * b.maxBrightness));
 				GUILayout.EndHorizontal();
 

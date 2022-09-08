@@ -595,7 +595,7 @@ namespace DistantObject
 			{
 				// Apply fudge factors here so people who turn off the skybox don't turn off the flares, too.
 				// And avoid a divide-by-zero.
-				skyboxDimFactor = Mathf.Max(0.5f, GalaxyCubeControl.Instance.maxGalaxyColor.r / Mathf.Max(0.0078125f, DistantObjectSettings.Instance.SkyboxBrightness.maxBrightness));
+				skyboxDimFactor = (float)Math.Max(0.5, GalaxyCubeControl.Instance.maxGalaxyColor.r / Math.Max(0.0078125, DistantObjectSettings.Instance.SkyboxBrightness.maxBrightness));
 			}
 			else
 			{
