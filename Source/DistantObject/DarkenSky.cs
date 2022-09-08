@@ -103,7 +103,26 @@ namespace DistantObject
             Vector3d camAngle = FlightCamera.fetch.mainCamera.transform.forward;
 
 			double targetColorScalar = 1.0;
-            for (int i = 0; i < FlightGlobals.Bodies.Count; ++i)
+
+			// The Sun needs special handling
+			{
+				double sunRadius = FlightGlobals.Bodies[0].Radius;
+				double sunDist = FlightGlobals.Bodies[0].GetAltitude(camPos) + sunRadius;
+				double sunAngularSize = Math.Acos((Math.Sqrt(sunDist * sunDist - sunRadius * sunRadius) / sunDist)) * (double)Mathf.Rad2Deg;
+
+				if (sunAngularSize > 1.0)
+				{
+					Vector3d sunPosition = FlightGlobals.Bodies[0].position;
+
+					// CSAngle = Camera to Sun angle
+					double CSAngle = Math.Max(0.0, Vector3.Angle((sunPosition - camPos).normalized, camAngle) - sunAngularSize);
+					CSAngle = 1.0 - Math.Min(1.0, Math.Max(0.0, (CSAngle - (camFov / 2.0))) / (camFov / 4.0));
+
+					targetColorScalar = 1.0 - (Math.Sqrt(sunAngularSize) * CSAngle);
+				}
+			}
+
+			for (int i = 1; i < FlightGlobals.Bodies.Count; ++i)
             {
                 double bodyRadius = FlightGlobals.Bodies[i].Radius;
                 double bodyDist = FlightGlobals.Bodies[i].GetAltitude(camPos) + bodyRadius;
