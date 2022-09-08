@@ -147,6 +147,9 @@ namespace DistantObject
 		{
 			public bool changeSkybox = true;
 			public double maxBrightness = 0.25f;
+			public double referenceBodySize = 60f;
+			public double minimumSignificantBodySize = 1.0f;
+			public double minimumTargetRelativeAngle = 100f;
 		}
 
 		public bool debugMode = false;
@@ -201,6 +204,15 @@ namespace DistantObject
 				ConfigNodeWithSteroids skyboxBrightness = ConfigNodeWithSteroids.from(settings.GetNode("SkyboxBrightness"));
 				SkyboxBrightness.changeSkybox = skyboxBrightness.GetValue<bool>("changeSkybox", SkyboxBrightness.changeSkybox);
 				SkyboxBrightness.maxBrightness = skyboxBrightness.GetValue<double>("maxBrightness", SkyboxBrightness.maxBrightness);
+				SkyboxBrightness.referenceBodySize = Math.Min(1.0,
+						skyboxBrightness.GetValue<double>("referenceBodySize", SkyboxBrightness.referenceBodySize)
+					);
+				SkyboxBrightness.minimumSignificantBodySize = Math.Min(1.0,
+						skyboxBrightness.GetValue<double>("minimumSignificantBodySize", SkyboxBrightness.minimumSignificantBodySize)
+					);
+				SkyboxBrightness.minimumTargetRelativeAngle = Math.Max(1, Math.Min(180,
+						skyboxBrightness.GetValue<double>("minimumTargetRelativeAngle", SkyboxBrightness.minimumTargetRelativeAngle)
+					));
 			}
 
 			hasLoaded = true;
@@ -235,6 +247,9 @@ namespace DistantObject
             ConfigNode skyboxBrightness = settings.AddNode("SkyboxBrightness");
             skyboxBrightness.AddValue("changeSkybox", SkyboxBrightness.changeSkybox);
             skyboxBrightness.AddValue("maxBrightness", SkyboxBrightness.maxBrightness);
+			skyboxBrightness.AddValue("referenceBodySize", SkyboxBrightness.referenceBodySize);
+			skyboxBrightness.AddValue("minimumSignificantBodySize", SkyboxBrightness.minimumSignificantBodySize);
+			skyboxBrightness.AddValue("minimumTargetRelativeAngle", SkyboxBrightness.minimumTargetRelativeAngle);
 
             Commit();
 			if (!IO.Directory.Exists(Constants.CONFIG_DIRECTORY)) IO.Directory.CreateDirectory(Constants.CONFIG_DIRECTORY);

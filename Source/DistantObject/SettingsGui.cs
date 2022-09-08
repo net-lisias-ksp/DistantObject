@@ -66,6 +66,9 @@ namespace DistantObject
 				DistantObjectSettings.SkyboxBrightnessClass b = buffer.SkyboxBrightness;
 				DistantObjectSettings.Instance.SkyboxBrightness.changeSkybox = b.changeSkybox;
 				DistantObjectSettings.Instance.SkyboxBrightness.maxBrightness = b.maxBrightness;
+				DistantObjectSettings.Instance.SkyboxBrightness.referenceBodySize = b.referenceBodySize;
+				DistantObjectSettings.Instance.SkyboxBrightness.minimumSignificantBodySize = b.minimumSignificantBodySize;
+				DistantObjectSettings.Instance.SkyboxBrightness.minimumTargetRelativeAngle = b.minimumTargetRelativeAngle;
 			}
 			DistantObjectSettings.Instance.debugMode = buffer.debugMode;
             DistantObjectSettings.Instance.useToolbar = buffer.useToolbar;
@@ -102,6 +105,9 @@ namespace DistantObject
 				DistantObjectSettings.SkyboxBrightnessClass b = buffer.SkyboxBrightness;
 				b.changeSkybox = DistantObjectSettings.Instance.SkyboxBrightness.changeSkybox;
 				b.maxBrightness = DistantObjectSettings.Instance.SkyboxBrightness.maxBrightness;
+				b.minimumSignificantBodySize = DistantObjectSettings.Instance.SkyboxBrightness.minimumSignificantBodySize;
+				b.minimumTargetRelativeAngle = DistantObjectSettings.Instance.SkyboxBrightness.minimumTargetRelativeAngle;
+				b.referenceBodySize = DistantObjectSettings.Instance.SkyboxBrightness.referenceBodySize;
 			}
 			buffer.debugMode = DistantObjectSettings.Instance.debugMode;
 			buffer.useToolbar = DistantObjectSettings.Instance.useToolbar;
@@ -339,6 +345,30 @@ namespace DistantObject
 				GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
 				b.maxBrightness = GUILayout.HorizontalSlider((float)b.maxBrightness, 0f, 1f, GUILayout.Width(220));
 				GUILayout.Label(string.Format("{0:0}%", 100 * b.maxBrightness));
+				GUILayout.EndHorizontal();
+
+				GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
+				GUILayout.Label("Reference Body Size");
+				GUILayout.EndHorizontal();
+				GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
+				b.referenceBodySize = GUILayout.HorizontalSlider((float)b.referenceBodySize, 1f, 100f, GUILayout.Width(220));
+				GUILayout.Label(string.Format("{0:0.0}", b.referenceBodySize));
+				GUILayout.EndHorizontal();
+
+				GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
+				GUILayout.Label("Minimum Significant Body Size");
+				GUILayout.EndHorizontal();
+				GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
+				b.minimumSignificantBodySize = GUILayout.HorizontalSlider((float)b.minimumSignificantBodySize, 1f, 180f, GUILayout.Width(220));
+				GUILayout.Label(string.Format("{0:0.0}", b.minimumSignificantBodySize));
+				GUILayout.EndHorizontal();
+
+				GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
+				GUILayout.Label("Minimum Target Relative Angle");
+				GUILayout.EndHorizontal();
+				GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
+				b.minimumTargetRelativeAngle = GUILayout.HorizontalSlider((float)b.minimumTargetRelativeAngle, 1f, 180f, GUILayout.Width(220));
+				GUILayout.Label(string.Format("{0:0.0}", b.minimumTargetRelativeAngle));
 				GUILayout.EndHorizontal();
 
 				GUILayout.EndVertical();

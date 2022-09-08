@@ -110,7 +110,7 @@ namespace DistantObject
 				double sunDist = FlightGlobals.Bodies[0].GetAltitude(camPos) + sunRadius;
 				double sunAngularSize = Math.Acos((Math.Sqrt(sunDist * sunDist - sunRadius * sunRadius) / sunDist)) * (double)Mathf.Rad2Deg;
 
-				if (sunAngularSize > 1.0)
+				if (sunAngularSize > DistantObjectSettings.Instance.SkyboxBrightness.minimumSignificantBodySize)
 				{
 					Vector3d sunPosition = FlightGlobals.Bodies[0].position;
 
@@ -126,25 +126,25 @@ namespace DistantObject
             {
                 double bodyRadius = FlightGlobals.Bodies[i].Radius;
                 double bodyDist = FlightGlobals.Bodies[i].GetAltitude(camPos) + bodyRadius;
-				double bodyAngularSize = Math.Acos((Math.Sqrt(bodyDist * bodyDist - bodyRadius * bodyRadius) / bodyDist)) * (double)Mathf.Rad2Deg;
+				double bodySize = Math.Acos((Math.Sqrt(bodyDist * bodyDist - bodyRadius * bodyRadius) / bodyDist)) * (double)Mathf.Rad2Deg;
 
-				if (bodyAngularSize > 1.0)
+				if (bodySize < DistantObjectSettings.Instance.SkyboxBrightness.minimumSignificantBodySize) continue;
+
 				{
 					Vector3d bodyPosition = FlightGlobals.Bodies[i].position;
 					Vector3d targetVectorToSun = FlightGlobals.Bodies[0].position - bodyPosition;
 					Vector3d targetVectorToCam = camPos - bodyPosition;
 
-					double targetRelAngle = Vector3d.Angle(targetVectorToSun, targetVectorToCam);
-					targetRelAngle = Math.Max(targetRelAngle, bodyAngularSize);
-					targetRelAngle = Math.Min(targetRelAngle, 100.0);
-					targetRelAngle = 1.0 - ((targetRelAngle - bodyAngularSize) / (100.0 - bodyAngularSize));
+					double targetRelAngle = (float)Vector3d.Angle(targetVectorToSun, targetVectorToCam);
+					targetRelAngle = Math.Max(targetRelAngle, bodySize);
+					targetRelAngle = Math.Min(targetRelAngle, DistantObjectSettings.Instance.SkyboxBrightness.minimumTargetRelativeAngle);
+					targetRelAngle = 1.0 - ((targetRelAngle - bodySize) / (DistantObjectSettings.Instance.SkyboxBrightness.minimumTargetRelativeAngle - bodySize));
 
-					// CBAngle = Camera to Body angle
-					double CBAngle = Math.Max(0.0, Vector3.Angle((bodyPosition - camPos).normalized, camAngle) - bodyAngularSize);
+					double CBAngle = Math.Max(0.0, Vector3.Angle((bodyPosition - camPos).normalized, camAngle) - bodySize);
 					CBAngle = 1.0 - Math.Min(1.0, Math.Max(0.0, (CBAngle - (camFov / 2.0)) - 5.0) / (camFov / 4.0));
-					bodyAngularSize = Math.Min(bodyAngularSize, 60.0);
+					bodySize = Math.Min(bodySize, DistantObjectSettings.Instance.SkyboxBrightness.referenceBodySize);
 
-					double colorScalar = 1.0 - (targetRelAngle * (Math.Sqrt(bodyAngularSize / 60.0)) * CBAngle);
+					double colorScalar = 1.0 - (targetRelAngle * (Math.Sqrt(bodySize / DistantObjectSettings.Instance.SkyboxBrightness.referenceBodySize)) * CBAngle);
 					targetColorScalar = Math.Min(targetColorScalar, colorScalar);
 				}
 			}
