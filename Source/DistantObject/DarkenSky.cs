@@ -107,24 +107,25 @@ namespace DistantObject
             {
                 double bodyRadius = FlightGlobals.Bodies[i].Radius;
                 double bodyDist = FlightGlobals.Bodies[i].GetAltitude(camPos) + bodyRadius;
-				double bodySize = Math.Acos((Math.Sqrt(bodyDist * bodyDist - bodyRadius * bodyRadius) / bodyDist)) * (double)Mathf.Rad2Deg;
+				double bodyAngularSize = Math.Acos((Math.Sqrt(bodyDist * bodyDist - bodyRadius * bodyRadius) / bodyDist)) * (double)Mathf.Rad2Deg;
 
-				if (bodySize > 1.0)
+				if (bodyAngularSize > 1.0)
 				{
 					Vector3d bodyPosition = FlightGlobals.Bodies[i].position;
 					Vector3d targetVectorToSun = FlightGlobals.Bodies[0].position - bodyPosition;
 					Vector3d targetVectorToCam = camPos - bodyPosition;
 
 					double targetRelAngle = Vector3d.Angle(targetVectorToSun, targetVectorToCam);
-					targetRelAngle = Math.Max(targetRelAngle, bodySize);
+					targetRelAngle = Math.Max(targetRelAngle, bodyAngularSize);
 					targetRelAngle = Math.Min(targetRelAngle, 100.0);
-					targetRelAngle = 1.0 - ((targetRelAngle - bodySize) / (100.0 - bodySize));
+					targetRelAngle = 1.0 - ((targetRelAngle - bodyAngularSize) / (100.0 - bodyAngularSize));
 
-					double CBAngle = Math.Max(0.0, Vector3.Angle((bodyPosition - camPos).normalized, camAngle) - bodySize);
+					// CBAngle = Camera to Body angle
+					double CBAngle = Math.Max(0.0, Vector3.Angle((bodyPosition - camPos).normalized, camAngle) - bodyAngularSize);
 					CBAngle = 1.0 - Math.Min(1.0, Math.Max(0.0, (CBAngle - (camFov / 2.0)) - 5.0) / (camFov / 4.0));
-					bodySize = Math.Min(bodySize, 60.0);
+					bodyAngularSize = Math.Min(bodyAngularSize, 60.0);
 
-					double colorScalar = 1.0 - (targetRelAngle * (Math.Sqrt(bodySize / 60.0)) * CBAngle);
+					double colorScalar = 1.0 - (targetRelAngle * (Math.Sqrt(bodyAngularSize / 60.0)) * CBAngle);
 					targetColorScalar = Math.Min(targetColorScalar, colorScalar);
 				}
 			}
