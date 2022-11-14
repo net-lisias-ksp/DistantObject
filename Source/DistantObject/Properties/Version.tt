@@ -86,7 +86,7 @@ namespace <#= PROJECT_NAME #>
 #if DEBUG
 		public const string Text = Number + " /L DEBUG";
 #else
-		public const string Text = Number + " /L Experimental";
+		public const string Text = Number + " /L";
 #endif
 	}
 }
