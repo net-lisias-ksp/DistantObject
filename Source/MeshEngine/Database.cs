@@ -93,19 +93,19 @@ namespace DistantObject.MeshEngine
 					}
 					else
 					{
-						Log.error("Could not find a model for part {0}.  Part will not render for VesselDraw.", partName);
+						Log.warn("Could not find a model for part {0}.  Part will not render for VesselDraw.", partName);
 						sawErrors = true;
 					}
 				}
 				else
 				{
-					Log.error("Could not find ConfigNode for part {0}.  Part will not render for VesselDraw.", urlConfig.name);
+					Log.warn("Could not find ConfigNode for part {0}.  Part will not render for VesselDraw.", urlConfig.name);
 					sawErrors = true;
 				}
 			}
 
 			Log.dbg("VesselDraw initialized");
-			if (sawErrors) Log.error("Some parts do not have ConfigNode entries in the game database.  Some distant vessels will be missing pieces.");
+			if (sawErrors) Log.warn("Some parts do not have ConfigNode entries in the game database.  Some distant vessels will be missing pieces.");
 		}
 
 		private static bool AddModelToPart(string partName, string modelPath)
