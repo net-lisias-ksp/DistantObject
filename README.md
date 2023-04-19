@@ -7,14 +7,23 @@ Distant Object Enhancement /L is DOE under Lisias' management!
 
 ## In a Hurry
 
-* [Latest Release](https://github.com/net-lisias-ksp/DistantObject/releases)
-	+ [Binaries](https://github.com/net-lisias-ksp/DistantObject/tree/Archive)
-* [Source](https://github.com/net-lisias-ksp/DistantObject)
 * Documentation
+	+ [Homepage](http://ksp.lisias.net/add-ons/DistantObject/) on L Aerospace
 	+ [Project's README](https://github.com/net-lisias-ksp/DistantObject/blob/master/README.md)
 	+ [Install Instructions](https://github.com/net-lisias-ksp/DistantObject/blob/master/INSTALL.md)
 	+ [Change Log](./CHANGE_LOG.md)
-	+ [TODO](./TODO.md) list
+* Official Distribution Sites:
+	+ [CurseForge](https://legacy.curseforge.com/kerbal/ksp-mods/distant-object-enhancement-l)
+	+ [SpaceDock](https://spacedock.info/mod/2274/Distant%20Object%20Enhancement%20/L)
+	+ [Latest Release](https://github.com/net-lisias-ksp/DistantObject/releases)
+		- [Archive](https://github.com/net-lisias-ksp/DistantObject/tree/Archive)
+* Support
+	+ [Homepage](http://ksp.lisias.net/add-ons/DistantObject/Support/) on L Aerospace
+	+ [Reddit](https://www.reddit.com/r/net_lisias_ksp/)
+	+ [Forum](https://forum.kerbalspaceprogram.com/index.php?/topic/179030-*/)
+	+ [Discussions on Github](https://github.com/net-lisias-ksp/DistantObject/discussions/categories/support)
+* [Source](https://github.com/net-lisias-ksp/DistantObject)
+	+ [Issue Tracker](https://github.com/net-lisias-ksp/DistantObject/issues)
 
 
 ## Description
