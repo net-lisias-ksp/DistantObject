@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 // Change them to the values specific to your project.
 
 [assembly: AssemblyTitle("MeshEngine")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("DOE's Mesh Engine")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany(DistantObject.LegalMamboJambo.Company)]
 [assembly: AssemblyProduct(DistantObject.LegalMamboJambo.Product)]
