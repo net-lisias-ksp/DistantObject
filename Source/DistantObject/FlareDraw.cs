@@ -148,7 +148,7 @@ namespace DistantObject
 			this.color = this.meshRenderer.material.color;
 			this.relativeRadiusSquared = Math.Pow(body.Radius / FlightGlobals.Bodies[1].Radius, 2.0);
 			this.bodyRadiusSquared = body.Radius * body.Radius;
-			this.mesh.SetActive(DistantObjectSettings.Instance.DistantFlare.flaresEnabled);
+			this.mesh.SetActive(Settings.Instance.DistantFlare.flaresEnabled);
 		}
 
 		~BodyFlare()
@@ -182,7 +182,7 @@ namespace DistantObject
 			mesh.transform.position = camPos - targetVectorToCam;
 			mesh.transform.LookAt(camPos);
 
-			float resizeFactor = (-750.0f * (brightness - 5.0f) * (0.7f + .99f * camFOV) / 70.0f) * DistantObjectSettings.Instance.DistantFlare.flareSize;
+			float resizeFactor = (-750.0f * (brightness - 5.0f) * (0.7f + .99f * camFOV) / 70.0f) * Settings.Instance.DistantFlare.flareSize;
 			mesh.transform.localScale = new Vector3(resizeFactor, resizeFactor, resizeFactor);
 
 			this.__sizeInDegrees = Math.Acos(Math.Sqrt(distanceFromCamera * distanceFromCamera - bodyRadiusSquared) / distanceFromCamera) * Mathf.Rad2Deg;
@@ -237,7 +237,7 @@ namespace DistantObject
 
 					this.mesh.transform.position = camPos - targetDist * targetVectorToCam.normalized;
 					this.mesh.transform.LookAt(camPos);
-					float resizeFactor = (0.002f * targetDist * brightness * (0.7f + .99f * camFOV) / 70.0f) * DistantObjectSettings.Instance.DistantFlare.flareSize;
+					float resizeFactor = (0.002f * targetDist * brightness * (0.7f + .99f * camFOV) / 70.0f) * Settings.Instance.DistantFlare.flareSize;
 
 					this.mesh.transform.localScale = new Vector3(resizeFactor, resizeFactor, resizeFactor);
 					Log.dbg("Resizing vessel flare {0} to {1} - brightness {2}, luminosity {3}", referenceShip.vesselName, resizeFactor, brightness, luminosity);
@@ -316,9 +316,9 @@ namespace DistantObject
 				if (FlightGlobals.Bodies.Contains(body))
 				{
 					Color color = ConfigNode.ParseColor(node.config.GetValue("color"));
-					color.r = 1.0f - (DistantObjectSettings.Instance.DistantFlare.flareSaturation * (1.0f - (color.r / 255.0f)));
-					color.g = 1.0f - (DistantObjectSettings.Instance.DistantFlare.flareSaturation * (1.0f - (color.g / 255.0f)));
-					color.b = 1.0f - (DistantObjectSettings.Instance.DistantFlare.flareSaturation * (1.0f - (color.b / 255.0f)));
+					color.r = 1.0f - (Settings.Instance.DistantFlare.flareSaturation * (1.0f - (color.r / 255.0f)));
+					color.g = 1.0f - (Settings.Instance.DistantFlare.flareSaturation * (1.0f - (color.g / 255.0f)));
+					color.b = 1.0f - (Settings.Instance.DistantFlare.flareSaturation * (1.0f - (color.b / 255.0f)));
 					color.a = 1.0f;
 					if (!r.ContainsKey(body))
 					{
@@ -519,15 +519,15 @@ namespace DistantObject
 				{
 					dimming *= (float)(((camFOV / targetSize) / 500.0) - 1.0);
 				}
-				if (flareType == FlareType.Debris && DistantObjectSettings.Instance.DistantFlare.debrisBrightness < 1.0f)
+				if (flareType == FlareType.Debris && Settings.Instance.DistantFlare.debrisBrightness < 1.0f)
 				{
-					dimming *= DistantObjectSettings.Instance.DistantFlare.debrisBrightness;
+					dimming *= Settings.Instance.DistantFlare.debrisBrightness;
 				}
 				// Uncomment this to help with debugging
 				//alpha = 1.0f;
 				//dimming = 1.0f;
 				flare.meshRenderer.material.color = ResourceUtilities.HSL2RGB(flare.hslColor.x, flare.hslColor.y, flare.hslColor.z * dimming, alpha);
-				flare.mesh.SetActive(DistantObjectSettings.Instance.SkyboxBrightness.changeSkybox);
+				flare.mesh.SetActive(Settings.Instance.SkyboxBrightness.changeSkybox);
 			}
 			else
 			{
@@ -540,7 +540,7 @@ namespace DistantObject
 		// Indicates whether the specified vessel type is one we will render
 		private bool RenderableVesselType(VesselType vesselType)
 		{
-			return !(vesselType == VesselType.Flag || vesselType == VesselType.EVA || (vesselType == VesselType.Debris && DistantObjectSettings.Instance.DistantFlare.ignoreDebrisFlare));
+			return !(vesselType == VesselType.Flag || vesselType == VesselType.EVA || (vesselType == VesselType.Debris && Settings.Instance.DistantFlare.ignoreDebrisFlare));
 		}
 
 		//--------------------------------------------------------------------
@@ -591,11 +591,11 @@ namespace DistantObject
 
 			float sunDimFactor = 1.0f;
 			float skyboxDimFactor;
-			if (DistantObjectSettings.Instance.SkyboxBrightness.changeSkybox)
+			if (Settings.Instance.SkyboxBrightness.changeSkybox)
 			{
 				// Apply fudge factors here so people who turn off the skybox don't turn off the flares, too.
 				// And avoid a divide-by-zero.
-				skyboxDimFactor = (float)Math.Max(0.5, GalaxyCubeControl.Instance.maxGalaxyColor.r / Math.Max(0.0078125, DistantObjectSettings.Instance.SkyboxBrightness.maxBrightness));
+				skyboxDimFactor = (float)Math.Max(0.5, GalaxyCubeControl.Instance.maxGalaxyColor.r / Math.Max(0.0078125, Settings.Instance.SkyboxBrightness.maxBrightness));
 			}
 			else
 			{
@@ -626,7 +626,7 @@ namespace DistantObject
 					sunDimFactor *= sunDimming;
 				}
 			}
-			dimFactor = DistantObjectSettings.Instance.DistantFlare.flareBrightness * Mathf.Min(skyboxDimFactor, sunDimFactor);
+			dimFactor = Settings.Instance.DistantFlare.flareBrightness * Mathf.Min(skyboxDimFactor, sunDimFactor);
 		}
 
 		//--------------------------------------------------------------------
@@ -634,7 +634,7 @@ namespace DistantObject
 		// Update the mousever name (if applicable)
 		private void UpdateNameShown()
 		{
-			if (!DistantObjectSettings.Instance.DistantFlare.showNames) return;
+			if (!Settings.Instance.DistantFlare.showNames) return;
 
 			showNameTransform = null;
 			{
@@ -731,7 +731,8 @@ namespace DistantObject
 			this.flare = GameDatabase.Instance.GetModel(MODEL);
 			Log.assert(() => null != this.flare, "Flare model {0} not found", MODEL);
 
-			DistantObjectSettings.Instance.LoadConfig();
+			Settings.Instance.Load();
+			Settings.Instance.Commit();
 
 			Dictionary<string, Vessel.Situations> namedSituations = new Dictionary<string, Vessel.Situations> {
 				{ Vessel.Situations.LANDED.ToString(), Vessel.Situations.LANDED},
@@ -744,7 +745,7 @@ namespace DistantObject
 				{ Vessel.Situations.DOCKED.ToString(), Vessel.Situations.DOCKED},
 			};
 
-			string[] situationStrings = DistantObjectSettings.Instance.DistantFlare.situations.Split(',');
+			string[] situationStrings = Settings.Instance.DistantFlare.situations.Split(',');
 
 			foreach (string sit in situationStrings)
 			{
@@ -769,7 +770,7 @@ namespace DistantObject
 		[UsedImplicitly]
 		private void Start()
 		{
-			DistantObjectSettings.Instance.Commit();
+			Settings.Instance.Commit();
 		}
 
 		//--------------------------------------------------------------------
@@ -831,7 +832,7 @@ namespace DistantObject
 		private void Update()
 		{
 			showNameTransform = null;
-			if (DistantObjectSettings.Instance.DistantFlare.flaresEnabled)
+			if (Settings.Instance.DistantFlare.flaresEnabled)
 			{
 				if (MapView.MapIsEnabled)
 				{
@@ -923,7 +924,7 @@ namespace DistantObject
 		[UsedImplicitly]
 		private void OnGUI()
 		{
-			if (MapView.MapIsEnabled || !(DistantObjectSettings.Instance.DistantFlare.flaresEnabled && DistantObjectSettings.Instance.DistantFlare.showNames)) return;
+			if (MapView.MapIsEnabled || !(Settings.Instance.DistantFlare.flaresEnabled && Settings.Instance.DistantFlare.showNames)) return;
 
 			if (Input.GetMouseButton(1) && Event.current.modifiers == EventModifiers.Alt)
 			{
