@@ -39,18 +39,12 @@ namespace DistantObject
 			{
 				KSPe.Util.Compatibility.Check<Startup>();
 				KSPe.Util.Installation.Check<Startup>();
+				GameEvents.onGameSceneSwitchRequested.Add(OnGameSceneSwitchRequested);
 			}
 			catch (KSPe.Util.InstallmentException e)
 			{
 				Log.error(e.ToShortMessage());
 				KSPe.Common.Dialogs.ShowStopperAlertBox.Show(e);
-			}
-
-			{ 
-				using (KSPe.Util.SystemTools.Assembly.Loader a = new KSPe.Util.SystemTools.Assembly.Loader<Startup>())
-				{
-					a.LoadAndStartup("MeshEngine");
-				}
 			}
 		}
 
@@ -58,6 +52,15 @@ namespace DistantObject
 		private void Start()
 		{
 			Log.force("Version {0}", Version.Text);
+		}
+
+		private void OnGameSceneSwitchRequested(GameEvents.FromToAction<GameScenes, GameScenes> data)
+		{
+			GameEvents.onGameSceneSwitchRequested.Remove(OnGameSceneSwitchRequested);
+			using (KSPe.Util.SystemTools.Assembly.Loader a = new KSPe.Util.SystemTools.Assembly.Loader<Startup>())
+			{
+				a.LoadAndStartup("MeshEngine");
+			}
 		}
 	}
 }
