@@ -1,5 +1,12 @@
 # Distant Object Enhancement (DOE) :: Changes
 
+* 2023-0421: 2.1.1.12 (LisiasT) for KSP >= 1.3.1
+	+ "Dumb mistakes fixed" edition.
+	+ Closes issues:
+		- [#34](https://github.com/net-lisias-ksp/DistantObject/issues/34) Hundreds of errors in KSP.log
+		- [#25](https://github.com/net-lisias-ksp/DistantObject/issues/25) Rework the Settings.
+		- [#14](https://github.com/net-lisias-ksp/DistantObject/issues/14) Disabling "changeSkybox" non functional
+		- [#1](https://github.com/net-lisias-ksp/DistantObject/issues/1)
 * 2022-1114: 2.1.1.11 (LisiasT) for KSP >= 1.3.1
 	+ Brings to mainstream the Experimental features from 2.1.1.10
 		- Fixes the Sky dimming for the Sun
