@@ -67,9 +67,9 @@ namespace DistantObject.MeshEngine
 			foreach (UrlDir.UrlConfig urlConfig in GameDatabase.Instance.GetConfigs("PART"))
 			{
 				ConfigNode cfgNode = urlConfig.config;
-				if (cfgNode.HasValue("name"))
 				{
-					string partName = cfgNode.GetValue("name");
+					//string partName = cfgNode.GetValue("name");
+					string partName = urlConfig.name;
 
 					// There's no point on tryint to render the Prebuilt parts. Their meshes are not available.
 					if (partName.StartsWith("kerbalEVA")) continue;
@@ -97,15 +97,10 @@ namespace DistantObject.MeshEngine
 						sawErrors = true;
 					}
 				}
-				else
-				{
-					Log.warn("Could not find ConfigNode for part {0}.  Part will not render for VesselDraw.", urlConfig.name);
-					sawErrors = true;
-				}
 			}
 
 			Log.dbg("VesselDraw initialized");
-			if (sawErrors) Log.warn("Some parts do not have ConfigNode entries in the game database.  Some distant vessels will be missing pieces.");
+			if (sawErrors) Log.warn("Some parts could not be registered into the Mesh Engine.  Some distant vessels will be missing pieces.");
 		}
 
 		private static bool AddModelToPart(string partName, string modelPath)
