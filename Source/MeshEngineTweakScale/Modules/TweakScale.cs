@@ -50,7 +50,9 @@ namespace DistantObject.MeshEngine.TweakScale.Modules
 			float ratio = currentScale / defaultScale;
 			if (ratio > 0.001)
 			{
+				Log.dbg("localScale before {0}", mesh.transform.localScale);
 				mesh.transform.localScale = new Vector3(ratio, ratio, ratio);
+				mesh.transform.hasChanged = true;
 				Log.dbg("localScale after {0}", mesh.transform.localScale);
 			}
 			return mesh;

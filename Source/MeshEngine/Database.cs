@@ -109,7 +109,7 @@ namespace DistantObject.MeshEngine
 		}
 
 		private static bool AddModelToPart(string partName, string modelPath)
-		{	// TODO: Find the right place to initialise this thing, so we don't need to check sanityon the drawing phase!
+		{	// TODO: Find the right place to initialise this thing, so we don't need to check sanity on the drawing phase!
 			//
 			// The problem is that by callig this on some Awake or Start a lot of parts that would work on the
 			// MeshEngine Update bork on the spot - and I just don't understand why.
@@ -118,7 +118,7 @@ namespace DistantObject.MeshEngine
 
 			//if (null != GameDatabase.Instance.GetModel(modelPath))
 			//{ 
-				Log.trace("Addint {0} {1}", partName, modelPath);
+				Log.trace("Adding {0} {1}", partName, modelPath);
 				PartModelDB.Add(partName, modelPath);
 				return false;
 			//}

@@ -109,6 +109,7 @@ namespace DistantObject.MeshEngine
 				cloneMesh.transform.SetParent(this.vessel.transform);
 				cloneMesh.transform.localPosition = a.position;
 				cloneMesh.transform.localRotation = a.rotation;
+				cloneMesh.transform.hasChanged = true;
 
 				VesselRanges.Situation situation = this.vessel.vesselRanges.GetSituationRanges(this.vessel.situation);
 				if (Vector3d.Distance(cloneMesh.transform.position, FlightGlobals.ship_position) < situation.load)
