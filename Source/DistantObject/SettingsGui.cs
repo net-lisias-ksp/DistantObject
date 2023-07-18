@@ -46,6 +46,7 @@ namespace DistantObject
 
 		private void OnDestroy()
 		{
+			this.settingsGui.OnDestroy();
 			this.settingsGui = null;
 		}
 	}
@@ -67,6 +68,7 @@ namespace DistantObject
 
 		private void OnDestroy()
 		{
+			this.settingsGui.OnDestroy();
 			this.settingsGui = null;
 		}
 	}
@@ -185,7 +187,7 @@ namespace DistantObject
         {
             if (buffer.useAppLauncher && appLauncherButton == null)
             {
-                Log.trace("creating new appLauncher instance - " + this.GetInstanceID());
+                Log.trace("creating new appLauncher instance - {0}", this.GetHashCode());
                 appLauncherButton = InitAppLauncherButton();
             }
         }
@@ -201,7 +203,7 @@ namespace DistantObject
 
         internal void Awake()
         {
-            Log.trace("SettingsGui awake - " + this.GetInstanceID());
+            Log.trace("SettingsGui awake - {0}", this.GetHashCode());
 
             //Load settings
             ReadSettings();

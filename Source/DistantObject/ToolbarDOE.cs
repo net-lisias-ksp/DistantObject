@@ -28,7 +28,7 @@ using UnityEngine;
 
 namespace DistantObject
 {
-    partial class SettingsGui : MonoBehaviour
+    partial class SettingsGui
     {
         private static IButton buttonDOSettings = null;
 
@@ -93,9 +93,9 @@ namespace DistantObject
             }
         }
 
-        private void OnDestroy()
+        internal void OnDestroy()
         {
-            Log.trace("OnDestroy - {0}", this.GetInstanceID());
+            Log.trace("OnDestroy - {0}", this.GetHashCode());
 
             if (buttonDOSettings != null)
             {
