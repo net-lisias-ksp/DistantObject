@@ -1,5 +1,8 @@
 # Distant Object Enhancement (DOE) :: Changes
 
+* 2023-0818: 2.1.1.14 (LisiasT) for KSP >= 1.3.1
+	+ Closes issues:
+		- [#38](https://github.com/net-lisias-ksp/DistantObject/issues/38) Misbehaviour on the Settings Dialog 
 * 2023-0718: 2.1.1.13 (LisiasT) for KSP >= 1.3.1
 	+ An embarrassing memory leak was detected and fixed.
 * 2023-0421: 2.1.1.12 (LisiasT) for KSP >= 1.3.1
