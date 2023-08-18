@@ -258,12 +258,12 @@ namespace DistantObject
 			{
 				this.changeSkybox = node.GetValue<bool>("changeSkybox", this.changeSkybox);
 				this.maxBrightness = node.GetValue<double>("maxBrightness", this.maxBrightness);
-				this.referenceBodySize = Math.Min(1.0,
+				this.referenceBodySize = Math.Max(1.0, Math.Min(180,
 						node.GetValue<double>("referenceBodySize", this.referenceBodySize)
-					);
-				this.minimumSignificantBodySize = Math.Min(1.0,
+					));
+				this.minimumSignificantBodySize = Math.Max(1.0, Math.Min(180,
 						node.GetValue<double>("minimumSignificantBodySize", this.minimumSignificantBodySize)
-					);
+					));
 				this.minimumTargetRelativeAngle = Math.Max(1, Math.Min(180,
 						node.GetValue<double>("minimumTargetRelativeAngle", this.minimumTargetRelativeAngle)
 					));
