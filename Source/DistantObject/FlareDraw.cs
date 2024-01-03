@@ -527,7 +527,7 @@ namespace DistantObject
 				//alpha = 1.0f;
 				//dimming = 1.0f;
 				flare.meshRenderer.material.color = ResourceUtilities.HSL2RGB(flare.hslColor.x, flare.hslColor.y, flare.hslColor.z * dimming, alpha);
-				flare.mesh.SetActive(Settings.Instance.SkyboxBrightness.changeSkybox);
+				flare.mesh.SetActive(Settings.Instance.DistantFlare.flaresEnabled);
 			}
 			else
 			{
