@@ -1,5 +1,9 @@
 # Distant Object Enhancement (DOE) :: Change Log
 
+* 2023-0103: 2.1.1.15 (LisiasT) for KSP >= 1.3.1
+	+ Closes issues:
+		- [#37](https://github.com/net-lisias-ksp/DistantObject/issues/37) Parallax may be inducing DOE to bork the Flares 
+		- [#32](https://github.com/net-lisias-ksp/DistantObject/issues/32) `Body Flares` are being deactivated when `Dynamic Dimming Skies` are 
 * 2023-0818: 2.1.1.14 (LisiasT) for KSP >= 1.3.1
 	+ Closes issues:
 		- [#38](https://github.com/net-lisias-ksp/DistantObject/issues/38) Misbehaviour on the Settings Dialog 
