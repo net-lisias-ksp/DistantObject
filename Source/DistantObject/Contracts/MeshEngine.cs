@@ -39,7 +39,7 @@ namespace DistantObject.Contract
 
 		internal static Interface CreateFor(Vessel vessel)
 		{
-			Type type = KSPe.Util.SystemTools.TypeFinder.FindByInterface(typeof(DistantObject.Contract.MeshEngine.Interface));
+			Type type = KSPe.Util.SystemTools.Type.Find.By(typeof(DistantObject.Contract.MeshEngine.Interface));
 			ConstructorInfo ctor = type.GetConstructor(new[] { typeof(Vessel) });
 			return (Interface) ctor.Invoke(new object[] { vessel });
 		}

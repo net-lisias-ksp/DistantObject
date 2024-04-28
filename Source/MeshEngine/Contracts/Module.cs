@@ -48,7 +48,7 @@ namespace DistantObject.MeshEngine.Contract
 		private static readonly Dictionary<string, Interface> MAP = new Dictionary<string, Interface>();
 		internal static void Init()
 		{
-			foreach (Type type in KSPe.Util.SystemTools.TypeSearch.ByInterface(typeof(DistantObject.MeshEngine.Contract.Module.IBlackList)))
+			foreach (Type type in KSPe.Util.SystemTools.Type.Search.By(typeof(DistantObject.MeshEngine.Contract.Module.IBlackList)))
 			{
 				ConstructorInfo ctor = type.GetConstructor(new Type[] { });
 				IBlackList i = (IBlackList) ctor.Invoke(new object[] { });
@@ -56,7 +56,7 @@ namespace DistantObject.MeshEngine.Contract
 					BLACKLIST.Add(s);
 			}
 
-			foreach (Type type in KSPe.Util.SystemTools.TypeSearch.ByInterface(typeof(DistantObject.MeshEngine.Contract.Module.Interface)))
+			foreach (Type type in KSPe.Util.SystemTools.Type.Search.By(typeof(DistantObject.MeshEngine.Contract.Module.Interface)))
 			{
 				ConstructorInfo ctor = type.GetConstructor(new Type[] { });
 				Interface i = (Interface) ctor.Invoke(new object[] { });
