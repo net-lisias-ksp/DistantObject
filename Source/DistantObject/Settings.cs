@@ -47,6 +47,13 @@ namespace DistantObject
 
 		public class DefaultSettings
 		{
+			public class FlyOverClass
+			{
+				public readonly int textSize = 14;
+				public readonly string fontName = "Arial"; // Options on 1.4.3 (must be dynamic): Arial; HEADINGFONT; calibri; calibrib; calibriz; kalibri; calibrii; calibril; calibrili; calibrib; calibrii; dotty
+				public FlyOverClass(ConfigNodeWithSteroids node) { }
+			}
+
 			public class DistantFlareClass
 			{
 				public readonly bool flaresEnabled = true;
@@ -97,12 +104,14 @@ namespace DistantObject
 			public readonly bool useAppLauncher = true;
 			public readonly bool onlyInSpaceCenter = false;
 
+			public readonly FlyOverClass FlyOver;
 			public readonly DistantFlareClass DistantFlare;
 			public readonly DistantVesselClass DistantVessel;
 			public readonly SkyboxBrightnessClass SkyboxBrightness;
 
 			public DefaultSettings(ConfigNodeWithSteroids node)
 			{
+				this.FlyOver = new FlyOverClass(node);
 				this.DistantFlare = new DistantFlareClass(node);
 				this.DistantVessel = new DistantVesselClass(node);
 				this.SkyboxBrightness = new SkyboxBrightnessClass(node);
@@ -110,6 +119,45 @@ namespace DistantObject
 		}
 
 		//--- Config file values
+
+		public class FlyOverClass
+		{
+			public int textSize;
+			public string fontName;
+
+			public int ScaledTextSize => (int)(GameSettings.UI_SCALE * this.textSize);
+
+			public FlyOverClass(DefaultSettings defaults)
+			{
+				this.Reset(defaults.FlyOver);
+			}
+
+			public void Reset(DefaultSettings.FlyOverClass defaults)
+			{
+				this.textSize = defaults.textSize;
+				this.fontName = defaults.fontName;
+			}
+
+			internal void Apply(FlyOverClass buffer)
+			{
+				this.textSize = buffer.textSize;
+				this.fontName = buffer.fontName;
+			}
+
+			internal void Load(ConfigNodeWithSteroids node)
+			{
+				this.textSize = node.GetValue<int>("textSize", this.textSize);
+				this.fontName = node.GetValue<string>("fontName", this.fontName);
+			}
+
+			internal void Save(ConfigNode node)
+			{
+				ConfigNode distantFlare = node.AddNode("FlyOver");
+				distantFlare.AddValue("textSize", this.textSize);
+				distantFlare.AddValue("fontName", this.fontName);
+			}
+		}
+
 		public class DistantFlareClass
 		{
 			public bool flaresEnabled;
@@ -281,6 +329,7 @@ namespace DistantObject
 		}
 
 		internal readonly DefaultSettings Defaults;
+		public readonly FlyOverClass FlyOver;
 		public readonly DistantFlareClass DistantFlare;
 		public readonly DistantVesselClass DistantVessel;
 		public readonly SkyboxBrightnessClass SkyboxBrightness;
@@ -295,6 +344,7 @@ namespace DistantObject
 			UrlDir.UrlConfig url = GameDatabase.Instance.GetConfigs(Globals.SETTINGS_DEFAULTS)[0];
 			ConfigNodeWithSteroids node = ConfigNodeWithSteroids.from(url.config);
 			this.Defaults = new DefaultSettings(node);
+			this.FlyOver = new FlyOverClass(this.Defaults);
 			this.DistantFlare = new DistantFlareClass(this.Defaults);
 			this.DistantVessel = new DistantVesselClass(this.Defaults);
 			this.SkyboxBrightness = new SkyboxBrightnessClass(this.Defaults);
@@ -309,6 +359,7 @@ namespace DistantObject
 			this.useAppLauncher = this.Defaults.useAppLauncher;
 			this.onlyInSpaceCenter = this.Defaults.onlyInSpaceCenter;
 
+			this.FlyOver.Reset(this.Defaults.FlyOver);
 			this.DistantFlare.Reset(this.Defaults.DistantFlare);
 			this.DistantVessel.Reset(this.Defaults.DistantVessel);
 			this.SkyboxBrightness.Reset(this.Defaults.SkyboxBrightness);
@@ -321,6 +372,7 @@ namespace DistantObject
 			this.useAppLauncher = buffer.useAppLauncher;
 			this.onlyInSpaceCenter = buffer.onlyInSpaceCenter;
 
+			this.FlyOver.Apply(buffer.FlyOver);
 			this.DistantFlare.Apply(buffer.DistantFlare);
 			this.DistantVessel.Apply(buffer.DistantVessel);
 			this.SkyboxBrightness.Apply(buffer.SkyboxBrightness);
@@ -342,6 +394,7 @@ namespace DistantObject
 			this.useAppLauncher = settings.GetValue<bool>("useAppLauncher", this.useAppLauncher);
 			this.onlyInSpaceCenter = settings.GetValue<bool>("onlyInSpaceCenter", this.onlyInSpaceCenter);
 
+			if (settings.HasNode("FlyOver")) this.DistantFlare.Load(ConfigNodeWithSteroids.from(settings.GetNode("FlyOver")));
 			if (settings.HasNode("DistantFlare")) this.DistantFlare.Load(ConfigNodeWithSteroids.from(settings.GetNode("DistantFlare")));
 			if (settings.HasNode("DistantVessel")) this.DistantVessel.Load(ConfigNodeWithSteroids.from(settings.GetNode("DistantVessel")));
 			if (settings.HasNode("SkyboxBrightness")) this.SkyboxBrightness.Load(ConfigNodeWithSteroids.from(settings.GetNode("SkyboxBrightness")));
@@ -358,6 +411,7 @@ namespace DistantObject
 			settings.AddValue("useAppLauncher", this.useAppLauncher);
 			settings.AddValue("onlyInSpaceCenter", this.onlyInSpaceCenter);
 
+			this.FlyOver.Save(settings);
 			this.DistantFlare.Save(settings);
 			this.DistantVessel.Save(settings);
 			this.SkyboxBrightness.Save(settings);

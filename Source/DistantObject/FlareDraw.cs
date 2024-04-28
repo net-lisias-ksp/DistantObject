@@ -727,6 +727,17 @@ namespace DistantObject
 		{
 			INSTANCE = this;
 
+			this.flyoverTextStyle.fontSize = Settings.Instance.FlyOver.ScaledTextSize;
+			{
+				Font[] fonts = Resources.FindObjectsOfTypeAll<Font>();
+				foreach (Font f in fonts) if (f.dynamic)
+				{
+					Log.dbg("Found dynamic font: {0}", f.name);
+					this.flyoverTextStyle.font = f;
+					if (f.name.Equals(Settings.Instance.FlyOver.fontName)) break;
+				}
+			}
+
 			// DistantObject/Flare/model has extents of (0.5, 0.5, 0.0), a 1/2 meter wide square.
 			this.flare = GameDatabase.Instance.GetModel(MODEL);
 			Log.assert(() => null != this.flare, "Flare model {0} not found", MODEL);
@@ -951,8 +962,9 @@ namespace DistantObject
 		{
 			Vector3 screenPos = this.cam.WorldToScreenPoint(showNameTransform.position);
 			flyoverTextPosition.x = screenPos.x;
-			flyoverTextPosition.y = Screen.height - screenPos.y - 20.0f;
+			flyoverTextPosition.y = Screen.height - screenPos.y - (GameSettings.UI_SCALE * 20.0f);
 			flyoverTextStyle.normal.textColor = showNameColor;
+			flyoverTextStyle.fontSize = Settings.Instance.FlyOver.ScaledTextSize;
 			GUI.Label(flyoverTextPosition, showNameString, flyoverTextStyle);
 		}
 
