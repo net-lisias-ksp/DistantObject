@@ -30,7 +30,8 @@ namespace DistantObject
 {
 	internal class Globals
 	{
-		static internal readonly string DistantObject = "Distant Object Enhancement v" + Version.Number;
+		static internal readonly string DistantObject = "Distant Object Enhancement";
+		static internal readonly string DistantObjectVersion = Version.Text;
 		internal const string SETTINGS_NAME = "Settings";
 		internal const string SETTINGS_FILE = SETTINGS_NAME + ".cfg";
 		static internal readonly string SETTINGS_DEFAULTS = "DistantObject";

@@ -238,7 +238,9 @@ namespace DistantObject
             GUILayout.BeginVertical();
 
             GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
-            GUILayout.Label("");
+			GUIStyle style = GUI.skin.GetStyle("label");
+			style.alignment = TextAnchor.MiddleRight;
+			GUILayout.Label(Globals.DistantObjectVersion, style);
             GUILayout.EndHorizontal();
 
             //--- Flare Rendering --------------------------------------------
