@@ -1,5 +1,7 @@
 # Distant Object Enhancement (DOE) :: Change Log
 
+* 2024-0428: 2.1.1.16 (LisiasT) for KSP >= 1.3.1
+	+ Updates `KSPe.Light` to the lastest, mitigating that pesky collateral effect on KSP when users brute-force their way into the Steam's Launcher options trying to get rid of the infamous PD-Launcher.
 * 2023-0103: 2.1.1.15 (LisiasT) for KSP >= 1.3.1
 	+ Closes issues:
 		- [#37](https://github.com/net-lisias-ksp/DistantObject/issues/37) Parallax may be inducing DOE to bork the Flares 
