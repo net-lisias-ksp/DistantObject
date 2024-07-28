@@ -159,7 +159,7 @@ namespace DistantObject
 		public void Update(Vector3d camPos, float camFOV)
 		{
 			// Update Body Flare
-			Vector3d targetVectorToSun = FlightGlobals.Bodies[0].position - body.position;
+			Vector3d targetVectorToSun = Contract.SolarSystemEngine.Instance.GetSunPosition() - body.position;
 			Vector3d targetVectorToCam = camPos - body.position;
 
 			double targetSunRelAngle = Vector3d.Angle(targetVectorToSun, targetVectorToCam);

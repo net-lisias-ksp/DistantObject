@@ -70,6 +70,7 @@
     <Compile Include="Contracts\MeshEngine.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Globals.cs" />
+    <Compile Include="Contracts\SolarSystem.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\Version.tt">

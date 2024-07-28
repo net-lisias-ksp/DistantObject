@@ -25,44 +25,15 @@
 		If not, see <https://www.gnu.org/licenses/>.
 */
 using KSPe.Annotations;
-using UnityEngine;
 
-namespace DistantObject
+namespace DistantObject.SolarSystem.Kopernicus
 {
-	[KSPAddon(KSPAddon.Startup.Instantly, true)]
-	public class Startup:MonoBehaviour
+	public class Startup
 	{
-		[UsedImplicitly]
-		private void Awake()
-		{
-			try
-			{
-				KSPe.Util.Compatibility.Check<Startup>();
-				KSPe.Util.Installation.Check<Startup>();
-				GameEvents.onGameSceneSwitchRequested.Add(OnGameSceneSwitchRequested);
-			}
-			catch (KSPe.Util.InstallmentException e)
-			{
-				Log.error(e.ToShortMessage());
-				KSPe.Common.Dialogs.ShowStopperAlertBox.Show(e);
-			}
-		}
-
 		[UsedImplicitly]
 		private void Start()
 		{
-			Log.force("Version {0}", Version.Text);
-		}
-
-		private void OnGameSceneSwitchRequested(GameEvents.FromToAction<GameScenes, GameScenes> data)
-		{
-			GameEvents.onGameSceneSwitchRequested.Remove(OnGameSceneSwitchRequested);
-			object dummy = Contract.SolarSystemEngine.Instance; // Forcing the load of this Contract here.
-
-			using (KSPe.Util.SystemTools.Assembly.Loader a = new KSPe.Util.SystemTools.Assembly.Loader<Startup>())
-			{
-				a.LoadAndStartup("MeshEngine");
-			}
+			Log.force("SolarSystemKopernicus {0}", Version.Text);
 		}
 	}
 }

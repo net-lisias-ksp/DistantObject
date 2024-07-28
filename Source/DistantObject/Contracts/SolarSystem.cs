@@ -24,45 +24,29 @@
 		along with Distant Object Enhancement /L.
 		If not, see <https://www.gnu.org/licenses/>.
 */
-using KSPe.Annotations;
-using UnityEngine;
+using System;
 
-namespace DistantObject
+namespace DistantObject.Contract
 {
-	[KSPAddon(KSPAddon.Startup.Instantly, true)]
-	public class Startup:MonoBehaviour
+	public static class SolarSystemEngine
 	{
-		[UsedImplicitly]
-		private void Awake()
+		public interface Interface
 		{
-			try
-			{
-				KSPe.Util.Compatibility.Check<Startup>();
-				KSPe.Util.Installation.Check<Startup>();
-				GameEvents.onGameSceneSwitchRequested.Add(OnGameSceneSwitchRequested);
-			}
-			catch (KSPe.Util.InstallmentException e)
-			{
-				Log.error(e.ToShortMessage());
-				KSPe.Common.Dialogs.ShowStopperAlertBox.Show(e);
-			}
+			Vector3d GetSunPosition();
 		}
 
-		[UsedImplicitly]
-		private void Start()
-		{
-			Log.force("Version {0}", Version.Text);
-		}
+		private static Interface INSTANCE;
+		internal static Interface Instance => INSTANCE ?? (INSTANCE = Create()) ;
 
-		private void OnGameSceneSwitchRequested(GameEvents.FromToAction<GameScenes, GameScenes> data)
+		private static Interface Create()
 		{
-			GameEvents.onGameSceneSwitchRequested.Remove(OnGameSceneSwitchRequested);
-			object dummy = Contract.SolarSystemEngine.Instance; // Forcing the load of this Contract here.
-
+			string assemblyToBeLoaded = KSPe.Util.SystemTools.Assembly.Exists.ByName("Kopernicus") ? "SolarSystemKopernicus" : "SolarSystemStock";
 			using (KSPe.Util.SystemTools.Assembly.Loader a = new KSPe.Util.SystemTools.Assembly.Loader<Startup>())
 			{
-				a.LoadAndStartup("MeshEngine");
+				a.LoadAndStartup(assemblyToBeLoaded);
 			}
+
+			return (Interface)KSPe.Util.SystemTools.Interface.CreateInstanceByInterface(typeof(Interface));
 		}
 	}
 }

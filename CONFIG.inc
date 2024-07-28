@@ -9,7 +9,7 @@ VERSIONFILE="$PACKAGE.version"
 
 DLLS="$PACKAGE"
 # PluginData DLLs
-PD_DLLS="MeshEngine MeshEngineStock MeshEngineTweakScale"
+PD_DLLS="MeshEngine MeshEngineStock MeshEngineTweakScale SolarSystemStock SolarSystemKopernicus"
 # Rule oriented deployoment for PluginData
 declare -A PD_SUB_RULES=( )
 PD_SUB_DLLS=`{ for K in "${!PD_SUB_RULES[@]}"; do echo $(basename ${PD_SUB_RULES[$K]}); done } | sort -u | tr '\n' ' '`
