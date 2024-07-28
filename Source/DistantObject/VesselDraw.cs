@@ -113,16 +113,16 @@ namespace DistantObject
 		private void Awake()
 		{
 			__instance = this;
-
-			//Load settings
-			Settings.Instance.Load();
-			Settings.Instance.Commit();
 		}
 
 		[UsedImplicitly]
 		private void Start()
 		{
 			Log.dbg("VesselDraw Start");
+
+			//Load settings
+			Settings.Instance.Load();
+
 			GameEvents.onVesselChange.Add(this.OnVesselChange);
 			GameEvents.onVesselGoOnRails.Add(this.OnVesselGoOnRails);
 			GameEvents.onVesselGoOffRails.Add(this.OnVesselGoOffRails);

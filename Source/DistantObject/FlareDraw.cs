@@ -742,8 +742,18 @@ namespace DistantObject
 			this.flare = GameDatabase.Instance.GetModel(MODEL);
 			Log.assert(() => null != this.flare, "Flare model {0} not found", MODEL);
 
+			sunRadiusSquared = FlightGlobals.Bodies[0].Radius * FlightGlobals.Bodies[0].Radius;
+			GenerateBodyFlares();
+
+			// Remove Vessels from our dictionaries just before they are destroyed.
+			// After they are destroyed they are == null and this confuses Dictionary.
+			GameEvents.onVesselWillDestroy.Add(RemoveVesselFlare);
+		}
+
+		[UsedImplicitly]
+		private void Start()
+		{
 			Settings.Instance.Load();
-			Settings.Instance.Commit();
 
 			Dictionary<string, Vessel.Situations> namedSituations = new Dictionary<string, Vessel.Situations> {
 				{ Vessel.Situations.LANDED.ToString(), Vessel.Situations.LANDED},
@@ -758,29 +768,15 @@ namespace DistantObject
 
 			string[] situationStrings = Settings.Instance.DistantFlare.situations.Split(',');
 
+			this.situations.Clear();
 			foreach (string sit in situationStrings)
 			{
 				if (namedSituations.ContainsKey(sit))
-				{
-					situations.Add(namedSituations[sit]);
-				}
+					this.situations.Add(namedSituations[sit]);
 				else
-				{
 					Log.warn("Unable to find situation '{0}' in my known situations atlas", sit);
-				}
 			}
 
-			sunRadiusSquared = FlightGlobals.Bodies[0].Radius * FlightGlobals.Bodies[0].Radius;
-			GenerateBodyFlares();
-
-			// Remove Vessels from our dictionaries just before they are destroyed.
-			// After they are destroyed they are == null and this confuses Dictionary.
-			GameEvents.onVesselWillDestroy.Add(RemoveVesselFlare);
-		}
-
-		[UsedImplicitly]
-		private void Start()
-		{
 			Settings.Instance.Commit();
 		}
 

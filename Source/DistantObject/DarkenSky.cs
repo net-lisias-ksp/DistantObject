@@ -47,32 +47,30 @@ namespace DistantObject
             INSTANCE = this;
 
             restorableGalaxyCube = false;
-
-			Settings.Instance.Load();
-			Settings.Instance.Commit();
-
-            if (GalaxyCubeControl.Instance != null)
-            {
-                restorableGalaxyCube = true;
-                galaxyColor = GalaxyCubeControl.Instance.maxGalaxyColor;
-                glareFadeLimit = GalaxyCubeControl.Instance.glareFadeLimit;
-
-                if (Settings.Instance.SkyboxBrightness.changeSkybox)
-                {
-					GalaxyCubeControl.Instance.maxGalaxyColor = new Color(
-							(float)Settings.Instance.SkyboxBrightness.maxBrightness,
-							(float)Settings.Instance.SkyboxBrightness.maxBrightness,
-							(float)Settings.Instance.SkyboxBrightness.maxBrightness
-						);
-                    GalaxyCubeControl.Instance.glareFadeLimit = 1f;
-                }
-            }
         }
 
 		[UsedImplicitly]
 		private void Start()
 		{
+			Settings.Instance.Load();
 			Settings.Instance.Commit();
+
+			if (null != GalaxyCubeControl.Instance)
+			{
+				restorableGalaxyCube = true;
+				galaxyColor = GalaxyCubeControl.Instance.maxGalaxyColor;
+				glareFadeLimit = GalaxyCubeControl.Instance.glareFadeLimit;
+
+				if (Settings.Instance.SkyboxBrightness.changeSkybox)
+				{
+					GalaxyCubeControl.Instance.maxGalaxyColor = new Color(
+							(float)Settings.Instance.SkyboxBrightness.maxBrightness,
+							(float)Settings.Instance.SkyboxBrightness.maxBrightness,
+							(float)Settings.Instance.SkyboxBrightness.maxBrightness
+						);
+					GalaxyCubeControl.Instance.glareFadeLimit = 1f;
+				}
+			}
 		}
 
 		[UsedImplicitly]

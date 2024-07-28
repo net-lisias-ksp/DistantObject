@@ -25,9 +25,9 @@
 		If not, see <https://www.gnu.org/licenses/>.
 */
 using System;
+using SIO = System.IO;
 
 using KSPe;
-
 using IO = KSPe.IO;
 
 namespace DistantObject
@@ -381,8 +381,7 @@ namespace DistantObject
 		private bool hasLoaded = false;
 		public void Load()
 		{
-			ConfigNode configNode = ConfigNode.Load(Globals.CONFIG_PATHNAME);
-			if (null == configNode) configNode = ConfigNode.Load(Globals.REFERENCE_CONFIG_PATHNAME);
+			ConfigNode configNode = this.LoadSettings();
 			if (null == configNode) return;
 
 			this.Reset();
@@ -402,6 +401,14 @@ namespace DistantObject
 			hasLoaded = true;
 		}
 
+		private ConfigNode LoadSettings()
+		{
+			if (HighLogic.LoadedSceneIsGame && SIO.File.Exists(Globals.CONFIG_PATHNAME))
+				return ConfigNode.Load(Globals.CONFIG_PATHNAME);
+
+			return ConfigNode.Load(Globals.REFERENCE_CONFIG_PATHNAME);
+		}
+
 		public void Save()
 		{
 			ConfigNode settings = new ConfigNode();
@@ -416,8 +423,15 @@ namespace DistantObject
 			this.DistantVessel.Save(settings);
 			this.SkyboxBrightness.Save(settings);
 
-			if (!IO.Directory.Exists(Globals.CONFIG_DIRECTORY)) IO.Directory.CreateDirectory(Globals.CONFIG_DIRECTORY);
+			this.saveSettings(settings);
+		}
+
+		private void saveSettings(ConfigNode settings)
+		{
+			Log.force(Globals.CONFIG_DIRECTORY);
+			SIO.Directory.CreateDirectory(Globals.CONFIG_DIRECTORY);
 			settings.Save(Globals.CONFIG_PATHNAME);
+
 		}
 
 		internal void Commit()
