@@ -65,7 +65,23 @@ namespace DistantObject
 				public readonly string situations = "ORBITING,SUB_ORBITAL,ESCAPING,DOCKED,FLYING";
 				public readonly float debrisBrightness = 0.15f;
 
-				public DistantFlareClass(ConfigNodeWithSteroids node) { }
+				public class CelestialBody
+				{
+					public readonly HashSet<string> exclusionList = new HashSet<string>();
+
+					internal CelestialBody(ConfigNodeWithSteroids celestialBodyNode)
+					{
+						foreach (string n in celestialBodyNode.GetValues("name"))
+							this.exclusionList.Add(n);
+					}
+				}
+				public readonly CelestialBody celestialBody;
+
+				public DistantFlareClass(ConfigNodeWithSteroids node)
+				{
+					ConfigNodeWithSteroids celestialBodyNode = ConfigNodeWithSteroids.from(node.GetNode("DistantFlare").GetNode("CelestialBody").GetNode("ExclusionList"));
+					this.celestialBody = new CelestialBody(celestialBodyNode);
+				}
 			}
 
 			public class DistantVesselClass
@@ -168,6 +184,7 @@ namespace DistantObject
 			public float flareBrightness;
 			public string situations;
 			public float debrisBrightness;
+			public DefaultSettings.DistantFlareClass.CelestialBody celestialBody;
 
 			public DistantFlareClass(DefaultSettings defaults)
 			{
@@ -184,6 +201,7 @@ namespace DistantObject
 				this.flareBrightness = defaults.flareBrightness;
 				this.situations = defaults.situations;
 				this.debrisBrightness = defaults.debrisBrightness;
+				this.celestialBody = defaults.celestialBody;
 			}
 
 			public void Apply(DistantFlareClass buffer)
@@ -428,7 +446,6 @@ namespace DistantObject
 
 		private void saveSettings(ConfigNode settings)
 		{
-			Log.force(Globals.CONFIG_DIRECTORY);
 			SIO.Directory.CreateDirectory(Globals.CONFIG_DIRECTORY);
 			settings.Save(Globals.CONFIG_PATHNAME);
 

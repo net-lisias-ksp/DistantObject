@@ -391,15 +391,16 @@ namespace DistantObject
 			bodyFlares.Clear();
 
 			double largestSMA = 0.0;
-			foreach (CelestialBody body in FlightGlobals.Bodies)
+			foreach (CelestialBody body in FlightGlobals.Bodies) if (
+					body != FlightGlobals.Bodies[0]
+					&& null != body?.MapObject
+					&& !Settings.Instance.DistantFlare.celestialBody.exclusionList.Contains(body.bodyName)
+				)
 			{
-				if (body != FlightGlobals.Bodies[0] && body?.MapObject != null)
-				{
-					largestSMA = Math.Max(largestSMA, body.orbit.semiMajorAxis);
-					BodyFlare bf = new BodyFlare(body, this.flare, this.bodyColors, DEFAULT_LAYER);
-					bodyFlares.Add(bf);
-					Log.dbg("Body {0}:{1} added to bodyFlares.", body.bodyName, body.displayName);
-				}
+				largestSMA = Math.Max(largestSMA, body.orbit.semiMajorAxis);
+				BodyFlare bf = new BodyFlare(body, this.flare, this.bodyColors, DEFAULT_LAYER);
+				bodyFlares.Add(bf);
+				Log.dbg("Body {0}:{1} added to bodyFlares.", body.bodyName, body.displayName);
 			}
 			BodyFlare.bodyFlareDistanceScalar = BodyFlare.FlareDistanceRange / largestSMA;
 		}
