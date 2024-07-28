@@ -28,7 +28,7 @@ using System;
 using SIO = System.IO;
 
 using KSPe;
-using IO = KSPe.IO;
+using System.Collections.Generic;
 
 namespace DistantObject
 {
@@ -51,7 +51,7 @@ namespace DistantObject
 			{
 				public readonly int textSize = 14;
 				public readonly string fontName = "Arial"; // Options on 1.4.3 (must be dynamic): Arial; HEADINGFONT; calibri; calibrib; calibriz; kalibri; calibrii; calibril; calibrili; calibrib; calibrii; dotty
-				public FlyOverClass(ConfigNodeWithSteroids node) { }
+				internal FlyOverClass(ConfigNodeWithSteroids node) { }
 			}
 
 			public class DistantFlareClass
@@ -138,19 +138,19 @@ namespace DistantObject
 				this.fontName = defaults.fontName;
 			}
 
-			internal void Apply(FlyOverClass buffer)
+			public void Apply(FlyOverClass buffer)
 			{
 				this.textSize = buffer.textSize;
 				this.fontName = buffer.fontName;
 			}
 
-			internal void Load(ConfigNodeWithSteroids node)
+			public void Load(ConfigNodeWithSteroids node)
 			{
 				this.textSize = node.GetValue<int>("textSize", this.textSize);
 				this.fontName = node.GetValue<string>("fontName", this.fontName);
 			}
 
-			internal void Save(ConfigNode node)
+			public void Save(ConfigNode node)
 			{
 				ConfigNode distantFlare = node.AddNode("FlyOver");
 				distantFlare.AddValue("textSize", this.textSize);
@@ -186,7 +186,7 @@ namespace DistantObject
 				this.debrisBrightness = defaults.debrisBrightness;
 			}
 
-			internal void Apply(DistantFlareClass buffer)
+			public void Apply(DistantFlareClass buffer)
 			{
 				this.flaresEnabled = buffer.flaresEnabled;
 				this.ignoreDebrisFlare = buffer.ignoreDebrisFlare;
@@ -198,7 +198,7 @@ namespace DistantObject
 				this.debrisBrightness = buffer.debrisBrightness;
 			}
 
-			internal void Load(ConfigNodeWithSteroids node)
+			public void Load(ConfigNodeWithSteroids node)
 			{
 				this.flaresEnabled = node.GetValue<bool>("flaresEnabled", this.flaresEnabled);
 				this.flareSaturation = node.GetValue<float>("flareSaturation", this.flareSaturation);
@@ -209,7 +209,7 @@ namespace DistantObject
 				this.showNames = node.GetValue<bool>("showNames", this.showNames);
 			}
 
-			internal void Save(ConfigNode node)
+			public void Save(ConfigNode node)
 			{
 				ConfigNode distantFlare = node.AddNode("DistantFlare");
 				distantFlare.AddValue("flaresEnabled", this.flaresEnabled);
@@ -243,7 +243,7 @@ namespace DistantObject
 				this.ignoreDebris = defaults.ignoreDebris;
 			}
 
-			internal void Apply(DistantVesselClass buffer)
+			public void Apply(DistantVesselClass buffer)
 			{
 				this.renderVessels = buffer.renderVessels;
 				this.maxDistance = buffer.maxDistance;
@@ -251,7 +251,7 @@ namespace DistantObject
 				this.ignoreDebris = buffer.ignoreDebris;
 			}
 
-			internal void Load(ConfigNodeWithSteroids node)
+			public void Load(ConfigNodeWithSteroids node)
 			{
 				this.renderVessels = node.GetValue<bool>("renderVessels", this.renderVessels);
 				float maxDistance = node.GetValue<float>("maxDistance", this.maxDistance);
@@ -260,7 +260,7 @@ namespace DistantObject
 				this.ignoreDebris = node.GetValue<bool>("ignoreDebris", this.ignoreDebris);
 			}
 
-			internal void Save(ConfigNode node)
+			public void Save(ConfigNode node)
 			{
 				ConfigNode distantVessel = node.AddNode("DistantVessel");
 				distantVessel.AddValue("renderVessels", this.renderVessels);
@@ -293,7 +293,7 @@ namespace DistantObject
 				this.minimumTargetRelativeAngle = defaults.minimumTargetRelativeAngle;
 			}
 
-			internal void Apply(SkyboxBrightnessClass buffer)
+			public void Apply(SkyboxBrightnessClass buffer)
 			{
 				this.changeSkybox = buffer.changeSkybox;
 				this.maxBrightness = buffer.maxBrightness;
@@ -302,7 +302,7 @@ namespace DistantObject
 				this.minimumTargetRelativeAngle = buffer.minimumTargetRelativeAngle;
 			}
 
-			internal void Load(ConfigNodeWithSteroids node)
+			public void Load(ConfigNodeWithSteroids node)
 			{
 				this.changeSkybox = node.GetValue<bool>("changeSkybox", this.changeSkybox);
 				this.maxBrightness = node.GetValue<double>("maxBrightness", this.maxBrightness);
@@ -317,7 +317,7 @@ namespace DistantObject
 					));
 			}
 
-			internal void Save(ConfigNode node)
+			public void Save(ConfigNode node)
 			{
 				ConfigNode skyboxBrightness = node.AddNode("SkyboxBrightness");
 				skyboxBrightness.AddValue("changeSkybox", this.changeSkybox);
@@ -339,7 +339,7 @@ namespace DistantObject
 		public bool useAppLauncher = true;
 		public bool onlyInSpaceCenter = false;
 
-		internal Settings()
+		public Settings()
 		{
 			UrlDir.UrlConfig url = GameDatabase.Instance.GetConfigs(Globals.SETTINGS_DEFAULTS)[0];
 			ConfigNodeWithSteroids node = ConfigNodeWithSteroids.from(url.config);
@@ -434,7 +434,7 @@ namespace DistantObject
 
 		}
 
-		internal void Commit()
+		public void Commit()
 		{
 			if (null != VesselDraw.Instance) VesselDraw.Instance.SetActiveTo(this.DistantVessel.renderVessels);
 			if (null != FlareDraw.Instance) FlareDraw.Instance.SetActiveTo(this.DistantFlare.flaresEnabled);
