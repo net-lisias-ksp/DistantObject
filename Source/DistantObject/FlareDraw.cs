@@ -985,9 +985,9 @@ namespace DistantObject
 			ExternalControl = Control;
 		}
 
-		internal void SetActiveTo(bool changeSkybox)
+		internal void SetActiveTo(bool ativated)
 		{
-			if (changeSkybox)
+			if (ativated)
 				this.Activate();
 			else
 				this.Deactivate();
