@@ -140,6 +140,32 @@ namespace DistantObject
 		{
 			public int textSize;
 			public string fontName;
+			public UnityEngine.Font font
+			{
+				get
+				{
+					UnityEngine.Font r = null;
+					foreach (UnityEngine.Font f in this.fonts)
+					{
+						r = f;
+						if (f.name.Equals(this.fontName)) break;
+					}
+					return r;
+				}
+			}
+			public List<UnityEngine.Font> fonts
+			{
+				get
+				{
+					List<UnityEngine.Font> r = new List<UnityEngine.Font>();
+					foreach (UnityEngine.Font f in UnityEngine.Resources.FindObjectsOfTypeAll<UnityEngine.Font>()) if (f.dynamic)
+					{
+						Log.dbg("Found dynamic font: {0}", f.name);
+						r.Add(f);
+					}
+					return r;
+				}
+			}
 
 			public int ScaledTextSize => (int)(GameSettings.UI_SCALE * this.textSize);
 
@@ -168,7 +194,7 @@ namespace DistantObject
 
 			public void Save(ConfigNode node)
 			{
-				ConfigNode distantFlare = node.AddNode("FlyOver");
+				ConfigNode distantFlare = node.AddNode("FlyOverText");
 				distantFlare.AddValue("textSize", this.textSize);
 				distantFlare.AddValue("fontName", this.fontName);
 			}
@@ -411,7 +437,7 @@ namespace DistantObject
 			this.useAppLauncher = settings.GetValue<bool>("useAppLauncher", this.useAppLauncher);
 			this.onlyInSpaceCenter = settings.GetValue<bool>("onlyInSpaceCenter", this.onlyInSpaceCenter);
 
-			if (settings.HasNode("FlyOver")) this.DistantFlare.Load(ConfigNodeWithSteroids.from(settings.GetNode("FlyOver")));
+			if (settings.HasNode("FlyOverText")) this.FlyOver.Load(ConfigNodeWithSteroids.from(settings.GetNode("FlyOverText")));
 			if (settings.HasNode("DistantFlare")) this.DistantFlare.Load(ConfigNodeWithSteroids.from(settings.GetNode("DistantFlare")));
 			if (settings.HasNode("DistantVessel")) this.DistantVessel.Load(ConfigNodeWithSteroids.from(settings.GetNode("DistantVessel")));
 			if (settings.HasNode("SkyboxBrightness")) this.SkyboxBrightness.Load(ConfigNodeWithSteroids.from(settings.GetNode("SkyboxBrightness")));

@@ -917,16 +917,8 @@ namespace DistantObject
 		private Rect flyoverTextPosition = new Rect(0.0f, 0.0f, 100.0f, 20.0f);
 		private void initFont()
 		{
-			this.flyoverTextStyle.fontSize = Settings.Instance.FlyOver.ScaledTextSize;
-			{
-				Font[] fonts = Resources.FindObjectsOfTypeAll<Font>();
-				foreach (Font f in fonts) if (f.dynamic)
-				{
-					Log.dbg("Found dynamic font: {0}", f.name);
-					this.flyoverTextStyle.font = f;
-					if (f.name.Equals(Settings.Instance.FlyOver.fontName)) break;
-				}
-			}
+			this.flyoverTextStyle.fontSize = Settings.Instance.FlyOver.textSize;
+			this.flyoverTextStyle.font = Settings.Instance.FlyOver.font;
 		}
 
 		//--------------------------------------------------------------------

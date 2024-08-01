@@ -26,6 +26,7 @@
 */
 using UnityEngine;
 using KSP.UI.Screens;
+using System;
 
 namespace DistantObject
 {
@@ -97,6 +98,12 @@ namespace DistantObject
 
 			// Create local copies of the values, so we're not editing the
 			// config file until the user presses "Apply"
+
+			{
+				Settings.FlyOverClass b = buffer.FlyOver;
+				b.textSize = Settings.Instance.FlyOver.textSize;
+				b.fontName = Settings.Instance.FlyOver.fontName;
+			}
 			{
 				Settings.DistantFlareClass b = buffer.DistantFlare;
 				b.flaresEnabled = Settings.Instance.DistantFlare.flaresEnabled;
@@ -243,7 +250,36 @@ namespace DistantObject
 			GUILayout.Label(Globals.DistantObjectVersion, style);
             GUILayout.EndHorizontal();
 
-            //--- Flare Rendering --------------------------------------------
+			//--- Fly Over Test --------------------------------------------
+			{
+				Settings.FlyOverClass b = buffer.FlyOver;
+				GUILayout.BeginVertical("Fly Over Text", new GUIStyle(GUI.skin.window));
+
+				GUILayout.Label("Font Size/Name");
+
+				GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
+				b.textSize = (int) GUILayout.HorizontalSlider(b.textSize, 8f, 64f, GUILayout.Width(200));
+				GUILayout.Label(string.Format("{0:0}", b.textSize));
+				GUILayout.EndHorizontal();
+
+				{
+					GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
+					Font[] fonts = this.buffer.FlyOver.fonts.ToArray();
+					int index = this.fontIndexFindByName(b.fontName, fonts);
+					index = (int) GUILayout.HorizontalSlider(index, 0, fonts.Length-1, GUILayout.Width(200));
+					b.fontName = fonts[index].name;
+					GUILayout.Label(b.fontName);
+					GUILayout.EndHorizontal();
+				}
+
+				GUILayout.EndVertical();
+			}
+
+			GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
+			GUILayout.Label("");
+			GUILayout.EndHorizontal();
+
+			//--- Flare Rendering --------------------------------------------
 			{
 				Settings.DistantFlareClass b = buffer.DistantFlare;
 				GUILayout.BeginVertical("Flare Rendering", new GUIStyle(GUI.skin.window));
@@ -431,7 +467,15 @@ namespace DistantObject
             GUI.DragWindow();
         }
 
-        internal void drawGUI()
+		private int fontIndexFindByName(string fontName, Font[] fonts)
+		{
+			int r = 0;
+			for (; r < fonts.Length; r++)
+				if (fonts[r].name.Equals(fontName)) return r;
+			return 0;
+		}
+
+		internal void drawGUI()
         {
             if (HighLogic.LoadedScene == GameScenes.SPACECENTER || HighLogic.LoadedScene == GameScenes.FLIGHT)
             {
