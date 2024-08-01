@@ -77,6 +77,7 @@ namespace DistantObject
 	partial class SettingsGui
     {
         protected Rect windowPos = new Rect(Screen.width / 4, Screen.height / 4, 10f, 10f);
+		protected Vector2 scrollViewPosition = new Vector2();
 
         private static bool activated = false;
         private bool isActivated = false;
@@ -246,6 +247,7 @@ namespace DistantObject
 			GUILayoutOption guiwidth220 = GUILayout.Width(220);
 
             GUILayout.BeginVertical();
+			this.scrollViewPosition = GUILayout.BeginScrollView(this.scrollViewPosition, false, true);
 
             GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
 			GUIStyle style = GUI.skin.GetStyle("label");
@@ -466,7 +468,8 @@ namespace DistantObject
             }
             GUILayout.EndHorizontal();
 
-            GUILayout.EndVertical();
+			GUILayout.EndScrollView();
+			GUILayout.EndVertical();
             GUI.DragWindow();
         }
 
@@ -488,7 +491,8 @@ namespace DistantObject
                     {
                         ReadSettings();
                     }
-                    windowPos = GUILayout.Window(-5234628, windowPos, mainGUI, Globals.DistantObject + " Settings", GUILayout.Width(300), GUILayout.Height(200));
+
+                    windowPos = GUILayout.Window(-5234628, windowPos, mainGUI, Globals.DistantObject + " Settings", GUILayout.Width(320), GUILayout.Height(600));
                 }
                 isActivated = activated;
             }
