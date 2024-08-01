@@ -728,16 +728,7 @@ namespace DistantObject
 		{
 			INSTANCE = this;
 
-			this.flyoverTextStyle.fontSize = Settings.Instance.FlyOver.ScaledTextSize;
-			{
-				Font[] fonts = Resources.FindObjectsOfTypeAll<Font>();
-				foreach (Font f in fonts) if (f.dynamic)
-				{
-					Log.dbg("Found dynamic font: {0}", f.name);
-					this.flyoverTextStyle.font = f;
-					if (f.name.Equals(Settings.Instance.FlyOver.fontName)) break;
-				}
-			}
+			this.initFont();
 
 			// DistantObject/Flare/model has extents of (0.5, 0.5, 0.0), a 1/2 meter wide square.
 			this.flare = GameDatabase.Instance.GetModel(MODEL);
@@ -924,6 +915,19 @@ namespace DistantObject
 
 		private GUIStyle flyoverTextStyle = new GUIStyle();
 		private Rect flyoverTextPosition = new Rect(0.0f, 0.0f, 100.0f, 20.0f);
+		private void initFont()
+		{
+			this.flyoverTextStyle.fontSize = Settings.Instance.FlyOver.ScaledTextSize;
+			{
+				Font[] fonts = Resources.FindObjectsOfTypeAll<Font>();
+				foreach (Font f in fonts) if (f.dynamic)
+				{
+					Log.dbg("Found dynamic font: {0}", f.name);
+					this.flyoverTextStyle.font = f;
+					if (f.name.Equals(Settings.Instance.FlyOver.fontName)) break;
+				}
+			}
+		}
 
 		//--------------------------------------------------------------------
 		// OnGUI
@@ -987,6 +991,7 @@ namespace DistantObject
 
 		internal void SetActiveTo(bool ativated)
 		{
+			this.initFont(); // rebuilds the font every startup or settings change, so any changes will be effective.
 			if (ativated)
 				this.Activate();
 			else
