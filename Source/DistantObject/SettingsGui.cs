@@ -250,7 +250,7 @@ namespace DistantObject
 			this.scrollViewPosition = GUILayout.BeginScrollView(this.scrollViewPosition, false, true);
 
             GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
-			GUIStyle style = GUI.skin.GetStyle("label");
+			GUIStyle style = new GUIStyle(GUI.skin.GetStyle("label"));
 			style.alignment = TextAnchor.MiddleRight;
 			GUILayout.Label(Globals.DistantObjectVersion, style);
             GUILayout.EndHorizontal();
