@@ -34,9 +34,12 @@ namespace DistantObject
 
         private void toolbarButton()
         {
+            if (!(HighLogic.LoadedScene == GameScenes.SPACECENTER || HighLogic.LoadedScene == GameScenes.FLIGHT))
+                return;
+
             Log.dbg("Drawing toolbar icon...");
             buttonDOSettings = ToolbarManager.Instance.add("test", "buttonDOSettings");
-            buttonDOSettings.Visibility = new GameScenesVisibility(GameScenes.SPACECENTER, GameScenes.FLIGHT);
+            buttonDOSettings.Visibility = new GameScenesVisibility(GameScenes.MAINMENU, GameScenes.SPACECENTER, GameScenes.FLIGHT);
             if (activated)
             {
                 buttonDOSettings.TexturePath = "DistantObject/Icons/toolbar_enabled";

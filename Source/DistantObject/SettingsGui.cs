@@ -26,7 +26,6 @@
 */
 using UnityEngine;
 using KSP.UI.Screens;
-using System;
 
 namespace DistantObject
 {
@@ -36,8 +35,14 @@ namespace DistantObject
 		private SettingsGui settingsGui;
 		private void Awake()
 		{
+			Log.dbg("SettingsGuiOnMainMenu.Awake()");
 			this.settingsGui = new SettingsGui();
 			this.settingsGui.Awake();
+		}
+
+		private void Start()
+		{
+			Settings.Instance.Load();
 		}
 
 		private void OnGUI()
@@ -195,7 +200,8 @@ namespace DistantObject
             {
                 button = ApplicationLauncher.Instance.AddModApplication(onAppLauncherTrue, onAppLauncherFalse,
                     null, null, null, null,
-                    (buffer.onlyInSpaceCenter) ? ApplicationLauncher.AppScenes.SPACECENTER : (ApplicationLauncher.AppScenes.FLIGHT | ApplicationLauncher.AppScenes.SPACECENTER),
+					ApplicationLauncher.AppScenes.MAINMENU |
+						(buffer.onlyInSpaceCenter ? ApplicationLauncher.AppScenes.SPACECENTER : (ApplicationLauncher.AppScenes.FLIGHT | ApplicationLauncher.AppScenes.SPACECENTER)),
                     iconTexture);
 
                 if (button == null)
@@ -235,7 +241,7 @@ namespace DistantObject
             GameEvents.onGUIApplicationLauncherReady.Add(AddAppLauncherButton);
             GameEvents.onGUIApplicationLauncherDestroyed.Add(RemoveAppLauncherButton);
 
-            if (HighLogic.LoadedScene == GameScenes.SPACECENTER || HighLogic.LoadedScene == GameScenes.FLIGHT)
+            //if (HighLogic.LoadedScene == GameScenes.SPACECENTER || HighLogic.LoadedScene == GameScenes.FLIGHT)
             {
                 if (buffer.useToolbar && ToolbarManager.ToolbarAvailable)
                 {
@@ -498,21 +504,18 @@ namespace DistantObject
 		}
 
 		internal void drawGUI()
-        {
-            if (HighLogic.LoadedScene == GameScenes.SPACECENTER || HighLogic.LoadedScene == GameScenes.FLIGHT)
-            {
-                if (activated)
-                {
-                    if (!isActivated)
-                    {
-                        ReadSettings();
-                    }
+		{
+			if (activated)
+			{
+				if (!isActivated)
+				{
+					ReadSettings();
+				}
 
-                    windowPos = GUILayout.Window(-5234628, windowPos, mainGUI, Globals.DistantObject + " Settings", GUILayout.Width(320), GUILayout.Height(600));
-                }
-                isActivated = activated;
-            }
-        }
+				windowPos = GUILayout.Window(-5234628, windowPos, mainGUI, Globals.DistantObject + " Settings", GUILayout.Width(320), GUILayout.Height(600));
+			}
+			isActivated = activated;
+		}
 
 		private void Reset() => this.buffer = new Settings();
 
