@@ -53,13 +53,21 @@ namespace DistantObject
 	}
 
 	[KSPAddon(KSPAddon.Startup.AllGameScenes, false)]
-	internal class SettingsGuiOnGameScenes:MonoBehaviour
+	internal class SettingsGuiOnGameScenes:MonoBehaviour, KSPe.IO.SaveGameMonitor.SaveGameLoadedListener
 	{
 		private SettingsGui settingsGui;
 		private void Awake()
 		{
+			Log.dbg("SettingsGuiOnGameScenes.Awake()");
 			this.settingsGui = new SettingsGui();
 			this.settingsGui.Awake();
+		}
+
+		private void Start()
+		{
+			Settings.Instance.Load();
+			if (!KSPe.IO.SaveGameMonitor.Instance.IsValid)
+				KSPe.IO.SaveGameMonitor.Instance.AddSingleShot(this);
 		}
 
 		private void OnGUI()
@@ -72,6 +80,14 @@ namespace DistantObject
 			this.settingsGui.OnDestroy();
 			this.settingsGui = null;
 		}
+
+		void KSPe.IO.SaveGameMonitor.SaveGameLoadedListener.OnSaveGameLoaded(string name)
+		{
+			Log.dbg("SaveGame {0} is ready!", name);
+			Settings.Instance.Load();
+		}
+
+		void KSPe.IO.SaveGameMonitor.SaveGameLoadedListener.OnSaveGameClosed() { }
 	}
 
 	partial class SettingsGui

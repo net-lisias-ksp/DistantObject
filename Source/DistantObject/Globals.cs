@@ -37,12 +37,12 @@ namespace DistantObject
 		static internal readonly string SETTINGS_DEFAULTS = "DistantObject";
 		static internal readonly string REFERENCE_CONFIG_PATHNAME = IO.Hierarchy<Startup>.GAMEDATA.Solve("PluginData", SETTINGS_FILE);
 
-		static private readonly string CONFIG_DIRECTORY_MAINMENU = IO.Hierarchy<Startup>.PLUGINDATA.Solve();
-		static private readonly string CONFIG_PATHNAME_MAINMENU = IO.Hierarchy<Startup>.PLUGINDATA.Solve(SETTINGS_FILE);
+		static internal readonly string CONFIG_DIRECTORY_MAINMENU = IO.Hierarchy<Startup>.PLUGINDATA.Solve();
+		static internal readonly string CONFIG_PATHNAME_MAINMENU = IO.Hierarchy<Startup>.PLUGINDATA.Solve(SETTINGS_FILE);
 
 		// Gambiarra para sobreviver um bug do KSPe. Ver https://github.com/KSP-ModularManagement/KSPe/issues/74
-		static internal string CONFIG_DIRECTORY => HighLogic.LoadedSceneIsGame ? System.IO.Path.GetDirectoryName(CONFIG_PATHNAME) : CONFIG_DIRECTORY_MAINMENU;
+		static internal string CONFIG_DIRECTORY => IO.SaveGameMonitor.Instance.IsValid ? System.IO.Path.GetDirectoryName(CONFIG_PATHNAME) : CONFIG_DIRECTORY_MAINMENU;
 
-		static internal string CONFIG_PATHNAME => HighLogic.LoadedSceneIsGame ? IO.Hierarchy<Startup>.SAVE.Solve(SETTINGS_FILE) : CONFIG_PATHNAME_MAINMENU;
+		static internal string CONFIG_PATHNAME => IO.SaveGameMonitor.Instance.IsValid ? IO.Hierarchy<Startup>.SAVE.Solve(SETTINGS_FILE) : CONFIG_PATHNAME_MAINMENU;
 	}
 }

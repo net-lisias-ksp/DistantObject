@@ -447,8 +447,10 @@ namespace DistantObject
 
 		private ConfigNode LoadSettings()
 		{
-			if (HighLogic.LoadedSceneIsGame && SIO.File.Exists(Globals.CONFIG_PATHNAME))
+			if (KSPe.IO.SaveGameMonitor.Instance.IsValid && SIO.File.Exists(Globals.CONFIG_PATHNAME))
 				return ConfigNode.Load(Globals.CONFIG_PATHNAME);
+			else if (SIO.File.Exists(Globals.CONFIG_PATHNAME_MAINMENU))
+				return ConfigNode.Load(Globals.CONFIG_PATHNAME_MAINMENU);
 
 			return ConfigNode.Load(Globals.REFERENCE_CONFIG_PATHNAME);
 		}
@@ -472,9 +474,16 @@ namespace DistantObject
 
 		private void saveSettings(ConfigNode settings)
 		{
-			SIO.Directory.CreateDirectory(Globals.CONFIG_DIRECTORY);
-			settings.Save(Globals.CONFIG_PATHNAME);
-
+			if (KSPe.IO.SaveGameMonitor.Instance.IsValid)
+			{
+				SIO.Directory.CreateDirectory(Globals.CONFIG_DIRECTORY);
+				settings.Save(Globals.CONFIG_PATHNAME);
+			}
+			else
+			{
+				SIO.Directory.CreateDirectory(Globals.CONFIG_DIRECTORY_MAINMENU);
+				settings.Save(Globals.CONFIG_PATHNAME_MAINMENU);
+			}
 		}
 
 		public void Commit()
