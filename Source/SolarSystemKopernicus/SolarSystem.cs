@@ -24,9 +24,12 @@
 		along with Distant Object Enhancement /L.
 		If not, see <https://www.gnu.org/licenses/>.
 */
-using DistantObject.Contract;
+using UnityEngine;
 
 using Kopernicus.Components;
+
+using DistantObject.Contract;
+
 
 namespace DistantObject.SolarSystem.Kopernicus
 {
@@ -35,5 +38,17 @@ namespace DistantObject.SolarSystem.Kopernicus
 		public SolarSystem() { }
 
 		Vector3d SolarSystemEngine.Interface.GetSunPosition() => KopernicusStar.Current.sun.position;
+
+		double SolarSystemEngine.Interface.CalculatePlanetsBrightness(double minimumSignificantBodySize, double minimumTargetRelativeAngle, double referenceBodySize, Camera cam)
+		{
+			CelestialBody sun = KopernicusStar.Current.sun;
+			return CommonUtils.CalculatePlanetsBrightness(sun, minimumSignificantBodySize, minimumTargetRelativeAngle, referenceBodySize, cam);
+		}
+
+		double SolarSystemEngine.Interface.CalculateSunBrightness(double minimumSignificantBodySize, Camera cam)
+		{
+			CelestialBody sun = KopernicusStar.Current.sun;
+			return CommonUtils.CalculateSunBrightness(sun, minimumSignificantBodySize, cam);
+		}
 	}
 }

@@ -24,7 +24,7 @@
 		along with Distant Object Enhancement /L.
 		If not, see <https://www.gnu.org/licenses/>.
 */
-using System;
+using UnityEngine;
 
 namespace DistantObject.Contract
 {
@@ -33,6 +33,15 @@ namespace DistantObject.Contract
 		public interface Interface
 		{
 			Vector3d GetSunPosition();
+
+			double CalculateSunBrightness(double minimumSignificantBodySize, Camera cam);
+
+			double CalculatePlanetsBrightness(
+				double minimumSignificantBodySize
+				, double minimumTargetRelativeAngle
+				, double referenceBodySize
+				, Camera cam
+				);
 		}
 
 		private static Interface INSTANCE;

@@ -25,6 +25,9 @@
 		If not, see <https://www.gnu.org/licenses/>.
 */
 using System;
+
+using DistantObject.Contract;
+
 using KSPe.Annotations;
 using UnityEngine;
 
@@ -97,56 +100,18 @@ namespace DistantObject
                 return;
             }
 
-            Vector3d camPos = FlightCamera.fetch.mainCamera.transform.position;
-            double camFov = FlightCamera.fetch.mainCamera.fieldOfView;
-            Vector3d camAngle = FlightCamera.fetch.mainCamera.transform.forward;
-
-			double targetColorScalar = 1.0;
-
-			// The Sun needs special handling
-			{
-				double sunRadius = FlightGlobals.Bodies[0].Radius;
-				double sunDist = FlightGlobals.Bodies[0].GetAltitude(camPos) + sunRadius;
-				double sunAngularSize = Math.Acos((Math.Sqrt(sunDist * sunDist - sunRadius * sunRadius) / sunDist)) * (double)Mathf.Rad2Deg;
-
-				if (sunAngularSize > Settings.Instance.SkyboxBrightness.minimumSignificantBodySize)
-				{
-					Vector3d sunPosition = FlightGlobals.Bodies[0].position;
-
-					// CSAngle = Camera to Sun angle
-					double CSAngle = Math.Max(0.0, Vector3.Angle((sunPosition - camPos).normalized, camAngle) - sunAngularSize);
-					CSAngle = 1.0 - Math.Min(1.0, Math.Max(0.0, (CSAngle - (camFov / 2.0))) / (camFov / 4.0));
-
-					targetColorScalar = 1.0 - (Math.Sqrt(sunAngularSize) * CSAngle);
-				}
-			}
-
-			for (int i = 1; i < FlightGlobals.Bodies.Count; ++i)
-            {
-                double bodyRadius = FlightGlobals.Bodies[i].Radius;
-                double bodyDist = FlightGlobals.Bodies[i].GetAltitude(camPos) + bodyRadius;
-				double bodySize = Math.Acos((Math.Sqrt(bodyDist * bodyDist - bodyRadius * bodyRadius) / bodyDist)) * (double)Mathf.Rad2Deg;
-
-				if (bodySize < Settings.Instance.SkyboxBrightness.minimumSignificantBodySize) continue;
-
-				{
-					Vector3d bodyPosition = FlightGlobals.Bodies[i].position;
-					Vector3d targetVectorToSun = FlightGlobals.Bodies[0].position - bodyPosition;
-					Vector3d targetVectorToCam = camPos - bodyPosition;
-
-					double targetRelAngle = (float)Vector3d.Angle(targetVectorToSun, targetVectorToCam);
-					targetRelAngle = Math.Max(targetRelAngle, bodySize);
-					targetRelAngle = Math.Min(targetRelAngle, Settings.Instance.SkyboxBrightness.minimumTargetRelativeAngle);
-					targetRelAngle = 1.0 - ((targetRelAngle - bodySize) / (Settings.Instance.SkyboxBrightness.minimumTargetRelativeAngle - bodySize));
-
-					double CBAngle = Math.Max(0.0, Vector3.Angle((bodyPosition - camPos).normalized, camAngle) - bodySize);
-					CBAngle = 1.0 - Math.Min(1.0, Math.Max(0.0, (CBAngle - (camFov / 2.0)) - 5.0) / (camFov / 4.0));
-					bodySize = Math.Min(bodySize, Settings.Instance.SkyboxBrightness.referenceBodySize);
-
-					double colorScalar = 1.0 - (targetRelAngle * (Math.Sqrt(bodySize / Settings.Instance.SkyboxBrightness.referenceBodySize)) * CBAngle);
-					targetColorScalar = Math.Min(targetColorScalar, colorScalar);
-				}
-			}
+			double targetColorScalar = SolarSystemEngine.Instance.CalculateSunBrightness(
+				Settings.Instance.SkyboxBrightness.minimumSignificantBodySize
+				, FlightCamera.fetch.mainCamera
+				);
+			targetColorScalar = Math.Min(targetColorScalar,
+					SolarSystemEngine.Instance.CalculatePlanetsBrightness(
+						Settings.Instance.SkyboxBrightness.minimumSignificantBodySize
+						, Settings.Instance.SkyboxBrightness.minimumTargetRelativeAngle
+						, Settings.Instance.SkyboxBrightness.referenceBodySize
+						, FlightCamera.fetch.mainCamera
+					)
+				);
 			{
 				float c = (float)Settings.Instance.SkyboxBrightness.maxBrightness;
 				Color color = new Color(c,c,c) * (float)targetColorScalar;

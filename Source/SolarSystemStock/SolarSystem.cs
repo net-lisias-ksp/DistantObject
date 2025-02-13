@@ -24,16 +24,29 @@
 		along with Distant Object Enhancement /L.
 		If not, see <https://www.gnu.org/licenses/>.
 */
-using System;
+using UnityEngine;
 
 using DistantObject.Contract;
 
 namespace DistantObject.SolarSystem.Stock
 {
-	public class SolarSystem : SolarSystemEngine.Interface
+	public partial class SolarSystem : SolarSystemEngine.Interface
 	{
 		public SolarSystem() { }
 
 		Vector3d SolarSystemEngine.Interface.GetSunPosition() => FlightGlobals.Bodies[0].position;
+
+		double SolarSystemEngine.Interface.CalculatePlanetsBrightness(double minimumSignificantBodySize, double minimumTargetRelativeAngle, double referenceBodySize, Camera cam)
+		{
+			CelestialBody sun = FlightGlobals.Bodies[0];
+			return CommonUtils.CalculatePlanetsBrightness(sun, minimumSignificantBodySize, minimumTargetRelativeAngle, referenceBodySize, cam);
+		}
+
+		double SolarSystemEngine.Interface.CalculateSunBrightness(double minimumSignificantBodySize, Camera cam)
+		{
+			CelestialBody sun = FlightGlobals.Bodies[0];
+			return CommonUtils.CalculateSunBrightness(sun, minimumSignificantBodySize, cam);
+		}
+
 	}
 }
