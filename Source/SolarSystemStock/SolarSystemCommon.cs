@@ -107,11 +107,14 @@ namespace DistantObject.SolarSystem
 			Vector3d camPos = cam.transform.position;
 			double sunAngularSize = calculateBodyAngularSize(sun, camPos);
 
-			// Let's check if all the Sun's Coronas are hidden.
 			if (sunAngularSize > minimumSignificantBodySize)
 			{
-				Renderer renderer = sun.GetComponent<Renderer>();
-				r = (null != renderer && renderer.isVisible) ? 0.0 : 1.0;
+				Vector3 viewPoint = cam.WorldToViewportPoint(sun.transform.position);
+				if (viewPoint.z > 0)
+				{
+					Renderer renderer = sun.GetComponent<Renderer>();
+					r = (null != renderer && renderer.isVisible) ? 0.0 : 1.0;
+				}
 			}
 
 			return r;
