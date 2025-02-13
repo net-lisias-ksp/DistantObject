@@ -1,10 +1,12 @@
 # Distant Object Enhancement (DOE) :: Changes
 
-* 2025-0213: 2.2.1.1 (LisiasT) for KSP >= 1.3.1
+* 2025-0213: 2.2.1.2 (LisiasT) for KSP >= 1.3.1
 	+ **Finally** implements Sky Undimming when on the dark side of a planet where the Sun is not visible!
 	+ Fixes a potential glitch involving Kopernicus, discovered while implementing #31.
 	+ Closes issues:
 		- [#31](https://github.com/net-lisias-ksp/DistantObject/issues/31) Check the SkyBox Dimming when looking on the Planet from it's dark side.
+* 2025-0213: 2.2.1.1 (LisiasT) for KSP >= 1.3.1
+	+ ***DITCHED AGAIN***
 * 2025-0212: 2.2.1.0 (LisiasT) for KSP >= 1.3.1
 	+ ***DITCHED***
 * 2024-0803: 2.2.0.2 (LisiasT) for KSP >= 1.3.1
