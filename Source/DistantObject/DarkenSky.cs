@@ -112,6 +112,12 @@ namespace DistantObject
 						, FlightCamera.fetch.mainCamera
 					)
 				);
+			targetColorScalar = Math.Max(targetColorScalar,
+					SolarSystemEngine.Instance.CalculateSunCoronaBrightness(
+						Settings.Instance.SkyboxBrightness.minimumSignificantBodySize
+						, FlightCamera.fetch.mainCamera
+					)
+				);
 			{
 				float c = (float)Settings.Instance.SkyboxBrightness.maxBrightness;
 				Color color = new Color(c,c,c) * (float)targetColorScalar;

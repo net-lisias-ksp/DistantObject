@@ -100,6 +100,23 @@ namespace DistantObject.SolarSystem
 			return r;
 		}
 
+		static public double CalculateSunCoronaBrightness(CelestialBody sun, double minimumSignificantBodySize, Camera cam)
+		{
+			double r = 0.0;
+
+			Vector3d camPos = cam.transform.position;
+			double sunAngularSize = calculateBodyAngularSize(sun, camPos);
+
+			// Let's check if all the Sun's Coronas are hidden.
+			if (sunAngularSize > minimumSignificantBodySize)
+			{
+				Renderer renderer = sun.GetComponent<Renderer>();
+				r = (null != renderer && renderer.isVisible) ? 0.0 : 1.0;
+			}
+
+			return r;
+		}
+
 		static private double calculateBodyAngularSize(CelestialBody body, Vector3d camPos)
 		{
 			double sunRadius = body.Radius;

@@ -48,5 +48,11 @@ namespace DistantObject.SolarSystem.Stock
 			return CommonUtils.CalculateSunBrightness(sun, minimumSignificantBodySize, cam);
 		}
 
+		double SolarSystemEngine.Interface.CalculateSunCoronaBrightness(double minimumSignificantBodySize, Camera cam)
+		{
+			CelestialBody sun = FlightGlobals.Bodies[0];
+			return CommonUtils.CalculateSunCoronaBrightness(sun, minimumSignificantBodySize, cam);
+		}
+
 	}
 }

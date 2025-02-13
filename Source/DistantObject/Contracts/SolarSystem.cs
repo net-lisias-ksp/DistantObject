@@ -42,6 +42,8 @@ namespace DistantObject.Contract
 				, double referenceBodySize
 				, Camera cam
 				);
+
+			double CalculateSunCoronaBrightness(double minimumSignificantBodySize, Camera cam);
 		}
 
 		private static Interface INSTANCE;

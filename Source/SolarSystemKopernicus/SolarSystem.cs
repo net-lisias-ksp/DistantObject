@@ -50,5 +50,11 @@ namespace DistantObject.SolarSystem.Kopernicus
 			CelestialBody sun = KopernicusStar.Current.sun;
 			return CommonUtils.CalculateSunBrightness(sun, minimumSignificantBodySize, cam);
 		}
+
+		double SolarSystemEngine.Interface.CalculateSunCoronaBrightness(double minimumSignificantBodySize, Camera cam)
+		{
+			CelestialBody sun = KopernicusStar.Current.sun;
+			return CommonUtils.CalculateSunCoronaBrightness(sun, minimumSignificantBodySize, cam);
+		}
 	}
 }
