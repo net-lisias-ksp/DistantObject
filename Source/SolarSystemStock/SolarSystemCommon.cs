@@ -113,7 +113,18 @@ namespace DistantObject.SolarSystem
 				if (viewPoint.z > 0)
 				{
 					Renderer renderer = sun.GetComponent<Renderer>();
-					r = (null != renderer && renderer.isVisible) ? 0.0 : 1.0;
+					if (null != renderer && renderer.isVisible)
+					{
+						double camFov = cam.fieldOfView;
+						Vector3d camAngle = cam.transform.forward;
+						Vector3d sunPosition = sun.position;
+
+						// CSAngle = Camera to Sun angle
+						double CSAngle = Math.Max(0.0, Vector3.Angle((sunPosition - camPos).normalized, camAngle) - sunAngularSize);
+						CSAngle = 1.0 - Math.Min(1.0, Math.Max(0.0, (CSAngle - (camFov / 2.0))) / (camFov / 4.0));
+
+						r += 1 - (Math.Sqrt(sunAngularSize) * CSAngle);
+					}
 				}
 			}
 
