@@ -378,7 +378,7 @@ namespace DistantObject
 		public readonly DistantVesselClass DistantVessel;
 		public readonly SkyboxBrightnessClass SkyboxBrightness;
 
-		public bool debugMode = false;
+		public bool debugMode = Globals.DEBUG;
 		public bool useToolbar = false;
 		public bool useAppLauncher = true;
 		public bool onlyInSpaceCenter = false;
@@ -491,6 +491,7 @@ namespace DistantObject
 			if (null != VesselDraw.Instance) VesselDraw.Instance.SetActiveTo(this.DistantVessel.renderVessels);
 			if (null != FlareDraw.Instance) FlareDraw.Instance.SetActiveTo(this.DistantFlare.flaresEnabled);
 			if (null != DarkenSky.Instance) DarkenSky.Instance.SetActiveTo(this.SkyboxBrightness.changeSkybox);
+			Debug.DarkenSky.Instance.Show = this.debugMode;
 		}
 	}
 }

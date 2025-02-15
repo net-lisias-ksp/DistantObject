@@ -71,6 +71,7 @@
     <Compile Include="Settings.cs" />
     <Compile Include="Globals.cs" />
     <Compile Include="Contracts\SolarSystem.cs" />
+    <Compile Include="Debug\DarkenSky.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\Version.tt">
@@ -81,6 +82,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Contracts\" />
+    <Folder Include="Debug\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

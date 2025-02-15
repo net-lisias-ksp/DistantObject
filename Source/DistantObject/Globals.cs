@@ -30,6 +30,8 @@ namespace DistantObject
 {
 	internal class Globals
 	{
+		internal static readonly System.Random RAND = new System.Random();
+
 		static internal readonly string DistantObject = "Distant Object Enhancement";
 		static internal readonly string DistantObjectVersion = Version.Text;
 		internal const string SETTINGS_NAME = "Settings";
@@ -44,5 +46,7 @@ namespace DistantObject
 		static internal string CONFIG_DIRECTORY => IO.SaveGameMonitor.Instance.IsValid ? System.IO.Path.GetDirectoryName(CONFIG_PATHNAME) : CONFIG_DIRECTORY_MAINMENU;
 
 		static internal string CONFIG_PATHNAME => IO.SaveGameMonitor.Instance.IsValid ? IO.Hierarchy<Startup>.SAVE.Solve(SETTINGS_FILE) : CONFIG_PATHNAME_MAINMENU;
+
+		static internal bool DEBUG => KSPe.Globals<Startup>.DebugMode;
 	}
 }

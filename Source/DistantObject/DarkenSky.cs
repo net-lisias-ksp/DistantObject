@@ -118,6 +118,7 @@ namespace DistantObject
 						, FlightCamera.fetch.mainCamera
 					)
 				);
+			Debug.DarkenSky.Instance.targetColorScalar = targetColorScalar;
 			{
 				float c = (float)Settings.Instance.SkyboxBrightness.maxBrightness;
 				Color color = new Color(c,c,c) * (float)targetColorScalar;

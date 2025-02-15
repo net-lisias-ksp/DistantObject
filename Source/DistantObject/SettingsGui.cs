@@ -97,7 +97,8 @@ namespace DistantObject
 
 	partial class SettingsGui
     {
-        protected Rect windowPos = new Rect(Screen.width / 4, Screen.height / 4, 10f, 10f);
+		private readonly int windowId = KSPe.UI.UID.Get();
+		protected Rect windowPos = new Rect(Screen.width / 4, Screen.height / 4, 10f, 10f);
 		protected Vector2 scrollViewPosition = new Vector2();
 
         private static bool activated = false;
@@ -106,6 +107,11 @@ namespace DistantObject
 		private Settings buffer = new Settings();
 
         private static ApplicationLauncherButton appLauncherButton = null;
+
+		~SettingsGui()
+		{
+			KSPe.UI.UID.Release(this.windowId);
+		}
 
 		private void ApplySettings()
 		{
@@ -512,7 +518,7 @@ namespace DistantObject
 					ReadSettings();
 				}
 
-				windowPos = GUILayout.Window(-5234628, windowPos, mainGUI, Globals.DistantObject + " Settings", GUILayout.Width(320), GUILayout.Height(600));
+				windowPos = GUILayout.Window(this.windowId, windowPos, mainGUI, Globals.DistantObject + " Settings", GUILayout.Width(320), GUILayout.Height(600));
 			}
 			isActivated = activated;
 		}
