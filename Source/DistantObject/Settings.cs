@@ -34,8 +34,14 @@ namespace DistantObject
 {
 	internal class Settings
 	{
+		private static readonly object MUTEX = new object();
 		private static Settings __INSTANCE = null;
-		public static Settings Instance => __INSTANCE??(__INSTANCE = new Settings());
+		public static Settings Instance {
+			get {
+				lock(MUTEX)
+					return __INSTANCE??(__INSTANCE = new Settings());
+			}
+		}
 
 		public enum ERenderMode
 		{
