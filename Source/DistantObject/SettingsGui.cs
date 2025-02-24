@@ -71,7 +71,9 @@ namespace DistantObject
 		private void Start()
 		{
 			Settings.Instance.Load();
-			if (!KSPe.IO.SaveGameMonitor.Instance.IsValid)
+			if (KSPe.IO.SaveGameMonitor.Instance.IsValid)
+				Settings.Instance.Commit();
+			else
 				KSPe.IO.SaveGameMonitor.Instance.AddSingleShot(this);
 		}
 

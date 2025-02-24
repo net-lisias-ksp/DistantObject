@@ -122,6 +122,7 @@ namespace DistantObject
 
 			//Load settings
 			Settings.Instance.Load();
+			Settings.Instance.Commit();
 
 			GameEvents.onVesselChange.Add(this.OnVesselChange);
 			GameEvents.onVesselGoOnRails.Add(this.OnVesselGoOnRails);

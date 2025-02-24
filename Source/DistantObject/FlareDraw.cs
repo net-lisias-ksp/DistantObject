@@ -746,6 +746,7 @@ namespace DistantObject
 		private void Start()
 		{
 			Settings.Instance.Load();
+			Settings.Instance.Commit();
 
 			Dictionary<string, Vessel.Situations> namedSituations = new Dictionary<string, Vessel.Situations> {
 				{ Vessel.Situations.LANDED.ToString(), Vessel.Situations.LANDED},
