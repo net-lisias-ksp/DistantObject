@@ -90,6 +90,7 @@ namespace DistantObject
 		{
 			Log.dbg("SaveGame {0} is ready!", name);
 			Settings.Instance.Load();
+			Settings.Instance.Commit();
 		}
 
 		void KSPe.IO.SaveGameMonitor.SaveGameLoadedListener.OnSaveGameClosed() { }
