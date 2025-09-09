@@ -493,11 +493,11 @@ namespace DistantObject
 					isVisible = false;
 				}
 
-				if (isVisible)
+				if (isVisible && !(flare is BodyFlare))
 				{
 					for (int i = 0;i < bodyFlares.Count;++i)
 					{
-						if (bodyFlares[i].body.bodyName != flare.mesh.name && bodyFlares[i].distanceFromCamera < targetDist && bodyFlares[i].sizeInDegrees > targetSize && Vector3d.Angle(bodyFlares[i].cameraToBodyUnitVector, position - camPos) < bodyFlares[i].sizeInDegrees)
+						if (bodyFlares[i].distanceFromCamera < targetDist && bodyFlares[i].sizeInDegrees > targetSize && Vector3d.Angle(bodyFlares[i].cameraToBodyUnitVector, position - camPos) < bodyFlares[i].sizeInDegrees)
 						{
 							isVisible = false;
 							break;
