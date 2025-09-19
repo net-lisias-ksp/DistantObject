@@ -493,18 +493,34 @@ namespace DistantObject
 					isVisible = false;
 				}
 
-				if (isVisible && !(flare is BodyFlare))
-				{
-					for (int i = 0;i < bodyFlares.Count;++i)
-					{
-						if (bodyFlares[i].distanceFromCamera < targetDist && bodyFlares[i].sizeInDegrees > targetSize && Vector3d.Angle(bodyFlares[i].cameraToBodyUnitVector, position - camPos) < bodyFlares[i].sizeInDegrees)
-						{
-							isVisible = false;
-							break;
-						}
-					}
-				}
-			}
+                if (isVisible)
+                {
+                    bool CheckVisibility(BodyFlare bodyFlare) => bodyFlare.distanceFromCamera < targetDist && bodyFlare.sizeInDegrees > targetSize && Vector3d.Angle(bodyFlare.cameraToBodyUnitVector, position - camPos) < bodyFlare.sizeInDegrees;
+
+                    if (flare is BodyFlare bF)
+                    {
+                        for (int i = 0; i < bodyFlares.Count; ++i)
+                        {
+                            if (bodyFlares[i].body != bF.body && CheckVisibility(bodyFlares[i]))
+                            {
+                                isVisible = false;
+                                break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        for (int i = 0; i < bodyFlares.Count; ++i)
+                        {
+                            if (CheckVisibility(bodyFlares[i]))
+                            {
+                                isVisible = false;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
 
 			if (targetSize < (camFOV / 500.0f) && isVisible)
 			{
