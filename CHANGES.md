@@ -1,12 +1,14 @@
 # Distant Object Enhancement (DOE) :: Changes
 
-* 2025-0924: 2.2.1.3 (LisiasT) for KSP >= 1.3.1
+* 2025-0927: 2.2.1.4 (LisiasT) for KSP >= 1.3.1
 	+ Maintenance Release: bugfixes and (hopefully) performance enhancements.
 	+ Closes issues:
-		- [#55](https://github.com/net-lisias-ksp/DistantObject/issues/55) Flare Occlusion Performance IssuesenhancementNew feature or request.
+		- [#55](https://github.com/net-lisias-ksp/DistantObject/issues/55) Flare Occlusion Performance Issues.
 		- [#54](https://github.com/net-lisias-ksp/DistantObject/issues/54) data is getting screwed now and then when Switching to Map and back
 	+ Reworks issues:
 		- [#31](https://github.com/net-lisias-ksp/DistantObject/issues/31) Check the SkyBox Dimming when looking on the Planet from it's dark side.
+* 2025-0924: 2.2.1.3 (LisiasT) for KSP >= 1.3.1
+	+ ***DITCHED*** due a mistake while building it.
 * 2025-0213: 2.2.1.2 (LisiasT) for KSP >= 1.3.1
 	+ **Finally** implements Sky Undimming when on the dark side of a planet where the Sun is not visible!
 	+ Fixes a potential glitch involving Kopernicus, discovered while implementing #31.
