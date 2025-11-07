@@ -1,5 +1,11 @@
 # Distant Object Enhancement (DOE) :: Change Log
 
+* 2025-1107: 2.2.1.5 (LisiasT) for KSP >= 1.3.1
+	+ Bumping up the release, I botched the last one.
+		- Don't ask, I'm sincerely puzzled about how I pulled this fast one on myself.
+	+ Since we are here, merging up last minute performance improvements, see PL#60 (Thanks, [@Clayell](https://github.com/Clayell)!)
+	+ Merges:
+		- [PL#60](https://github.com/net-lisias-ksp/DistantObject/pull/60) Compare transforms instead of `transform.name`
 * 2025-0927: 2.2.1.4 (LisiasT) for KSP >= 1.3.1
 	+ Maintenance Release: bugfixes and (hopefully) performance enhancements.
 	+ Closes issues:
