@@ -1,5 +1,7 @@
 # Distant Object Enhancement (DOE) :: Change Log
 
+* 2026-0322: 2.2.1.6 (LisiasT) for KSP >= 1.3.1
+	+ Updates `KSPe.Light` to 2.5.5.2, fixing a lame mistake that prevented it from working on KSP < 1.8.0 🤦
 * 2025-1107: 2.2.1.5 (LisiasT) for KSP >= 1.3.1
 	+ Bumping up the release, I botched the last one.
 		- Don't ask, I'm sincerely puzzled about how I pulled this fast one on myself.
