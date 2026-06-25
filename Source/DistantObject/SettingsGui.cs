@@ -58,7 +58,7 @@ namespace DistantObject
 	}
 
 	[KSPAddon(KSPAddon.Startup.AllGameScenes, false)]
-	internal class SettingsGuiOnGameScenes:MonoBehaviour, KSPe.IO.SaveGameMonitor.SaveGameLoadedListener
+	internal class SettingsGuiOnGameScenes:MonoBehaviour
 	{
 		private SettingsGui settingsGui;
 		private void Awake()
@@ -71,10 +71,6 @@ namespace DistantObject
 		private void Start()
 		{
 			Settings.Instance.Load();
-			if (KSPe.IO.SaveGameMonitor.Instance.IsValid)
-				Settings.Instance.Commit();
-			else
-				KSPe.IO.SaveGameMonitor.Instance.AddSingleShot(this);
 		}
 
 		private void OnGUI()
@@ -87,15 +83,6 @@ namespace DistantObject
 			this.settingsGui.OnDestroy();
 			this.settingsGui = null;
 		}
-
-		void KSPe.IO.SaveGameMonitor.SaveGameLoadedListener.OnSaveGameLoaded(string name)
-		{
-			Log.dbg("SaveGame {0} is ready!", name);
-			Settings.Instance.Load();
-			Settings.Instance.Commit();
-		}
-
-		void KSPe.IO.SaveGameMonitor.SaveGameLoadedListener.OnSaveGameClosed() { }
 	}
 
 	partial class SettingsGui
@@ -107,7 +94,7 @@ namespace DistantObject
         private static bool activated = false;
         private bool isActivated = false;
 
-		private Settings buffer = new Settings();
+		private readonly SettingsBuffer buffer = new SettingsBuffer();
 
         private static ApplicationLauncherButton appLauncherButton = null;
 
@@ -526,7 +513,7 @@ namespace DistantObject
 			isActivated = activated;
 		}
 
-		private void Reset() => this.buffer = new Settings();
+		private void Reset() => this.buffer.Reset();
 
         public static void Toggle()
         {

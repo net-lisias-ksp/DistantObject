@@ -25,18 +25,16 @@
 		If not, see <https://www.gnu.org/licenses/>.
 */
 using System;
+using System.Collections.Generic;
 using SIO = System.IO;
 
 using KSPe;
-using System.Collections.Generic;
+using KSPe.IO;
 
 namespace DistantObject
 {
-	internal class Settings
+	internal class SettingsBuffer
 	{
-		private static Settings __INSTANCE = null;
-		public static Settings Instance => __INSTANCE??(__INSTANCE = new Settings());
-
 		public enum ERenderMode
 		{
 			RenderTargetOnly = 0,
@@ -383,7 +381,7 @@ namespace DistantObject
 		public bool useAppLauncher = true;
 		public bool onlyInSpaceCenter = false;
 
-		public Settings()
+		internal SettingsBuffer()
 		{
 			UrlDir.UrlConfig url = GameDatabase.Instance.GetConfigs(Globals.SETTINGS_DEFAULTS)[0];
 			ConfigNodeWithSteroids node = ConfigNodeWithSteroids.from(url.config);
@@ -396,8 +394,6 @@ namespace DistantObject
 
 		public void Reset()
 		{
-			this.hasLoaded = false;
-
 			this.debugMode = this.Defaults.debugMode;
 			this.useToolbar = this.Defaults.useToolbar;
 			this.useAppLauncher = this.Defaults.useAppLauncher;
@@ -409,7 +405,7 @@ namespace DistantObject
 			this.SkyboxBrightness.Reset(this.Defaults.SkyboxBrightness);
 		}
 
-		public void Apply(Settings buffer)
+		public void Apply(SettingsBuffer buffer)
 		{
 			this.debugMode = buffer.debugMode;
 			this.useToolbar = buffer.useToolbar;
@@ -420,6 +416,42 @@ namespace DistantObject
 			this.DistantFlare.Apply(buffer.DistantFlare);
 			this.DistantVessel.Apply(buffer.DistantVessel);
 			this.SkyboxBrightness.Apply(buffer.SkyboxBrightness);
+		}
+
+	}
+
+	internal class Settings : SettingsBuffer, SaveGameMonitor.SaveGameLoadedListener
+	{
+		private static Settings __INSTANCE = null;
+		public static Settings Instance => __INSTANCE??(__INSTANCE = new Settings());
+
+		private Settings() : base()
+		{
+			KSPe.IO.SaveGameMonitor.Instance.Add(this);
+		}
+
+		~Settings()
+		{
+			KSPe.IO.SaveGameMonitor.Instance.Remove(this);
+		}
+
+		void SaveGameMonitor.SaveGameLoadedListener.OnSaveGameLoaded(string name)
+		{
+			Log.dbg("Settings.OnSaveGameLoaded {0}", name);
+			this.Load();
+			this.Commit();
+		}
+
+		void SaveGameMonitor.SaveGameLoadedListener.OnSaveGameClosed()
+		{
+			Log.dbg("Settings.OnSaveGameClosed");
+			this.Save();
+		}
+
+		public new void Reset()
+		{
+			this.hasLoaded = false;
+			base.Reset();
 		}
 
 		private bool hasLoaded = false;
