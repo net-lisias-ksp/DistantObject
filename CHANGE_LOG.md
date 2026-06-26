@@ -1,5 +1,8 @@
 # Distant Object Enhancement (DOE) :: Change Log
 
+* 2026-0626: 2.2.1.7 (LisiasT) for KSP >= 1.3.1
+	+ Small refactoring on the `Settings` infrastructure, saving some sweat from the GC.
+	+ Updates `KSPe.Light`, fixing a weird and elusive bug that was hindering the per savegame Settings.
 * 2026-0322: 2.2.1.6 (LisiasT) for KSP >= 1.3.1
 	+ Updates `KSPe.Light` to 2.5.5.2, fixing a lame mistake that prevented it from working on KSP < 1.8.0 🤦
 * 2025-1107: 2.2.1.5 (LisiasT) for KSP >= 1.3.1
