@@ -1,5 +1,10 @@
 # Distant Object Enhancement (DOE) :: Change Log
 
+* 2026-1017: 2.2.1.8 (LisiasT) for KSP >= 1.3.1
+	+ A long standing quirk was finally diagnosed.
+		- Thanks to [Aragael](https://forum.kerbalspaceprogram.com/profile/239444-aragael/) for the [report](https://forum.kerbalspaceprogram.com/topic/205063-ksp-131-distant-object-enhancement-doe-l-2217-2026-0626/page/17/#findComment-4543148) and [Alex6643](https://forum.kerbalspaceprogram.com/profile/243188-alex6643/) for the [tip](https://forum.kerbalspaceprogram.com/topic/205063-ksp-131-distant-object-enhancement-doe-l-2217-2026-0626/page/17/#findComment-4543581)!
+	+ Closes issues:
+		- [#65](https://github.com/net-lisias-ksp/DistantObject/issues/65) Reverting to Launch is restoring the Settings do Default.
 * 2026-0626: 2.2.1.7 (LisiasT) for KSP >= 1.3.1
 	+ Small refactoring on the `Settings` infrastructure, saving some sweat from the GC.
 	+ Updates `KSPe.Light`, fixing a weird and elusive bug that was hindering the per savegame Settings.
