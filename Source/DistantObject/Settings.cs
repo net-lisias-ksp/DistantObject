@@ -428,11 +428,20 @@ namespace DistantObject
 		private Settings() : base()
 		{
 			KSPe.IO.SaveGameMonitor.Instance.Add(this);
+			GameEvents.onFlightReady.Add(this.OnFlightReady);
 		}
 
 		~Settings()
 		{
 			KSPe.IO.SaveGameMonitor.Instance.Remove(this);
+			GameEvents.onFlightReady.Remove(this.OnFlightReady);
+		}
+
+		void OnFlightReady()
+		{
+			Log.dbg("Settings.OnFlightReady");
+			this.Load();
+			this.Commit();
 		}
 
 		void SaveGameMonitor.SaveGameLoadedListener.OnSaveGameLoaded(string name)
@@ -455,6 +464,7 @@ namespace DistantObject
 		}
 
 		private bool hasLoaded = false;
+
 		public void Load()
 		{
 			ConfigNode configNode = this.LoadSettings();

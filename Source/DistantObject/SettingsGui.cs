@@ -70,6 +70,7 @@ namespace DistantObject
 
 		private void Start()
 		{
+			Log.dbg("SettingsGuiOnGameScenes.Start()");
 			Settings.Instance.Load();
 		}
 
@@ -80,6 +81,7 @@ namespace DistantObject
 
 		private void OnDestroy()
 		{
+			Log.dbg("SettingsGuiOnGameScenes.OnDestroy()");
 			this.settingsGui.OnDestroy();
 			this.settingsGui = null;
 		}
